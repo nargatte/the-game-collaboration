@@ -78,10 +78,17 @@
     <Compile Include="Messages\Communication\TaskField.cs" />
     <Compile Include="Messages\Communication\TeamColour.cs" />
     <Compile Include="Messages\Communication\TestPiece.cs" />
+    <Compile Include="Messages\Configuration\CommunicationServerSettings.cs" />
     <Compile Include="Messages\Configuration\Configuration.cs" />
+    <Compile Include="Messages\Configuration\Field.cs" />
     <Compile Include="Messages\Configuration\GameMasterSettings.cs" />
+    <Compile Include="Messages\Configuration\GameMasterSettingsActionCosts.cs" />
     <Compile Include="Messages\Configuration\GameMasterSettingsGameDefinition.cs" />
+    <Compile Include="Messages\Configuration\GoalField.cs" />
+    <Compile Include="Messages\Configuration\GoalFieldType.cs" />
+    <Compile Include="Messages\Configuration\Location.cs" />
     <Compile Include="Messages\Configuration\PlayerSettings.cs" />
+    <Compile Include="Messages\Configuration\TeamColour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
