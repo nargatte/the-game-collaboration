@@ -40,32 +40,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Board.cs" />
-    <Compile Include="Entities\ConfirmJoiningGame.cs" />
-    <Compile Include="Entities\ConfirmRegistration.cs" />
-    <Compile Include="Entities\Game.cs" />
-    <Compile Include="Entities\GameInfo.cs" />
-    <Compile Include="Entities\GetGames.cs" />
-    <Compile Include="Entities\JoinGame.cs" />
-    <Compile Include="Entities\NewGameInfo.cs" />
-    <Compile Include="Entities\PlayerDefinition.cs" />
-    <Compile Include="Entities\PlayerLocation.cs" />
-    <Compile Include="Entities\RegisteredGames.cs" />
-    <Compile Include="Entities\RegisterGame.cs" />
-    <Compile Include="Entities\RejectJoiningGame.cs" />
-    <Compile Include="Enums\MoveType.cs" />
-    <Compile Include="Enums\PlayerType.cs" />
-    <Compile Include="Enums\TeamColour.cs" />
+    <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
+    <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
+    <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />
+    <Compile Include="Messages\Communication\ConfirmGameRegistration.cs" />
+    <Compile Include="Messages\Communication\ConfirmJoiningGame.cs" />
+    <Compile Include="Messages\Communication\Data.cs" />
+    <Compile Include="Messages\Communication\Discover.cs" />
+    <Compile Include="Messages\Communication\Field.cs" />
+    <Compile Include="Messages\Communication\Game.cs" />
+    <Compile Include="Messages\Communication\GameBoard.cs" />
+    <Compile Include="Messages\Communication\GameInfo.cs" />
+    <Compile Include="Messages\Communication\GameMasterDisconnected.cs" />
+    <Compile Include="Messages\Communication\GameMessage.cs" />
+    <Compile Include="Messages\Communication\GameStarted.cs" />
+    <Compile Include="Messages\Communication\GetGames.cs" />
+    <Compile Include="Messages\Communication\GoalField.cs" />
+    <Compile Include="Messages\Communication\GoalFieldType.cs" />
+    <Compile Include="Messages\Communication\JoinGame.cs" />
+    <Compile Include="Messages\Communication\KnowledgeExchangeRequest.cs" />
+    <Compile Include="Messages\Communication\Location.cs" />
+    <Compile Include="Messages\Communication\Move.cs" />
+    <Compile Include="Messages\Communication\MoveType.cs" />
+    <Compile Include="Messages\Communication\PickUpPiece.cs" />
+    <Compile Include="Messages\Communication\Piece.cs" />
+    <Compile Include="Messages\Communication\PieceType.cs" />
+    <Compile Include="Messages\Communication\PlacePiece.cs" />
+    <Compile Include="Messages\Communication\Player.cs" />
+    <Compile Include="Messages\Communication\PlayerDisconnected.cs" />
+    <Compile Include="Messages\Communication\PlayerMessage.cs" />
+    <Compile Include="Messages\Communication\PlayerType.cs" />
+    <Compile Include="Messages\Communication\RegisteredGames.cs" />
+    <Compile Include="Messages\Communication\RegisterGame.cs" />
+    <Compile Include="Messages\Communication\RejectGameRegistration.cs" />
+    <Compile Include="Messages\Communication\RejectJoiningGame.cs" />
+    <Compile Include="Messages\Communication\RejectKnowledgeExchange.cs" />
+    <Compile Include="Messages\Communication\TaskField.cs" />
+    <Compile Include="Messages\Communication\TeamColour.cs" />
+    <Compile Include="Messages\Communication\TestPiece.cs" />
+    <Compile Include="Messages\Configuration\Configuration.cs" />
+    <Compile Include="Messages\Configuration\GameMasterSettings.cs" />
+    <Compile Include="Messages\Configuration\GameMasterSettingsGameDefinition.cs" />
+    <Compile Include="Messages\Configuration\PlayerSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Communication.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Communication\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
