@@ -40,7 +40,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
+    <Compile Include="IGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\DiscoverRequest.cs" />
+    <Compile Include="Requests\KnowledgeExchangeRequest.cs" />
+    <Compile Include="Requests\MoveRequest.cs" />
+    <Compile Include="Requests\PickUpRequest.cs" />
+    <Compile Include="Requests\PlaceRequest.cs" />
+    <Compile Include="Requests\TestPieceRequest.cs" />
+    <Compile Include="Responses\DiscoverResponse.cs" />
+    <Compile Include="Responses\GameMessage.cs" />
+    <Compile Include="Responses\KnowledgeExchangeRequestMessage.cs" />
+    <Compile Include="Responses\MoveResponse.cs" />
+    <Compile Include="Responses\PickUpResponse.cs" />
+    <Compile Include="Responses\PlaceResponse.cs" />
+    <Compile Include="Responses\PositionalResponse.cs" />
+    <Compile Include="Responses\TestPieceResponse.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
