@@ -40,7 +40,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Board.cs" />
+    <Compile Include="Entities\ConfirmJoiningGame.cs" />
+    <Compile Include="Entities\ConfirmRegistration.cs" />
+    <Compile Include="Entities\Game.cs" />
+    <Compile Include="Entities\GameInfo.cs" />
+    <Compile Include="Entities\GetGames.cs" />
+    <Compile Include="Entities\JoinGame.cs" />
+    <Compile Include="Entities\NewGameInfo.cs" />
+    <Compile Include="Entities\PlayerDefinition.cs" />
+    <Compile Include="Entities\PlayerLocation.cs" />
+    <Compile Include="Entities\RegisteredGames.cs" />
+    <Compile Include="Entities\RegisterGame.cs" />
+    <Compile Include="Entities\RejectJoiningGame.cs" />
+    <Compile Include="Enums\MoveType.cs" />
+    <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Enums\TeamColour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Communication.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Communication\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
