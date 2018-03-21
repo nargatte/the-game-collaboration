@@ -3,29 +3,56 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMasterCore", "GameMasterCore\GameMasterCore.csproj", "{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerCore", "CommunicationServerCore\CommunicationServerCore.csproj", "{B97BA770-ABD7-4FA3-AD2C-36278011F6AF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCore", "PlayerCore\PlayerCore.csproj", "{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationSubstitute", "CommunicationSubstitute\CommunicationSubstitute.csproj", "{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{20D54140-CCFE-4767-90A4-F5F093A296F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedUnitTests", "SharedUnitTests\SharedUnitTests.csproj", "{57F2A9AB-7871-44CB-A991-15EF0D50D9C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCoreUnitTests", "PlayerCoreUnitTests\PlayerCoreUnitTests.csproj", "{6E9AFE11-0EA3-4562-8AC8-3A14DB74276A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6D23F13-B83A-4739-861D-6690D28DFA16} = {D6D23F13-B83A-4739-861D-6690D28DFA16}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMasterCoreUnitTests", "GameMasterCoreUnitTests\GameMasterCoreUnitTests.csproj", "{D3D06A5D-3A99-4527-A4B3-F9B31A4AD9CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7} = {A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationSubstituteUnitTests", "CommunicationSubstituteUnitTests\CommunicationSubstituteUnitTests.csproj", "{D6740EAE-6902-4DDB-BF0E-14F5803756DC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerCoreUnitTests", "CommunicationServerCoreUnitTests\CommunicationServerCoreUnitTests.csproj", "{97E40015-F449-4270-B29B-FE6C5CDA95C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898} = {A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cores", "Cores", "{E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMasterCore", "GameMasterCore\GameMasterCore.csproj", "{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
+		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerCore", "CommunicationServerCore\CommunicationServerCore.csproj", "{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
+		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCore", "PlayerCore\PlayerCore.csproj", "{D6D23F13-B83A-4739-861D-6690D28DFA16}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
+		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,18 +60,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B97BA770-ABD7-4FA3-AD2C-36278011F6AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B97BA770-ABD7-4FA3-AD2C-36278011F6AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B97BA770-ABD7-4FA3-AD2C-36278011F6AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B97BA770-ABD7-4FA3-AD2C-36278011F6AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,19 +88,31 @@ Global
 		{97E40015-F449-4270-B29B-FE6C5CDA95C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E40015-F449-4270-B29B-FE6C5CDA95C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E40015-F449-4270-B29B-FE6C5CDA95C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D23F13-B83A-4739-861D-6690D28DFA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D23F13-B83A-4739-861D-6690D28DFA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D23F13-B83A-4739-861D-6690D28DFA16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D23F13-B83A-4739-861D-6690D28DFA16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5B8A0EDF-9DE2-4634-ADD5-03B9A9369563} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
-		{B97BA770-ABD7-4FA3-AD2C-36278011F6AF} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
-		{EFBA11C6-376F-4E46-880C-4D8F4F4B4FFC} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
 		{57F2A9AB-7871-44CB-A991-15EF0D50D9C4} = {0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}
 		{6E9AFE11-0EA3-4562-8AC8-3A14DB74276A} = {0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}
 		{D3D06A5D-3A99-4527-A4B3-F9B31A4AD9CB} = {0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}
 		{D6740EAE-6902-4DDB-BF0E-14F5803756DC} = {0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}
 		{97E40015-F449-4270-B29B-FE6C5CDA95C4} = {0C0CD6ED-C821-4DB4-8071-3D8AC9E83CA6}
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
+		{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
+		{D6D23F13-B83A-4739-861D-6690D28DFA16} = {E4F8FAB3-C190-4B22-AD02-E4D3E3CA0F59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B441DA8B-82ED-4A86-A097-6BDF4BBD98B3}
