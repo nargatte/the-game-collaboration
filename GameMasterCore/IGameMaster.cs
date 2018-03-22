@@ -1,6 +1,5 @@
 ﻿using Shared;
-using Shared.Requests;
-using Shared.Responses;
+using Shared.Messages.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace GameMasterCore
 {
-    abstract public class IGameMaster
+    public interface IGameMaster
     {
         //IProxy proxy; //reference to CommunicationSubstitute
-        IGame game;
+        //IGame game;
 
-        abstract protected IGame InitializeGame(IGameConfiguration gameConfiguration);
-        abstract protected Data Move(MoveRequest moveRequest);
-        abstract protected Data Discover(DiscoverRequest discoverRequest);
-        abstract protected Data PickUp(PickUpRequest pickUpRequest);
-        abstract protected Data TestPiece(TestPieceRequest testPieceRequest);
-        abstract protected Data Place(PlaceRequest placeRequest);
-        abstract protected Data KnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
+        //IGame InitializeGame(IGameConfiguration gameConfiguration);
+        Data PerformMove(Move moveRequest);
+        Data PerformDiscover(Discover discoverRequest);
+        Data PerformPickUp(PickUpPiece pickUpRequest);
+        Data PerformTestPiece(TestPiece testPieceRequest);
+        Data PerformPlace(PlacePiece placeRequest);
+        Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
+        
     }
 }

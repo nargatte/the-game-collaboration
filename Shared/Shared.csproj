@@ -40,8 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
-    <Compile Include="IGame.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
     <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />
@@ -92,20 +90,6 @@
     <Compile Include="Messages\Configuration\PlayerSettings.cs" />
     <Compile Include="Messages\Configuration\TeamColour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Requests\DiscoverRequest.cs" />
-    <Compile Include="Requests\KnowledgeExchangeRequest.cs" />
-    <Compile Include="Requests\MoveRequest.cs" />
-    <Compile Include="Requests\PickUpRequest.cs" />
-    <Compile Include="Requests\PlaceRequest.cs" />
-    <Compile Include="Requests\TestPieceRequest.cs" />
-    <Compile Include="Responses\DiscoverResponse.cs" />
-    <Compile Include="Responses\GameMessage.cs" />
-    <Compile Include="Responses\KnowledgeExchangeRequestMessage.cs" />
-    <Compile Include="Responses\MoveResponse.cs" />
-    <Compile Include="Responses\PickUpResponse.cs" />
-    <Compile Include="Responses\PlaceResponse.cs" />
-    <Compile Include="Responses\PositionalResponse.cs" />
-    <Compile Include="Responses\TestPieceResponse.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
