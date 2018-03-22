@@ -8,17 +8,17 @@ namespace Shared.Components.Boards
     public interface IBoard
     {
         uint Width { get; }
-        uint Height { get; }
         uint TasksHeight { get; }
         uint GoalsHeight { get; }
-		IField GetField( uint x, uint y );
-		void SetField( uint x, uint y, IField value );
+		uint Height { get; }
 		IEnumerable<IField> Fields { get; }
-		IPlayer GetPlayer( ulong id );
-		void SetPlayer( ulong id, IPlayer value );
-		IEnumerable<IPlayer> Players { get; }
-		IPiece GetPiece( ulong id );
-		void SetPiece( ulong id, IPiece value );
 		IEnumerable<IPiece> Pieces { get; }
+		IEnumerable<IPlayer> Players { get; }
+		IField GetField( uint x, uint y );
+		IPiece GetPiece( ulong id );
+		IPlayer GetPlayer( ulong id );
+		void SetField( uint x, uint y, IField value );
+		void SetPlayer( ulong id, IPlayer value );
+		void SetPiece( ulong id, IPiece value );
 	}
 }

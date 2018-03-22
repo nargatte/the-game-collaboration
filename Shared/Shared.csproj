@@ -40,9 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Fields\Field.cs" />
+    <Compile Include="Components\Fields\GoalField.cs" />
+    <Compile Include="Components\Fields\TaskField.cs" />
     <Compile Include="Components\Pieces\IFieldPiece.cs" />
     <Compile Include="Components\Pieces\IPlayerPiece.cs" />
     <Compile Include="Components\Players\IPlayer.cs" />
+    <Compile Include="Components\Players\ExtenderIPlayer.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
     <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />
@@ -103,6 +107,5 @@
     <Compile Include="Enums\TeamColour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
