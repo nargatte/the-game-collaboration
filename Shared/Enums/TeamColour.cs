@@ -1,6 +1,6 @@
 ﻿namespace Shared.Enums
 {
-    enum TeamColour
+    public enum TeamColour
     {
         Red,
         Blue

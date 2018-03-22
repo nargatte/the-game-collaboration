@@ -2,7 +2,7 @@
 
 namespace Shared.Components.Boards
 {
-    interface IBoard
+    public interface IBoard
     {
         uint Width { get; }
         uint Height { get; }

@@ -10,13 +10,13 @@ namespace GameMasterCore
 {
     class GameMaster : IGameMaster
     {
-        //board, 
-        Dictionary<String, Player> guidToPlayer;
+        //board, players (z kolorami)
+        Dictionary<string, Player> guidToPlayer; //lub string->ulong
 
         public Data PerformDiscover(Discover discoverRequest)
         {
-
             //znajdź playera po id w request
+            Player player = GetPlayerForGuid(discoverRequest.playerGuid);
             //zrób discover
             throw new NotImplementedException();
         }
