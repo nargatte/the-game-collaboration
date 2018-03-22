@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared;
+using Shared.Components.Boards;
 using Shared.Messages.Communication;
 
 namespace GameMasterCore
@@ -11,7 +12,13 @@ namespace GameMasterCore
     class GameMaster : IGameMaster
     {
         //board, players (z kolorami)
+        IBoard board;
         Dictionary<string, Player> guidToPlayer; //lub string->ulong
+
+        public GameMaster()
+        {
+
+        }
 
         public Data PerformDiscover(Discover discoverRequest)
         {

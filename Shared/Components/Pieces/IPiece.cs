@@ -8,6 +8,5 @@ namespace Shared.Components.Pieces
         ulong Id { get; }
         PieceType Type { get; }
         DateTime Timestamp { get; }
-        ulong? PlayerId { get; }
     }
 }

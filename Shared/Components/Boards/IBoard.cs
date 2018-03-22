@@ -1,4 +1,5 @@
 ﻿using Shared.Components.Fields;
+using Shared.Components.Players;
 
 namespace Shared.Components.Boards
 {
@@ -9,5 +10,7 @@ namespace Shared.Components.Boards
         uint TasksHeight { get; }
         uint GoalsHeight { get; }
         IField this[ uint x, uint y ] { get; }
+		IPlayer GetPlayer( ulong id );
+		void SetPlayer( ulong id, IPlayer player );
     }
 }

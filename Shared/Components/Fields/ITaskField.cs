@@ -2,7 +2,7 @@
 
 namespace Shared.Components.Fields
 {
-    interface ITaskField : IField
+    public interface ITaskField : IField
     {
         int DistanceToPiece { get; }
         IPiece Piece { get; }

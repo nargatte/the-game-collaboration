@@ -2,7 +2,7 @@
 
 namespace Shared.Components.Fields
 {
-    interface IGoalField : IField
+    public interface IGoalField : IField
     {
         GoalFieldType Type { get; }
         TeamColour Team { get; }
