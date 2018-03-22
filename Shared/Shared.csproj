@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Players\IPlayer.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
     <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />

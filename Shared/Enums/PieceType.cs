@@ -1,6 +1,6 @@
 ﻿namespace Shared.Enums
 {
-    enum PieceType
+    public enum PieceType
     {
         Unknown,
         Sham,

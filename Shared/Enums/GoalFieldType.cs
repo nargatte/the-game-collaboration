@@ -1,6 +1,6 @@
 ﻿namespace Shared.Enums
 {
-    enum GoalFieldType
+    public enum GoalFieldType
     {
         Unknown,
         Goal,
