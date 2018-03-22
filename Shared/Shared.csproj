@@ -89,6 +89,15 @@
     <Compile Include="Messages\Configuration\Location.cs" />
     <Compile Include="Messages\Configuration\PlayerSettings.cs" />
     <Compile Include="Messages\Configuration\TeamColour.cs" />
+    <Compile Include="Components\Boards\Board.cs" />
+    <Compile Include="Components\Fields\IField.cs" />
+    <Compile Include="Components\Boards\IBoard.cs" />
+    <Compile Include="Components\Fields\IGoalField.cs" />
+    <Compile Include="Components\Fields\ITaskField.cs" />
+    <Compile Include="Components\Pieces\IPiece.cs" />
+    <Compile Include="Enums\GoalFieldType.cs" />
+    <Compile Include="Enums\PieceType.cs" />
+    <Compile Include="Enums\TeamColour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
