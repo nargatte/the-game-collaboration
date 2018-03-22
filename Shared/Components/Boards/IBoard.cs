@@ -1,5 +1,7 @@
 ﻿using Shared.Components.Fields;
+using Shared.Components.Pieces;
 using Shared.Components.Players;
+using System.Collections.Generic;
 
 namespace Shared.Components.Boards
 {
@@ -9,8 +11,14 @@ namespace Shared.Components.Boards
         uint Height { get; }
         uint TasksHeight { get; }
         uint GoalsHeight { get; }
-        IField this[ uint x, uint y ] { get; set; }
+		IField GetField( uint x, uint y );
+		void SetField( uint x, uint y, IField value );
+		IEnumerable<IField> Fields { get; }
 		IPlayer GetPlayer( ulong id );
-		void SetPlayer( ulong id, IPlayer player );
-    }
+		void SetPlayer( ulong id, IPlayer value );
+		IEnumerable<IPlayer> Players { get; }
+		IPiece GetPiece( ulong id );
+		void SetPiece( ulong id, IPiece value );
+		IEnumerable<IPiece> Pieces { get; }
+	}
 }

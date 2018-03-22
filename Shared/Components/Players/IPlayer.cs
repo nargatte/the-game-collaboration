@@ -1,12 +1,14 @@
-﻿using Shared.Components.Pieces;
+﻿using Shared.Components.Fields;
+using Shared.Components.Pieces;
+using System;
 
 namespace Shared.Components.Players
 {
 	public interface IPlayer
 	{
 		ulong Id { get; }
-		uint X { get; }
-		uint Y { get; }
-		IPiece Piece { get; }
+		DateTime Timestamp { get; }
+		IField Field { get; }
+		IPlayerPiece Piece { get; }
 	}
 }
