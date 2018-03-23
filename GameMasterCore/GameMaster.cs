@@ -12,7 +12,7 @@ using Shared.Messages.Communication;
 
 namespace GameMasterCore
 {
-    class GameMaster : IGameMaster
+    public class GameMaster : IGameMaster
     {
         //board, players (z kolorami)
         IBoard board;
@@ -64,6 +64,35 @@ namespace GameMasterCore
             IPlayer playerPawn = board.GetPlayer(player.id);
             //sprawdź czy może się ruszyć
 
+            int targetX = (int)playerPawn.X, targetY = (int)playerPawn.Y;
+            switch (moveRequest.direction)
+            {
+                case MoveType.down:
+                    targetY--;
+                    break;
+                case MoveType.left:
+                    targetX--;
+                    break;
+                case MoveType.right:
+                    targetX++;
+                    break;
+                case MoveType.up:
+                    targetY++;
+                    break;
+                default:
+                    break;
+            }
+            IField targetField = board.GetField((uint)targetX, (uint)targetY);
+            if (targetField == null
+                || (targetField is IGoalField gf && gf.Team != playerPawn.Team))
+            {
+                //do not move the player
+                return new Data
+                {
+                    playerId = playerPawn.Id,
+                    PlayerLocation = new Location { x = playerPawn.X, y = playerPawn.Y }
+                };
+            }
             //rusz
             //zwróć informacje o obecnym polu i PlayerLocation
             throw new NotImplementedException();
@@ -91,7 +120,7 @@ namespace GameMasterCore
             Player player = GetPlayerForGuid(testPieceRequest.playerGuid);
             IPlayer playerPawn = board.GetPlayer(player.id);
             IPiece heldPiecePawn = playerPawn.Piece;
-            if(heldPiecePawn == null)
+            if (heldPiecePawn == null)
             {
                 return new Data { playerId = player.id }; //player wanted to test inaccessible piece
             }
