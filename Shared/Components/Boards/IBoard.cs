@@ -17,8 +17,8 @@ namespace Shared.Components.Boards
 		IField GetField( uint x, uint y );
 		IPiece GetPiece( ulong id );
 		IPlayer GetPlayer( ulong id );
-		void SetField( IField value );
-		void SetPlayer( IPlayer value );
-		void SetPiece( IPiece value );
+		bool SetField( IField value );
+		bool SetPlayer( IPlayer value );
+		bool SetPiece( IPiece value );
 	}
 }

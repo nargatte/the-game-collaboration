@@ -40,9 +40,21 @@ namespace Shared.Components.Boards
 		public virtual IField GetField( uint x, uint y ) => x >= 0 && x < Width && y >= 0 && y < Height ? fields[ x, y ] : null;
 		public virtual IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : null;
 		public virtual IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : null;
-		public virtual void SetField( IField value ) => throw new System.NotImplementedException();
-		public virtual void SetPiece( IPiece value ) => throw new System.NotImplementedException();
-		public virtual void SetPlayer( IPlayer value ) => throw new System.NotImplementedException();
+		public virtual bool SetField( IField value )
+		{
+			if( value is null )
+				return false;
+			var field = GetField( value.X, value.Y );
+			if( field is null || field == value )
+				return false;
+			if( field is ITaskField oldTask && value is ITaskField freshTask )
+				return UpdateTaskField( oldTask, freshTask );
+			if( field is IGoalField oldGoal && value is IGoalField freshGoal )
+				return UpdateGoalField( oldGoal, freshGoal );
+			return false;
+		}
+		public virtual bool SetPiece( IPiece value ) => throw new System.NotImplementedException();
+		public virtual bool SetPlayer( IPlayer value ) => throw new System.NotImplementedException();
 		#endregion
 		#region Board
 		private readonly IField[,] fields;
@@ -70,6 +82,14 @@ namespace Shared.Components.Boards
 			for( uint i = Height - GoalsHeight; i < Height; ++i )
 				for( uint j = 0; j < Width; ++j )
 					fields[ i, j ] = new GoalField( i, j, TeamColour.Red );
+		}
+		protected bool UpdateTaskField( ITaskField old, ITaskField fresh )
+		{
+			return false;
+		}
+		protected bool UpdateGoalField( IGoalField old, IGoalField fresh )
+		{
+			return false;
 		}
 		#endregion
 	}
