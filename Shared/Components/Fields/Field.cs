@@ -22,12 +22,8 @@ namespace Shared.Components.Fields
 			Timestamp = timestamp;
 			Player = player;
 		}
-		protected Field( IField field )
+		protected Field( IField field ) : this( field.X, field.Y, field.Timestamp, field.Player )
 		{
-			X = field.X;
-			Y = field.Y;
-			Timestamp = field.Timestamp;
-			Player = field.Player;
 		}
 		#endregion
 	}

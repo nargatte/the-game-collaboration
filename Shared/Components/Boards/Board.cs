@@ -40,9 +40,9 @@ namespace Shared.Components.Boards
 		public virtual IField GetField( uint x, uint y ) => x >= 0 && x < Width && y >= 0 && y < Height ? fields[ x, y ] : null;
 		public virtual IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : null;
 		public virtual IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : null;
-		public virtual void SetField( uint x, uint y, IField value ) => throw new System.NotImplementedException();
-		public virtual void SetPiece( ulong id, IPiece value ) => throw new System.NotImplementedException();
-		public virtual void SetPlayer( ulong id, IPlayer value ) => throw new System.NotImplementedException();
+		public virtual void SetField( IField value ) => throw new System.NotImplementedException();
+		public virtual void SetPiece( IPiece value ) => throw new System.NotImplementedException();
+		public virtual void SetPlayer( IPlayer value ) => throw new System.NotImplementedException();
 		#endregion
 		#region Board
 		private readonly IField[,] fields;
