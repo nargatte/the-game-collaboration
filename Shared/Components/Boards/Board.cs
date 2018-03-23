@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
@@ -83,14 +84,8 @@ namespace Shared.Components.Boards
 				for( uint j = 0; j < Width; ++j )
 					fields[ i, j ] = new GoalField( i, j, TeamColour.Red );
 		}
-		protected bool UpdateTaskField( ITaskField old, ITaskField fresh )
-		{
-			return false;
-		}
-		protected bool UpdateGoalField( IGoalField old, IGoalField fresh )
-		{
-			return false;
-		}
+		protected bool UpdateTaskField( ITaskField old, ITaskField fresh ) => throw new NotImplementedException();
+		protected bool UpdateGoalField( IGoalField old, IGoalField fresh ) => throw new NotImplementedException();
 		#endregion
 	}
 }
