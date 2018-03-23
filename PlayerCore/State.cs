@@ -19,13 +19,11 @@ namespace PlayerCore
 
         public IBoard Board { get; }
 
-        /// <summary>
-        /// When Piece null then player do not hold piece
-        /// </summary>
-        public IPlayer player { get; }
-
-        public State()
+        public State(Game game, IBoard board, int id)
         {
+            Game = game;
+            Board = board;
+
         }
 
         public void ReceiveData(Data data)
