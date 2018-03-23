@@ -1,4 +1,6 @@
-﻿namespace Shared.Messages.Configuration
+﻿using Shared.Enums;
+
+namespace Shared.Messages.Configuration
 {
 
     /// <remarks/>
