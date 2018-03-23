@@ -6,13 +6,15 @@ namespace Shared.Enums
 	[Serializable]
 	[XmlType( Namespace = "https://se2.mini.pw.edu.pl/17-results/" )]
 	[XmlRoot( Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = false )]
-	public enum PieceType
-    {
-		[XmlEnum( "unknown" )]
-		Unknown,
-		[XmlEnum( "sham" )]
-		Sham,
-		[XmlEnum( "normal" )]
-		Normal
-    }
+	public enum MoveType
+	{
+		[XmlEnum( "up" )]
+		Up,
+		[XmlEnum( "down" )]
+		Down,
+		[XmlEnum( "left" )]
+		Left,
+		[XmlEnum( "right" )]
+		Right,
+	}
 }

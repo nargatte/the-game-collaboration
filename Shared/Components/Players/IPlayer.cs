@@ -1,12 +1,17 @@
-﻿using Shared.Components.Pieces;
+﻿using Shared.Components.Fields;
+using Shared.Components.Pieces;
+using Shared.Enums;
+using System;
 
 namespace Shared.Components.Players
 {
 	public interface IPlayer
 	{
 		ulong Id { get; }
-		uint X { get; }
-		uint Y { get; }
-		IPiece Piece { get; }
+		TeamColour Team { get; }
+		PlayerType Type { get; }
+		DateTime Timestamp { get; }
+		IField Field { get; }
+		IPlayerPiece Piece { get; }
 	}
 }
