@@ -6,11 +6,15 @@ namespace Shared.Enums
 	[Serializable]
 	[XmlType( Namespace = "https://se2.mini.pw.edu.pl/17-results/" )]
 	[XmlRoot( Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = false )]
-	public enum PlayerType
+	public enum MoveType
 	{
-		[XmlEnum( "leader" )]
-		Leader,
-		[XmlEnum( "member" )]
-		Member
+		[XmlEnum( "up" )]
+		Up,
+		[XmlEnum( "down" )]
+		Down,
+		[XmlEnum( "left" )]
+		Left,
+		[XmlEnum( "right" )]
+		Right,
 	}
 }
