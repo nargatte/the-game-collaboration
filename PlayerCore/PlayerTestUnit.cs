@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlayerCore
 {
-    class PlayerInstance
+    class PlayerTestUnit
     {
     }
 }
