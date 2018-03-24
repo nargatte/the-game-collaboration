@@ -22,28 +22,117 @@ namespace GameMasterCore
 
         public GameMaster()
         {
-            this.config = new Config.GameMasterSettings
+            config = new Config.GameMasterSettings
             {
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
             };
-            this.board = PrapareBoard();
+            board = PrapareBoard();
         }
 
 
         private IBoard PrapareBoard()
         {
-            IBoard result = new Board(config.GameDefinition.BoardWidth, config.GameDefinition.TaskAreaLength, config.GameDefinition.GoalAreaLength);
+            IBoard result = new Board(
+                config.GameDefinition.BoardWidth,
+                config.GameDefinition.TaskAreaLength,
+                config.GameDefinition.GoalAreaLength);
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
-                result.SetField(new GoalField(gf.x, gf.y, gf.team, type: GoalFieldType.Goal));
+                result.SetField(
+                    new GoalField(gf.x, gf.y, gf.team, type: GoalFieldType.Goal)
+                    );
             //set the rest of GoalArea fields as NonGoals
             foreach (var f in result.Fields)
                 if (f is GoalField gf && gf.Type == GoalFieldType.Unknown)
-                    result.SetField(new GoalField(gf.X, gf.Y, gf.Team, type: GoalFieldType.NonGoal));
+                    result.SetField(
+                        new GoalField(gf.X, gf.Y, gf.Team, type: GoalFieldType.NonGoal)
+                        );
+
             //TODO: place players on the board
+            var randomBluePlaces = GenerateRandomPlaces(
+                config.GameDefinition.NumberOfPlayersPerTeam,
+                0, board.Width, 0, board.TasksHeight);
+
+            var randomRedPlaces = GenerateRandomPlaces(
+                config.GameDefinition.NumberOfPlayersPerTeam,
+                0, board.Width, board.Height - board.TasksHeight, board.Height);
+
+            var players = new List<IPlayer>();
+            var randomBluePlaceIterator = randomBluePlaces.GetEnumerator();
+            var randomRedPlaceIterator = randomBluePlaces.GetEnumerator();
+            // place blue players
+            for (int i = 0; i < config.GameDefinition.NumberOfPlayersPerTeam; i++)
+            {
+                if (!randomBluePlaceIterator.MoveNext())
+                {
+                    // shouldn't happen
+                    break;
+                }
+
+                // create blue players and add them to the board with randomBluePlaceIterator.Current position
+
+            }
+            // do the same with red players
+
             //TODO: generate and place pieces
+
+            //GenerateRandomPlaces(
+            //    config.GameDefinition.InitialNumberOfPieces,
+            //    0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
+            //        place => board.SetPiece(new FieldPiece(???))
+            //    );
+
             return result;
+        }
+
+        /// <summary>
+        /// Returns mathematically correct uniformly generated coordinates
+        /// </summary>
+        private List<IHasCoordinates> GenerateRandomPlaces(
+            uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
+        {
+            if (maxXExclusive <= minYInclusive || maxYExclusive <= minYInclusive)
+            {
+                throw new ArgumentOutOfRangeException("Incorrectly defined rectangle");
+            }
+
+            int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
+            var random = new Random();
+            var placeToPieceId = new Dictionary<int, int>();
+
+            for (int i = 0; i < n; i++)
+            {
+                placeToPieceId.Add(i, i);
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                var randomPlace = random.Next(0, totalFieldCount);
+                if (placeToPieceId.Keys.Contains(randomPlace))
+                {
+
+                    var tmpId = placeToPieceId[randomPlace];
+                    placeToPieceId[randomPlace] = placeToPieceId[i];
+                    placeToPieceId[i] = tmpId;
+                }
+                else
+                {
+                    placeToPieceId[randomPlace] = i;
+                    placeToPieceId.Remove(i);
+                }
+            }
+            var coordinateListToReturn = new List<IHasCoordinates>((int)n);
+            foreach (var keyValue in placeToPieceId)
+            {
+                coordinateListToReturn[keyValue.Value] = new HasCoordinates(
+                    X: (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
+                    Y: (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
+                    );
+
+            }
+
+            return coordinateListToReturn;
         }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
@@ -231,10 +320,11 @@ namespace GameMasterCore
 
             }
 
+            // może ewentualnie dodać AsParallel().
             fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
-                Min(piece => Math.Abs(piece.Field.X - x) + Math.Abs(piece.Field.Y - y));
+                Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
 
             pieces = piecesToReturn.ToArray();
             return fieldToReturn;
@@ -260,7 +350,7 @@ namespace GameMasterCore
         #region HelperMethods
         private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
         private TeamColour GetTeamColorFromCoordinateY(int y) => y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
-        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message) => board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid)); 
+        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message) => board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
         #endregion
     }
 }
