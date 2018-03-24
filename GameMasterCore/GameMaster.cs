@@ -237,8 +237,11 @@ namespace GameMasterCore
                     });
 
             }
-            //TODO policz dystans do piece
-            //fieldToReturn.distanceToPiece = ???
+            
+            fieldToReturn.distanceToPiece = (int)board.Pieces.
+                Where(piece => piece is IFieldPiece).
+                Select(piece => piece as IFieldPiece).
+                Min(piece => Math.Abs(piece.Field.X - x) + Math.Abs(piece.Field.Y - y));
 
             pieces = piecesToReturn.ToArray();
             return fieldToReturn;
