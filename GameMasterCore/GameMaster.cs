@@ -29,20 +29,20 @@ namespace GameMasterCore
             };
             this.board = PrapareBoard();
         }
-        
+
 
         private IBoard PrapareBoard()
         {
             IBoard result = new Board(config.GameDefinition.BoardWidth, config.GameDefinition.TaskAreaLength, config.GameDefinition.GoalAreaLength);
             //set Goals from configuration
-            foreach(var gf in config.GameDefinition.Goals)  
+            foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(new GoalField(gf.x, gf.y, gf.team, type: GoalFieldType.Goal));
             //set the rest of GoalArea fields as NonGoals
             foreach (var f in result.Fields)
                 if (f is GoalField gf && gf.Type == GoalFieldType.Unknown)
                     result.SetField(new GoalField(gf.X, gf.Y, gf.Team, type: GoalFieldType.NonGoal));
             //TODO: place players on the board
-
+            //TODO: generate and place pieces
             return result;
         }
 
@@ -126,7 +126,33 @@ namespace GameMasterCore
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
             //znajdź playera po id w request
+            ulong playerId = GetPlayerIdForGuid(pickUpRequest.playerGuid);
+            IPlayer playerPawn = board.GetPlayer(playerId);
             //zwróć piece
+            ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
+            IPiece piece = field.Piece;
+
+            if(piece == null)
+            {
+                return new DTO.Data
+                {
+                    playerId = playerPawn.Id
+                };
+            }
+            
+            //set player to contain the obtained piece
+            //??? board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, field:playerPawn.Field, piece: new PlayerPiece())
+            //set field to not contain the piece anymore
+            
+            
+
+            DTO.Data result = new DTO.Data
+            {
+                Pieces = new DTO.Piece
+                {
+                    id = 
+                }
+            }
             throw new NotImplementedException();
         }
 
