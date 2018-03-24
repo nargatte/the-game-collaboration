@@ -132,7 +132,7 @@ namespace GameMasterCore
             ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
             IPiece piece = field.Piece;
 
-            if(piece == null)
+            if (piece == null)
             {
                 return new DTO.Data
                 {
@@ -246,7 +246,19 @@ namespace GameMasterCore
 
         private DTO.GoalField GetGoalFieldInfo(int x, int y)
         {
+            var relevantField = board.GetField((uint)x, (uint)y);
+            var goalFieldToReturn = new DTO.GoalField
+            {
+                playerId = relevantField.Player?.Id ?? 0,
+                playerIdSpecified = relevantField.Player != null,
+                timestamp = relevantField.Timestamp,
+                type = GoalFieldType.Unknown,
+                team = y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red,
+                x = (uint)x,
+                y = (uint)y
+            };
 
+            return goalFieldToReturn;
         }
     }
 }
