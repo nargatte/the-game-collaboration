@@ -28,7 +28,11 @@ namespace Shared.Components.Players
 			Field = field;
 			Piece = piece;
 		}
-		public Player( IPlayer player ) : this( player.Id, player.Team, player.Type, player.Timestamp, player.Field, player.Piece )
+		public Player( IPlayer player, DateTime timestamp = default(DateTime), IField field = null, IPlayerPiece piece = null) 
+            : this( player.Id, player.Team, player.Type,
+                  timestamp == default(DateTime) ? player.Timestamp : timestamp,
+                  field == null ? player.Field : field,
+                  piece == null ? player.Piece : piece )
 		{
 		}
 		#endregion
