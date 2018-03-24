@@ -49,8 +49,7 @@ namespace GameMasterCore
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
             //Find player and its on-board representation (aka pawn)
-            var playerId = GetPlayerIdForGuid(discoverRequest.playerGuid);
-            IPlayer playerPawn = board.GetPlayer(playerId);
+            IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
             //Prepare result partial structures
             List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
             List<DTO.Piece> resultPieces = new List<DTO.Piece>();
@@ -68,7 +67,7 @@ namespace GameMasterCore
                 }
             DTO.Data result = new DTO.Data
             {
-                playerId = playerId,
+                playerId = playerPawn.Id,
                 Pieces = resultPieces.ToArray(),
                 TaskFields = resultFields.ToArray(),
             };
@@ -83,8 +82,7 @@ namespace GameMasterCore
         public DTO.Data PerformMove(DTO.Move moveRequest)
         {
             //znajdź gracza po id
-            ulong playerId = GetPlayerIdForGuid(moveRequest.playerGuid);
-            IPlayer playerPawn = board.GetPlayer(playerId);
+            IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
             //sprawdź czy może się ruszyć
 
             int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
@@ -126,8 +124,7 @@ namespace GameMasterCore
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
             //znajdź playera po id w request
-            ulong playerId = GetPlayerIdForGuid(pickUpRequest.playerGuid);
-            IPlayer playerPawn = board.GetPlayer(playerId);
+            IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
             //zwróć piece
             ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
             IPiece piece = field.Piece;
@@ -149,13 +146,13 @@ namespace GameMasterCore
 
             DTO.Data result = new DTO.Data
             {
-                playerId = playerId,
+                playerId = playerPawn.Id,
                 Pieces = new DTO.Piece[]
                 {
                     new DTO.Piece
                     {
                         id = piece.Id,
-                        playerId = playerId,
+                        playerId = playerPawn.Id,
                         timestamp = DateTime.Now,
                         type = PieceType.Unknown
                     }
@@ -176,33 +173,29 @@ namespace GameMasterCore
 
         public DTO.Data PerformTestPiece(DTO.TestPiece testPieceRequest)
         {
-            //TODO znajdź playera po id, znajdź jego piece
-            ulong playerId = GetPlayerIdForGuid(testPieceRequest.playerGuid);
-            IPlayer playerPawn = board.GetPlayer(playerId);
+            IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
             IPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
-                return new DTO.Data { playerId = playerId }; //player wanted to test inaccessible piece
+                return new DTO.Data { playerId = playerPawn.Id }; //player wanted to test inaccessible piece
             }
 
             //zwróć czy sham
             DTO.Data result = new DTO.Data
             {
-                playerId = playerId,
+                playerId = playerPawn.Id,
                 Pieces = new DTO.Piece[] {
                     new DTO.Piece
                     {
                         id = heldPiecePawn.Id,
                         timestamp = DateTime.Now,
-                        playerId = playerId,
+                        playerId = playerPawn.Id,
                         type = heldPiecePawn.Type
                     }
                 }
             };
             return result;
         }
-
-        private ulong GetPlayerIdForGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
 
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
@@ -237,7 +230,7 @@ namespace GameMasterCore
                     });
 
             }
-            
+
             fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
@@ -256,12 +249,18 @@ namespace GameMasterCore
                 playerIdSpecified = relevantField.Player != null,
                 timestamp = relevantField.Timestamp,
                 type = GoalFieldType.Unknown,
-                team = y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red,
+                team = GetTeamColorFromCoordinateY(y),
                 x = (uint)x,
                 y = (uint)y
             };
 
             return goalFieldToReturn;
         }
+
+        #region HelperMethods
+        private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
+        private TeamColour GetTeamColorFromCoordinateY(int y) => y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
+        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message) => board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid)); 
+        #endregion
     }
 }
