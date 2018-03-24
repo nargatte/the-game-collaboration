@@ -139,21 +139,30 @@ namespace GameMasterCore
                     playerId = playerPawn.Id
                 };
             }
-            
+
             //set player to contain the obtained piece
             //??? board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, field:playerPawn.Field, piece: new PlayerPiece())
+
             //set field to not contain the piece anymore
-            
-            
+
+
 
             DTO.Data result = new DTO.Data
             {
-                Pieces = new DTO.Piece
+                playerId = playerId,
+                Pieces = new DTO.Piece[]
                 {
-                    id = 
+                    new DTO.Piece
+                    {
+                        id = piece.Id,
+                        playerId = playerId,
+                        timestamp = DateTime.Now,
+                        type = PieceType.Unknown
+                    }
                 }
-            }
-            throw new NotImplementedException();
+            };
+
+            return result;
         }
 
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
