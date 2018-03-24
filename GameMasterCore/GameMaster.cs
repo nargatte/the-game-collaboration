@@ -9,7 +9,7 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
-using Shared.Messages.Configuration;
+using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 
 namespace GameMasterCore
@@ -18,22 +18,32 @@ namespace GameMasterCore
     {
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
-        GameMasterSettings config;
+        Config.GameMasterSettings config;
 
         public GameMaster()
         {
-            config = new GameMasterSettings
+            this.config = new Config.GameMasterSettings
             {
-                ActionCosts = new GameMasterSettingsActionCosts(),
-                GameDefinition = new GameMasterSettingsGameDefinition(), //default GameDefinition without Goals
+                ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
+                GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
             };
-
+            this.board = PrapareBoard();
         }
         
 
         private IBoard PrapareBoard()
         {
-            board = new Board(config.GameDefinition.BoardWidth, config.GameDefinition.TaskAreaLength, config.GameDefinition.GoalAreaLength)
+            IBoard result = new Board(config.GameDefinition.BoardWidth, config.GameDefinition.TaskAreaLength, config.GameDefinition.GoalAreaLength);
+            //set Goals from configuration
+            foreach(var gf in config.GameDefinition.Goals)  
+                result.SetField(new GoalField(gf.x, gf.y, gf.team, type: GoalFieldType.Goal));
+            //set the rest of GoalArea fields as NonGoals
+            foreach (var f in result.Fields)
+                if (f is GoalField gf && gf.Type == GoalFieldType.Unknown)
+                    result.SetField(new GoalField(gf.X, gf.Y, gf.Team, type: GoalFieldType.NonGoal));
+            //TODO: place players on the board
+
+            return result;
         }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
