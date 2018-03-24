@@ -18,13 +18,13 @@
 
         private uint initialNumberOfPiecesField;
 
-        private string boardWidthField;
+        private uint boardWidthField;
 
-        private string taskAreaLengthField;
+        private uint taskAreaLengthField;
 
-        private string goalAreaLengthField;
+        private uint goalAreaLengthField;
 
-        private string numberOfPlayersPerTeamField;
+        private uint numberOfPlayersPerTeamField;
 
         private string gameNameField;
 
@@ -33,10 +33,10 @@
             this.shamProbabilityField = 0.1D;
             this.placingNewPiecesFrequencyField = ((uint)(1000));
             this.initialNumberOfPiecesField = ((uint)(4));
-            this.boardWidthField = "5";
-            this.taskAreaLengthField = "7";
-            this.goalAreaLengthField = "3";
-            this.numberOfPlayersPerTeamField = "4";
+            this.boardWidthField = ((uint)(5));
+            this.taskAreaLengthField = ((uint)(7));
+            this.goalAreaLengthField = ((uint)(3));
+            this.numberOfPlayersPerTeamField = ((uint)(4));
         }
 
         /// <remarks/>
@@ -94,7 +94,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "nonNegativeInteger")]
-        public string BoardWidth
+        public uint BoardWidth
         {
             get
             {
@@ -108,7 +108,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "nonNegativeInteger")]
-        public string TaskAreaLength
+        public uint TaskAreaLength
         {
             get
             {
@@ -122,7 +122,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "nonNegativeInteger")]
-        public string GoalAreaLength
+        public uint GoalAreaLength
         {
             get
             {
@@ -136,7 +136,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "nonNegativeInteger")]
-        public string NumberOfPlayersPerTeam
+        public uint NumberOfPlayersPerTeam
         {
             get
             {
