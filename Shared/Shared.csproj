@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Fields\Field.cs" />
     <Compile Include="Components\Fields\GoalField.cs" />
     <Compile Include="Components\Fields\TaskField.cs" />

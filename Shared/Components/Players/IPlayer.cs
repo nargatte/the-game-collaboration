@@ -5,13 +5,13 @@ using System;
 
 namespace Shared.Components.Players
 {
-    public interface IPlayer
-    {
-        ulong Id { get; }
-        TeamColour Team { get; }
-        PlayerType Type { get; }
-        DateTime Timestamp { get; }
-        IField Field { get; }
-        IPlayerPiece Piece { get; }
-    }
+	public interface IPlayer
+	{
+		ulong Id { get; }
+		TeamColour Team { get; }
+		PlayerType Type { get; }
+		DateTime Timestamp { get; }
+		IField Field { get; }
+		IPlayerPiece Piece { get; }
+	}
 }
