@@ -9,19 +9,31 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
+using Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 
 namespace GameMasterCore
 {
     public class GameMaster : IGameMaster
     {
-        //board, players (z kolorami)
         IBoard board;
-        Dictionary<string, ulong> playerGuidToId; //lub string->ulong
+        Dictionary<string, ulong> playerGuidToId;
+        GameMasterSettings config;
 
         public GameMaster()
         {
+            config = new GameMasterSettings
+            {
+                ActionCosts = new GameMasterSettingsActionCosts(),
+                GameDefinition = new GameMasterSettingsGameDefinition(), //default GameDefinition without Goals
+            };
 
+        }
+        
+
+        private IBoard PrapareBoard()
+        {
+            board = new Board(config.GameDefinition.BoardWidth, config.GameDefinition.TaskAreaLength, config.GameDefinition.GoalAreaLength)
         }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
@@ -40,7 +52,7 @@ namespace GameMasterCore
                     x <= Math.Min(playerPawn.GetX().Value + 1, (int)board.Width - 1);
                     ++x)
                 {
-                    DTO.TaskField fieldToReturn = GetFieldInfo(x, y, out DTO.Piece[] pieces);
+                    DTO.TaskField fieldToReturn = GetTaskFieldInfo(x, y, out DTO.Piece[] pieces);
                     resultFields.Add(fieldToReturn);
                     resultPieces.AddRange(pieces);
                 }
@@ -95,6 +107,8 @@ namespace GameMasterCore
                 };
             }
             //rusz
+
+
             //zwróć informacje o obecnym polu i PlayerLocation
             throw new NotImplementedException();
         }
@@ -145,7 +159,7 @@ namespace GameMasterCore
 
         private ulong GetPlayerIdForGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
 
-        private DTO.TaskField GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
+        private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
             ITaskField currentField = board.GetField((uint)x, (uint)y) as ITaskField;
@@ -183,6 +197,11 @@ namespace GameMasterCore
 
             pieces = piecesToReturn.ToArray();
             return fieldToReturn;
+        }
+
+        private DTO.GoalField GetGoalFieldInfo(int x, int y)
+        {
+
         }
     }
 }
