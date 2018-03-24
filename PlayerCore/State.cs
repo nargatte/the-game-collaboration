@@ -53,6 +53,10 @@ namespace PlayerCore
                 Board.GetField(game.PlayerLocation));
 
             Board.SetPlayer(boardPlayer);
+            foreach (var pl in Game.Players.Where(p => p.id!=Id))
+            {
+                Board.SetPlayer(new Shared.Components.Players.Player(pl.id, pl.team, pl.type));
+            }
         }
 
         public void ReceiveData(Data data)
