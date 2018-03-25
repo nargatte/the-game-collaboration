@@ -19,11 +19,8 @@ namespace Shared.Components.Fields
 			Type = type;
 			Team = team;
 		}
-		public GoalField( IGoalField field ) : base( field )
-		{
-			Type = field.Type;
-			Team = field.Team;
-		}
+
+		public override IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player ) => throw new NotImplementedException();
 		#endregion
 	}
 }

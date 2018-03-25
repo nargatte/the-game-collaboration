@@ -13,6 +13,7 @@ namespace Shared.Components.Fields
 		public virtual uint Y { get; }
 		public virtual DateTime Timestamp { get; }
 		public virtual IPlayer Player { get; }
+		public abstract IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player );
 		#endregion
 		#region Field
 		protected Field( uint x, uint y, DateTime timestamp = default( DateTime ), IPlayer player = null )
@@ -21,9 +22,6 @@ namespace Shared.Components.Fields
 			Y = y;
 			Timestamp = timestamp;
 			Player = player;
-		}
-		protected Field( IField field ) : this( field.X, field.Y, field.Timestamp, field.Player )
-		{
 		}
 		#endregion
 	}

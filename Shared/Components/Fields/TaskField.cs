@@ -19,11 +19,8 @@ namespace Shared.Components.Fields
 			DistanceToPiece = distanceToPiece;
 			Piece = piece;
 		}
-		public TaskField( ITaskField field ) : base( field )
-		{
-			DistanceToPiece = field.DistanceToPiece;
-			Piece = field.Piece;
-		}
+
+		public override IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player ) => throw new NotImplementedException();
 		#endregion
 	}
 }

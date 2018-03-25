@@ -9,5 +9,6 @@ namespace Shared.Components.Fields
 		uint Y { get; }
         DateTime Timestamp { get; }
         IPlayer Player { get; }
+		IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player );
     }
 }
