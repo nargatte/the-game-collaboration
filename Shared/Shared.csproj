@@ -42,8 +42,6 @@
   <ItemGroup>
     <Compile Include="Components\Fields\Field.cs" />
     <Compile Include="Components\Fields\GoalField.cs" />
-    <Compile Include="Components\Fields\HasCoordinates.cs" />
-    <Compile Include="Components\Fields\IHasCoordinates.cs" />
     <Compile Include="Components\Fields\TaskField.cs" />
     <Compile Include="Components\Pieces\FieldPiece.cs" />
     <Compile Include="Components\Pieces\IFieldPiece.cs" />

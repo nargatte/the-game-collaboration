@@ -313,7 +313,7 @@ namespace GameMasterCore
         /// <summary>
         /// Returns mathematically correct uniformly generated coordinates
         /// </summary>
-        private List<IHasCoordinates> GenerateRandomPlaces(
+        private List<DTO.Location> GenerateRandomPlaces(
             uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
         {
             if (maxXExclusive <= minYInclusive || maxYExclusive <= minYInclusive)
@@ -346,13 +346,14 @@ namespace GameMasterCore
                     placeToPieceId.Remove(i);
                 }
             }
-            var coordinateListToReturn = new List<IHasCoordinates>((int)n);
+            var coordinateListToReturn = new List<DTO.Location>((int)n);
             foreach (var keyValue in placeToPieceId)
             {
-                coordinateListToReturn[keyValue.Value] = new HasCoordinates(
-                    X: (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
-                    Y: (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
-                    );
+                coordinateListToReturn[keyValue.Value] = new DTO.Location()
+                {
+                    x = (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
+                    y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
+                    };
 
             }
 
