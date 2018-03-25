@@ -22,16 +22,31 @@ namespace GameMasterCore
 
         public GameMaster()
         {
-            config = new Config.GameMasterSettings
+            //prepare config
+            config = PrepareDefaultConfig();
+
+            //generate board itself from config
+            board = PrepareBoard();
+        }
+
+        #region Preparation
+        private Config.GameMasterSettings PrepareDefaultConfig()
+        {
+            var result = new Config.GameMasterSettings
             {
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
             };
-            board = PrapareBoard();
+            //generate Goals for default config without goals
+            var goalLocationsBlue = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, 0, result.GameDefinition.GoalAreaLength);
+            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength, result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength);
+            List<Config.GoalField> goals = new List<Config.GoalField>(goalLocationsBlue.Select(loc => new Config.GoalField { team = TeamColour.Blue, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
+            goals.AddRange(goalLocationsRed.Select(loc => new Config.GoalField { team = TeamColour.Red, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
+            result.GameDefinition.Goals = goals.ToArray();
+            return result;
         }
 
-
-        private IBoard PrapareBoard()
+        private IBoard PrepareBoard()
         {
             IBoard result = new Board(
                 config.GameDefinition.BoardWidth,
@@ -85,16 +100,16 @@ namespace GameMasterCore
 
             return result;
         }
+        #endregion
 
-
+        #region IGameMaster
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
-            //Find player and its on-board representation (aka pawn)
             IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
-            //Prepare result partial structures
+            //Prepare partial result structures
             List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
             List<DTO.Piece> resultPieces = new List<DTO.Piece>();
-            //Perform discover itself on 3x3 
+            //Perform discover on 3x3 
             for (int y = Math.Max((int)board.GoalsHeight, (int)playerPawn.GetY().Value - 1);
                 y <= Math.Min(playerPawn.GetY().Value + 1, (int)board.Height - (int)board.GoalsHeight - 1);
                 ++y)
@@ -117,15 +132,14 @@ namespace GameMasterCore
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
+            //TODO: knowledge exchange
             throw new NotImplementedException();
         }
 
         public DTO.Data PerformMove(DTO.Move moveRequest)
         {
-            //znajdź gracza po id
             IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
-            //sprawdź czy może się ruszyć
-
+            
             int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
             switch (moveRequest.direction)
             {
@@ -145,26 +159,50 @@ namespace GameMasterCore
                     break;
             }
             IField targetField = board.GetField((uint)targetX, (uint)targetY);
+            //check for invalid moves
             if (targetField == null
                 || (targetField is IGoalField gf && gf.Team != playerPawn.Team))
             {
-                //do not move the player
+                //trying to move outside the board or to other team's goal area - do not move the player
                 return new DTO.Data
                 {
                     playerId = playerPawn.Id,
                     PlayerLocation = new DTO.Location { x = playerPawn.GetX().Value, y = playerPawn.GetY().Value }
                 };
             }
-            //rusz
+            if (targetField.Player != null)
+            {
+                //field is occupied - do not move the player, return info about the occupied field
+                var occupiedField = GetFieldInfo(targetX, targetY, out DTO.Piece[] pieces);
+                return new DTO.Data
+                {
+                    playerId = playerPawn.Id,
+                    PlayerLocation = new DTO.Location { x = playerPawn.GetX().Value, y = playerPawn.GetY().Value },
+                    Pieces = pieces,
+                    GoalFields = (occupiedField is DTO.GoalField) ? new DTO.GoalField[] { occupiedField as DTO.GoalField } : null,
+                    TaskFields = (occupiedField is DTO.TaskField) ? new DTO.TaskField[] { occupiedField as DTO.TaskField } : null
+                };
+            }
 
-            //zwróć informacje o obecnym polu i PlayerLocation
-            throw new NotImplementedException();
+            //move
+            board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, piece: playerPawn.Piece, field: targetField));
+
+            //return information about current field and new player location
+            var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
+            DTO.Data result = new DTO.Data
+            {
+                playerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { x = (uint)targetX, y = (uint)targetY },
+                Pieces = currentPieces,
+                GoalFields = (currentField is DTO.GoalField) ? new DTO.GoalField[] { currentField as DTO.GoalField } : null,
+                TaskFields = (currentField is DTO.TaskField) ? new DTO.TaskField[] { currentField as DTO.TaskField } : null
+            };
+            return result;
         }
 
 
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
-            //znajdź playera po id w request
             IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
             //zwróć piece
             ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
@@ -178,13 +216,13 @@ namespace GameMasterCore
                 };
             }
 
+            //TODO: perform pickup itself [can't do now because of not clear info about SetPlayer and SetField usage]
             //set player to contain the obtained piece
             //??? board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, field:playerPawn.Field, piece: new PlayerPiece())
-
             //set field to not contain the piece anymore
 
 
-
+            //prepare result data
             DTO.Data result = new DTO.Data
             {
                 playerId = playerPawn.Id,
@@ -199,13 +237,29 @@ namespace GameMasterCore
                     }
                 }
             };
-
             return result;
         }
 
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
-            //znajdź playera po id, znajdź jego piece
+            IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
+            IPiece heldPiecePawn = playerPawn.Piece;
+            if (heldPiecePawn == null)
+            {
+                return new DTO.Data { playerId = playerPawn.Id }; //player wanted to place inaccessible piece
+            }
+            IField targetField = playerPawn.Field;
+            DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
+            if(targetField is ITaskField targetTaskField)
+            {
+                if(targetTaskField.Piece != null)
+                {
+                    //target field has a piece on it already
+                    //TODO: return field info, piece info and held piece info
+                }
+                //TODO: place the Piece [more info on board's methods needed]
+            }
+            var targetGoalField = targetField as IGoalField;
             //zobacz czy może odłożyć
             //zobacz czy zyskuje punkt
             //zobacz czy koniec gry
@@ -220,8 +274,6 @@ namespace GameMasterCore
             {
                 return new DTO.Data { playerId = playerPawn.Id }; //player wanted to test inaccessible piece
             }
-
-            //zwróć czy sham
             DTO.Data result = new DTO.Data
             {
                 playerId = playerPawn.Id,
@@ -237,7 +289,19 @@ namespace GameMasterCore
             };
             return result;
         }
+        #endregion
 
+        #region IBoard to DTO converters
+        private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
+        {
+            if(y<config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+            {
+                pieces = null;
+                return GetGoalFieldInfo(x, y);
+            }
+            return GetTaskFieldInfo(x, y, out pieces);
+        }
+        
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
@@ -298,6 +362,7 @@ namespace GameMasterCore
 
             return goalFieldToReturn;
         }
+        #endregion
 
         #region HelperMethods
         private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
