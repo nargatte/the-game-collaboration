@@ -55,13 +55,13 @@ namespace GameMasterCore
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
-                    new GoalField(gf.x, gf.y, gf.team, type: GoalFieldType.Goal)
+                    new GoalField(gf.x, gf.y, gf.team, DateTime.Now, type: GoalFieldType.Goal)
                     );
             //set the rest of GoalArea fields as NonGoals
             foreach (var f in result.Fields)
                 if (f is GoalField gf && gf.Type == GoalFieldType.Unknown)
                     result.SetField(
-                        new GoalField(gf.X, gf.Y, gf.Team, type: GoalFieldType.NonGoal)
+                        new GoalField(gf.X, gf.Y, gf.Team, DateTime.Now, type: GoalFieldType.NonGoal)
                         );
 
             //TODO: place players on the board
@@ -185,7 +185,7 @@ namespace GameMasterCore
             }
 
             //move
-            board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, piece: playerPawn.Piece, field: targetField));
+            board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
 
             //return information about current field and new player location
             var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
@@ -204,7 +204,6 @@ namespace GameMasterCore
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
-            //zwróć piece
             ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
             IPiece piece = field.Piece;
 
