@@ -130,6 +130,9 @@ namespace GameMasterCore
             return result;
         }
 
+        public DTO.Data ConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
+        public DTO.Data JoinGame(DTO.JoinGame joinGame) => throw new NotImplementedException();
+
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
             //TODO: knowledge exchange
