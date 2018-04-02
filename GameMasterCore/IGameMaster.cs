@@ -20,6 +20,7 @@ namespace GameMasterCore
         Data PerformTestPiece(TestPiece testPieceRequest);
         Data PerformPlace(PlacePiece placeRequest);
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
-        
+        Data ConfirmGameRegistration(RegisteredGames registeredGames);
+        Data JoinGame(JoinGame joinGame);
     }
 }
