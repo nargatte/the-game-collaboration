@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shared.Interfaces;
 using Shared.Messages.Communication;
 using Shared.Components.Boards;
 using Shared.Components.Pieces;
@@ -39,14 +35,35 @@ namespace PlayerCore
             }
         }
 
-        public State(Game game, ulong id)
+        public IField Field
         {
+            get
+            {
+                return Board.GetField(Location);
+            }
+        }
+
+        public ulong GameId { get; }
+
+        public string Guid { get; }
+
+        public TeamColour TeamColour { get; private set; }
+
+        public Shared.Messages.Communication.Piece HoldingPiece { get; private set; }
+
+
+        public State(Game game, ulong id, ulong gameId, string playerGuid)
+        {
+            GameId = GameId;
             Game = game;
+            Guid = playerGuid;
             Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight);
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
             PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
             PlayersCompetitors = game.Players.Where(p => p.team != player.team).ToArray();
+
+            TeamColour = player.team;
 
             IPlayer boardPlayer = new Shared.Components.Players.Player(id, player.team, player.type,
                 DateTime.Now,
@@ -61,7 +78,9 @@ namespace PlayerCore
 
         public void ReceiveData(Data data)
         {
-            if(data.gameFinished == true)
+            HoldingPiece = data.Pieces.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
+
+            if (data.gameFinished == true)
             {
                 if (EndGame == null)
                     throw new Exception("Nobody is subscribed EndGame event");
