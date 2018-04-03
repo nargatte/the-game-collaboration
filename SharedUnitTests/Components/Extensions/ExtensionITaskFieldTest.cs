@@ -24,8 +24,8 @@ namespace SharedUnitTests.Components.Extensions
 		static ExtensionITaskFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
-			playerExample = new Mock<IPlayer>().Object;
-			pieceExample = new Mock<IFieldPiece>().Object;
+			playerExample = Mock.Of<IPlayer>();
+			pieceExample = Mock.Of<IFieldPiece>();
 			parametersWithIsDefault = new object[]
 			{
 				new object[] { default( DateTime ), null, -1, null, true },

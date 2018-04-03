@@ -27,7 +27,7 @@ namespace SharedUnitTests.Components.Fields
 		static FieldTest()
 		{
 			dateTimeExample = DateTime.Now;
-			playerExample = new Mock<IPlayer>().Object;
+			playerExample = Mock.Of<IPlayer>();
 			constructorParameters = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null },

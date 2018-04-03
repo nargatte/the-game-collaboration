@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Extensions\ExtensionIFieldPieceTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIFieldTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIGoalFieldTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIPieceTest.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Components\Fields\FieldTest.cs" />
     <Compile Include="Components\Fields\GoalFieldTest.cs" />
     <Compile Include="Components\Fields\TaskFieldTest.cs" />
+    <Compile Include="Components\Pieces\FieldPieceTest.cs" />
     <Compile Include="Components\Pieces\PieceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

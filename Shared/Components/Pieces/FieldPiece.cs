@@ -9,13 +9,15 @@ namespace Shared.Components.Pieces
 	/// </summary>
 	public class FieldPiece : Piece, IFieldPiece
 	{
+		#region Piece
+		public override IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp ) => new FieldPiece( id, type, timestamp );
+		#endregion
 		#region IFieldPiece
 		public virtual ITaskField Field { get; }
+		public virtual IFieldPiece CreateFieldPiece( ulong id, PieceType type, DateTime timestamp, ITaskField field ) => new FieldPiece( id, type, timestamp, field );
 		#endregion
 		#region FieldPiece
 		public FieldPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, ITaskField field = null ) : base( id, type, timestamp ) => Field = field;
-
-		public override IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp ) => throw new NotImplementedException();
 		#endregion
 	}
 }

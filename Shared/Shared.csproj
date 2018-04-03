@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Extensions\ExtensionIField.cs" />
+    <Compile Include="Components\Extensions\ExtensionIFieldPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionIGoalField.cs" />
     <Compile Include="Components\Extensions\ExtensionIPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />

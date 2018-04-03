@@ -20,7 +20,7 @@ namespace SharedUnitTests.Components.Extensions
 		static ExtensionIFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
-			playerExample = new Mock<IPlayer>().Object;
+			playerExample = Mock.Of<IPlayer>();
 			parametersWithIsDefault = new object[]
 			{
 				new object[] { default( DateTime ), null, true },

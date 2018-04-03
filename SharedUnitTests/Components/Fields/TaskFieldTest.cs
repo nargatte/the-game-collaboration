@@ -20,8 +20,8 @@ namespace SharedUnitTests.Components.Fields
 		static TaskFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
-			playerExample = new Mock<IPlayer>().Object;
-			pieceExample = new Mock<IFieldPiece>().Object;
+			playerExample = Mock.Of<IPlayer>();
+			pieceExample = Mock.Of<IFieldPiece>();
 			constructorParameters = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null },

@@ -59,7 +59,7 @@ namespace SharedUnitTests.Components.Extensions
 			mock.Verify( piece => piece.CreatePiece( id, type, timestamp ) );
 		}
 		[TestCaseSource( nameof( parametersWithSetTypeParameter ) )]
-		public void SetPlayerCallsCreateFieldWithProperParameters( ulong id, PieceType type, DateTime timestamp, PieceType value )
+		public void SetPlayerCallsCreatePieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, PieceType value )
 		{
 			var mock = new Mock<IPiece>();
 			mock.SetupGet( piece => piece.Id ).Returns( id );
@@ -67,10 +67,10 @@ namespace SharedUnitTests.Components.Extensions
 			mock.SetupGet( piece => piece.Timestamp ).Returns( timestamp );
 			var sut = mock.Object;
 			var result = sut.SetType( value );
-			mock.Verify( field => field.CreatePiece( id, value, timestamp ) );
+			mock.Verify( piece => piece.CreatePiece( id, value, timestamp ) );
 		}
 		[TestCaseSource( nameof( parametersWithSetTimestampParameter ) )]
-		public void SetTimestampCallsCreateFieldWithProperParameters( ulong id, PieceType type, DateTime timestamp, DateTime value )
+		public void SetTimestampCallsCreatePieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, DateTime value )
 		{
 			var mock = new Mock<IPiece>();
 			mock.SetupGet( piece => piece.Id ).Returns( id );
@@ -78,7 +78,7 @@ namespace SharedUnitTests.Components.Extensions
 			mock.SetupGet( piece => piece.Timestamp ).Returns( timestamp );
 			var sut = mock.Object;
 			var result = sut.SetTimestamp( value );
-			mock.Verify( field => field.CreatePiece( id, type, value ) );
+			mock.Verify( piece => piece.CreatePiece( id, type, value ) );
 		}
 		#endregion
 	}
