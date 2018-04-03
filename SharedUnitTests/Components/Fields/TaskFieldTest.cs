@@ -13,7 +13,7 @@ namespace SharedUnitTests.Components.Fields
 		#region Data
 		private static readonly DateTime dateTimeExample;
 		private static readonly IPlayer playerExample;
-		private static readonly IFieldPiece pieceExample;
+		private static readonly IFieldPiece fieldPieceExample;
 		private static readonly object[] constructorParameters;
 		private static readonly object[] parametersWithCreateFieldParameters;
 		private static readonly object[] parametersWithCreateTaskFieldParameters;
@@ -21,11 +21,11 @@ namespace SharedUnitTests.Components.Fields
 		{
 			dateTimeExample = DateTime.Now;
 			playerExample = Mock.Of<IPlayer>();
-			pieceExample = Mock.Of<IFieldPiece>();
+			fieldPieceExample = Mock.Of<IFieldPiece>();
 			constructorParameters = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 4, pieceExample }
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 4, fieldPieceExample }
 			};
 			parametersWithCreateFieldParameters = new object[]
 			{
@@ -35,7 +35,7 @@ namespace SharedUnitTests.Components.Fields
 			parametersWithCreateTaskFieldParameters = new object[]
 			{
 				new object[] { 0u, 2u, 4u, 6u, default( DateTime ), null, -1, null },
-				new object[] { 1u, 3u, 5u, 7u, dateTimeExample, playerExample, 4, pieceExample }
+				new object[] { 1u, 3u, 5u, 7u, dateTimeExample, playerExample, 4, fieldPieceExample }
 			};
 		}
 		#endregion
@@ -51,7 +51,7 @@ namespace SharedUnitTests.Components.Fields
 				Assert.AreEqual( timestamp, sut.Timestamp );
 				Assert.AreSame( player, sut.Player );
 				Assert.AreEqual( distanceToPiece, sut.DistanceToPiece );
-				Assert.AreEqual( piece, sut.Piece );
+				Assert.AreSame( piece, sut.Piece );
 			} );
 		}
 		[TestCaseSource( nameof( parametersWithCreateFieldParameters ) )]

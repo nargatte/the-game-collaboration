@@ -36,23 +36,23 @@ namespace SharedUnitTests.Components.Extensions
 			};
 			makeGoalFieldParameters = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown },
-				new object[] { 1u, 3u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal }
+				new object[] { 0u, 2u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown },
+				new object[] { 1u, 3u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal }
 			};
 			parametersWithSetTimestampParameter = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown, dateTimeExample },
-				new object[] { 1u, 3u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal, default( DateTime ) }
+				new object[] { 0u, 2u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown, dateTimeExample },
+				new object[] { 1u, 3u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal, default( DateTime ) }
 			};
 			parametersWithSetPlayerParameter = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown, playerExample },
-				new object[] { 1u, 3u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal, null }
+				new object[] { 0u, 2u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown, playerExample },
+				new object[] { 1u, 3u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal, null }
 			};
 			parametersWithSetTypeParameter = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown, GoalFieldType.NonGoal },
-				new object[] { 1u, 3u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal, GoalFieldType.Unknown }
+				new object[] { 0u, 2u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown, GoalFieldType.NonGoal },
+				new object[] { 1u, 3u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal, GoalFieldType.Unknown }
 			};
 		}
 		#endregion

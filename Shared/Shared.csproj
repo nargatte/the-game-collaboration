@@ -46,6 +46,7 @@
     <Compile Include="Components\Extensions\ExtensionIFieldPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionIGoalField.cs" />
     <Compile Include="Components\Extensions\ExtensionIPiece.cs" />
+    <Compile Include="Components\Extensions\ExtensionIPlayer.cs" />
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
     <Compile Include="Components\Fields\Field.cs" />
@@ -57,7 +58,6 @@
     <Compile Include="Components\Pieces\Piece.cs" />
     <Compile Include="Components\Pieces\PlayerPiece.cs" />
     <Compile Include="Components\Players\IPlayer.cs" />
-    <Compile Include="Components\Players\ExtenderIPlayer.cs" />
     <Compile Include="Components\Players\Player.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />

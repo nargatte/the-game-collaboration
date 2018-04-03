@@ -14,7 +14,7 @@ namespace SharedUnitTests.Components.Extensions
 		#region Data
 		private static readonly DateTime dateTimeExample;
 		private static readonly IPlayer playerExample;
-		private static readonly IFieldPiece pieceExample;
+		private static readonly IFieldPiece fieldPieceExample;
 		private static readonly object[] parametersWithIsDefault;
 		private static readonly object[] makeTaskFieldParameters;
 		private static readonly object[] parametersWithSetTimestampParameter;
@@ -25,7 +25,7 @@ namespace SharedUnitTests.Components.Extensions
 		{
 			dateTimeExample = DateTime.Now;
 			playerExample = Mock.Of<IPlayer>();
-			pieceExample = Mock.Of<IFieldPiece>();
+			fieldPieceExample = Mock.Of<IFieldPiece>();
 			parametersWithIsDefault = new object[]
 			{
 				new object[] { default( DateTime ), null, -1, null, true },
@@ -36,39 +36,39 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { dateTimeExample, null, 1, null, false },
 				new object[] { default( DateTime ), playerExample, 2, null, false },
 				new object[] { dateTimeExample, playerExample, 3, null, false },
-				new object[] { default( DateTime ), null, -1, pieceExample, false },
-				new object[] { dateTimeExample, null, -1, pieceExample, false },
-				new object[] { default( DateTime ), playerExample, -1, pieceExample, false },
-				new object[] { dateTimeExample, playerExample, -1, pieceExample, false },
-				new object[] { default( DateTime ), null, 0, pieceExample, false },
-				new object[] { dateTimeExample, null, 1, pieceExample, false },
-				new object[] { default( DateTime ), playerExample, 2, pieceExample, false },
-				new object[] { dateTimeExample, playerExample, 3, pieceExample, false }
+				new object[] { default( DateTime ), null, -1, fieldPieceExample, false },
+				new object[] { dateTimeExample, null, -1, fieldPieceExample, false },
+				new object[] { default( DateTime ), playerExample, -1, fieldPieceExample, false },
+				new object[] { dateTimeExample, playerExample, -1, fieldPieceExample, false },
+				new object[] { default( DateTime ), null, 0, fieldPieceExample, false },
+				new object[] { dateTimeExample, null, 1, fieldPieceExample, false },
+				new object[] { default( DateTime ), playerExample, 2, fieldPieceExample, false },
+				new object[] { dateTimeExample, playerExample, 3, fieldPieceExample, false }
 			};
 			makeTaskFieldParameters = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, pieceExample }
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, fieldPieceExample }
 			};
 			parametersWithSetTimestampParameter = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null, dateTimeExample },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, pieceExample, default( DateTime ) }
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, fieldPieceExample, default( DateTime ) }
 			};
 			parametersWithSetPlayerParameter = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null, playerExample },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, pieceExample, null }
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, fieldPieceExample, null }
 			};
 			parametersWithSetDistanceToPieceParameter = new object[]
 			{
 				new object[] { 0u, 2u, default( DateTime ), null, -1, null, 1 },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, pieceExample, -1 }
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, fieldPieceExample, -1 }
 			};
 			parametersWithSetPieceParameter = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null, -1, null, pieceExample },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, pieceExample, null }
+				new object[] { 0u, 2u, default( DateTime ), null, -1, null, fieldPieceExample },
+				new object[] { 1u, 3u, dateTimeExample, playerExample, 0, fieldPieceExample, null }
 			};
 		}
 		#endregion

@@ -64,7 +64,7 @@ namespace SharedUnitTests.Components.Extensions
 			Assert.AreEqual( expected, sut.IsDefault() );
 		}
 		[TestCaseSource( nameof( makePlayerPieceParameters ) )]
-		public void MakeFieldPieceCallsCreateFieldPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player )
+		public void MakeFieldPieceCallsCreatePlayerPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player )
 		{
 			var mock = new Mock<IPlayerPiece>();
 			var sut = mock.Object;
@@ -72,7 +72,7 @@ namespace SharedUnitTests.Components.Extensions
 			mock.Verify( piece => piece.CreatePlayerPiece( id, type, timestamp, player ) );
 		}
 		[TestCaseSource( nameof( parametersWithSetTypeParameter ) )]
-		public void SetPlayerCallsCreateFieldPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player, PieceType value )
+		public void SetPlayerCallsCreatePlayerPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player, PieceType value )
 		{
 			var mock = new Mock<IPlayerPiece>();
 			mock.SetupGet( piece => piece.Id ).Returns( id );
@@ -84,7 +84,7 @@ namespace SharedUnitTests.Components.Extensions
 			mock.Verify( piece => piece.CreatePlayerPiece( id, value, timestamp, player ) );
 		}
 		[TestCaseSource( nameof( parametersWithSetTimestampParameter ) )]
-		public void SetTimestampCallsCreateFieldPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player, DateTime value )
+		public void SetTimestampCallsCreatePlayerPieceWithProperParameters( ulong id, PieceType type, DateTime timestamp, IPlayer player, DateTime value )
 		{
 			var mock = new Mock<IPlayerPiece>();
 			mock.SetupGet( piece => piece.Id ).Returns( id );

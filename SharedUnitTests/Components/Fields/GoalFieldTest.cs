@@ -22,18 +22,18 @@ namespace SharedUnitTests.Components.Fields
 			playerExample = Mock.Of<IPlayer>();
 			constructorParameters = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown },
-				new object[] { 1u, 3u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal }
+				new object[] { 0u, 2u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown },
+				new object[] { 1u, 3u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal }
 			};
 			parametersWithCreateFieldParameters = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, 4u, 6u, default( DateTime ), null },
-				new object[] { 1u, 3u, TeamColour.Red, 5u, 7u, dateTimeExample, playerExample }
+				new object[] { 0u, 2u, TeamColour.Red, 4u, 6u, default( DateTime ), null },
+				new object[] { 1u, 3u, TeamColour.Blue, 5u, 7u, dateTimeExample, playerExample }
 			};
 			parametersWithCreateGoalFieldParameters = new object[]
 			{
-				new object[] { 0u, 2u, TeamColour.Blue, 4u, 6u, TeamColour.Red, default( DateTime ), null, GoalFieldType.Unknown },
-				new object[] { 1u, 3u, TeamColour.Red, 5u, 7u, TeamColour.Blue, dateTimeExample, playerExample, GoalFieldType.Goal }
+				new object[] { 0u, 2u, TeamColour.Red, 4u, 6u, TeamColour.Blue, default( DateTime ), null, GoalFieldType.Unknown },
+				new object[] { 1u, 3u, TeamColour.Blue, 5u, 7u, TeamColour.Red, dateTimeExample, playerExample, GoalFieldType.Goal }
 			};
 		}
 		#endregion
