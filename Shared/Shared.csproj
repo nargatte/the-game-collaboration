@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Components\Extensions\ExtensionIField.cs" />
     <Compile Include="Components\Extensions\ExtensionIGoalField.cs" />
+    <Compile Include="Components\Extensions\ExtensionIPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
     <Compile Include="Components\Fields\Field.cs" />
     <Compile Include="Components\Fields\GoalField.cs" />

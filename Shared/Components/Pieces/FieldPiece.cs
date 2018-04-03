@@ -14,7 +14,8 @@ namespace Shared.Components.Pieces
 		#endregion
 		#region FieldPiece
 		public FieldPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, ITaskField field = null ) : base( id, type, timestamp ) => Field = field;
-		public FieldPiece( IFieldPiece piece ) : base( piece ) => Field = piece.Field;
+
+		public override IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp ) => throw new NotImplementedException();
 		#endregion
 	}
 }

@@ -14,7 +14,8 @@ namespace Shared.Components.Pieces
 		#endregion
 		#region PlayerPiece
 		public PlayerPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, IPlayer player = null ) : base( id, type, timestamp ) => Player = player;
-		public PlayerPiece( IPlayerPiece piece ) : base( piece ) => Player = piece.Player;
+
+		public override IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp ) => throw new NotImplementedException();
 		#endregion
 	}
 }
