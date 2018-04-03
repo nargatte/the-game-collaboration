@@ -53,24 +53,24 @@ namespace SharedUnitTests.Components.Fields
 			} );
 		}
 		[TestCaseSource( nameof( parametersWithCreateFieldParameters ) )]
-		public void CreateFieldThrowsNotSupportedException( uint x, uint y, TeamColour team, uint ax, uint ay, DateTime atimestamp, IPlayer aplayer )
+		public void CreateFieldThrowsNotSupportedException( uint x, uint y, TeamColour team, uint aX, uint aY, DateTime aTimestamp, IPlayer aPlayer )
 		{
 			var sut = new GoalField( x, y, team );
-			Assert.That( () => sut.CreateField( ax, ay, atimestamp, aplayer ), Throws.InstanceOf<NotSupportedException>() );
+			Assert.That( () => sut.CreateField( aX, aY, aTimestamp, aPlayer ), Throws.InstanceOf<NotSupportedException>() );
 		}
 		[TestCaseSource( nameof( parametersWithCreateGoalFieldParameters ) )]
-		public void CreateGoalFieldReturnsObjectWithFilledProperties( uint x, uint y, TeamColour team, uint ax, uint ay, TeamColour ateam, DateTime atimestamp, IPlayer aplayer, GoalFieldType atype )
+		public void CreateGoalFieldReturnsObjectWithFilledProperties( uint x, uint y, TeamColour team, uint aX, uint aY, TeamColour aTeam, DateTime aTimestamp, IPlayer aPlayer, GoalFieldType aType )
 		{
 			var sut = new GoalField( x, y, team );
-			var result = sut.CreateGoalField( ax, ay, ateam, atimestamp, aplayer, atype );
+			var result = sut.CreateGoalField( aX, aY, aTeam, aTimestamp, aPlayer, aType );
 			Assert.Multiple( () =>
 			{
-				Assert.AreEqual( ax, result.X );
-				Assert.AreEqual( ay, result.Y );
-				Assert.AreEqual( atimestamp, result.Timestamp );
-				Assert.AreSame( aplayer, result.Player );
-				Assert.AreEqual( atype, result.Type );
-				Assert.AreEqual( ateam, result.Team );
+				Assert.AreEqual( aX, result.X );
+				Assert.AreEqual( aY, result.Y );
+				Assert.AreEqual( aTimestamp, result.Timestamp );
+				Assert.AreSame( aPlayer, result.Player );
+				Assert.AreEqual( aType, result.Type );
+				Assert.AreEqual( aTeam, result.Team );
 			} );
 		}
 		#endregion

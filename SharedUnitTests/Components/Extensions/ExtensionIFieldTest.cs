@@ -5,7 +5,7 @@ using Shared.Components.Fields;
 using Shared.Components.Players;
 using System;
 
-namespace SharedUnitTests.Components.Fields
+namespace SharedUnitTests.Components.Extensions
 {
 	[TestFixture]
 	public class ExtensionIFieldTest
@@ -46,6 +46,7 @@ namespace SharedUnitTests.Components.Fields
 		}
 		#endregion
 		#region Test
+		[TestCaseSource( nameof( parametersWithIsDefault ) )]
 		public void IsDefaultReturnsTrueIfAndOnlyIfObjectWasPrepopulated( DateTime timestamp, IPlayer player, bool expected )
 		{
 			var sut = Mock.Of<IField>( field => field.Timestamp == timestamp && field.Player == player );

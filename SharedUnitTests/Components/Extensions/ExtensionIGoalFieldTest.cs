@@ -6,7 +6,7 @@ using Shared.Components.Players;
 using Shared.Enums;
 using System;
 
-namespace SharedUnitTests.Components.Fields
+namespace SharedUnitTests.Components.Extensions
 {
 	[TestFixture]
 	public class ExtensionIGoalFieldTest
@@ -57,6 +57,7 @@ namespace SharedUnitTests.Components.Fields
 		}
 		#endregion
 		#region Test
+		[TestCaseSource( nameof( parametersWithIsDefault ) )]
 		public void IsDefaultReturnsTrueIfAndOnlyIfObjectWasPrepopulated( DateTime timestamp, IPlayer player, GoalFieldType type, bool expected )
 		{
 			var sut = Mock.Of<IGoalField>( field => field.Timestamp == timestamp && field.Player == player && field.Type == type );
