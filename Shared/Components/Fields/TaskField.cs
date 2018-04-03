@@ -1,7 +1,6 @@
-﻿using System;
-using Shared.Components.Pieces;
+﻿using Shared.Components.Pieces;
 using Shared.Components.Players;
-using Shared.Enums;
+using System;
 
 namespace Shared.Components.Fields
 {

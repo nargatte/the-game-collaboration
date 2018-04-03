@@ -1,7 +1,7 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Shared.Components.Pieces;
 using Shared.Enums;
+using System;
 
 namespace SharedUnitTests.Components.Pieces
 {

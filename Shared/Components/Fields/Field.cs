@@ -1,5 +1,5 @@
-﻿using System;
-using Shared.Components.Players;
+﻿using Shared.Components.Players;
+using System;
 
 namespace Shared.Components.Fields
 {

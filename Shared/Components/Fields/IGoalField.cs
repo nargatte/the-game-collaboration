@@ -4,7 +4,7 @@ using System;
 
 namespace Shared.Components.Fields
 {
-    public interface IGoalField : IField
+	public interface IGoalField : IField
     {
         GoalFieldType Type { get; }
         TeamColour Team { get; }

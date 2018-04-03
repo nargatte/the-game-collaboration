@@ -3,7 +3,7 @@ using System;
 
 namespace Shared.Components.Fields
 {
-    public interface IField
+	public interface IField
     {
 		uint X { get; }
 		uint Y { get; }

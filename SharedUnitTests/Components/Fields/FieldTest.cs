@@ -1,8 +1,8 @@
-﻿using System;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using Shared.Components.Fields;
 using Shared.Components.Players;
+using System;
 
 namespace SharedUnitTests.Components.Fields
 {

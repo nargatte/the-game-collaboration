@@ -3,7 +3,7 @@ using System;
 
 namespace Shared.Components.Pieces
 {
-    public interface IPiece
+	public interface IPiece
     {
         ulong Id { get; }
         PieceType Type { get; }

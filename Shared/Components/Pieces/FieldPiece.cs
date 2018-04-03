@@ -1,6 +1,6 @@
-﻿using System;
-using Shared.Components.Fields;
+﻿using Shared.Components.Fields;
 using Shared.Enums;
+using System;
 
 namespace Shared.Components.Pieces
 {
