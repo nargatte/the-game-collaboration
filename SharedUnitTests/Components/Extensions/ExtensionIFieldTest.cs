@@ -13,10 +13,10 @@ namespace SharedUnitTests.Components.Fields
 		#region Data
 		private static readonly DateTime dateTimeExample;
 		private static readonly IPlayer playerExample;
-		private static object[] parametersWithIsDefault;
-		private static object[] makeFieldParameters;
-		private static object[] parametersWithSetTimestampParameter;
-		private static object[] parametersWithSetPlayerParameter;
+		private static readonly object[] parametersWithIsDefault;
+		private static readonly object[] makeFieldParameters;
+		private static readonly object[] parametersWithSetTimestampParameter;
+		private static readonly object[] parametersWithSetPlayerParameter;
 		static ExtensionIFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
@@ -30,24 +30,18 @@ namespace SharedUnitTests.Components.Fields
 			};
 			makeFieldParameters = new object[]
 			{
-				new object[] { 0u, 1u, default( DateTime ), null },
-				new object[] { 2u, 3u, dateTimeExample, null },
-				new object[] { 4u, 5u, default( DateTime ), playerExample },
-				new object[] { 6u, 7u, dateTimeExample, playerExample }
+				new object[] { 0u, 2u, default( DateTime ), null },
+				new object[] { 1u, 3u, dateTimeExample, playerExample }
 			};
 			parametersWithSetTimestampParameter = new object[]
 			{
-				new object[] { 0u, 1u, default( DateTime ), null, dateTimeExample },
-				new object[] { 2u, 3u, dateTimeExample, null, default( DateTime ) },
-				new object[] { 4u, 5u, default( DateTime ), playerExample, dateTimeExample },
-				new object[] { 6u, 7u, dateTimeExample, playerExample, default( DateTime ) }
+				new object[] { 0u, 2u, default( DateTime ), null, dateTimeExample },
+				new object[] { 1u, 3u, dateTimeExample, playerExample, default( DateTime ) }
 			};
 			parametersWithSetPlayerParameter = new object[]
 			{
-				new object[] { 0u, 1u, default( DateTime ), null, playerExample },
-				new object[] { 2u, 3u, dateTimeExample, null, playerExample },
-				new object[] { 4u, 5u, default( DateTime ), playerExample, null },
-				new object[] { 6u, 7u, dateTimeExample, playerExample, null }
+				new object[] { 0u, 2u, default( DateTime ), null, playerExample },
+				new object[] { 1u, 3u, dateTimeExample, playerExample, null }
 			};
 		}
 		#endregion
@@ -65,15 +59,6 @@ namespace SharedUnitTests.Components.Fields
 			var result = sut.MakeField( x, y, timestamp, player );
 			mock.Verify( field => field.CreateField( x, y, timestamp, player ) );
 		}
-		[TestCase( 0u, 1u )]
-		[TestCase( 2u, 3u )]
-		public void MakeFieldWithDefaultParametersCallsCreateFieldWithProperParameters( uint x, uint y )
-		{
-			var mock = new Mock<IField>();
-			var sut = mock.Object;
-			var result = sut.MakeField( x, y );
-			mock.Verify( field => field.CreateField( x, y, default( DateTime ), null ) );
-		}
 		[TestCaseSource( nameof( parametersWithSetTimestampParameter ) )]
 		public void SetTimestampCallsCreateFieldWithProperParameters( uint x, uint y, DateTime timestamp, IPlayer player, DateTime value )
 		{
@@ -86,18 +71,6 @@ namespace SharedUnitTests.Components.Fields
 			var result = sut.SetTimestamp( value );
 			mock.Verify( field => field.CreateField( x, y, value, player ) );
 		}
-		[TestCaseSource( nameof( makeFieldParameters ) )]
-		public void SetTimestampWithDefaultParameterCallsCreateFieldWithProperParameters( uint x, uint y, DateTime timestamp, IPlayer player )
-		{
-			var mock = new Mock<IField>();
-			mock.SetupGet( field => field.X ).Returns( x );
-			mock.SetupGet( field => field.Y ).Returns( y );
-			mock.SetupGet( field => field.Timestamp ).Returns( timestamp );
-			mock.SetupGet( field => field.Player ).Returns( player );
-			var sut = mock.Object;
-			var result = sut.SetTimestamp();
-			mock.Verify( field => field.CreateField( x, y, default( DateTime ), player ) );
-		}
 		[TestCaseSource( nameof( parametersWithSetPlayerParameter ) )]
 		public void SetPlayerCallsCreateFieldWithProperParameters( uint x, uint y, DateTime timestamp, IPlayer player, IPlayer value )
 		{
@@ -109,18 +82,6 @@ namespace SharedUnitTests.Components.Fields
 			var sut = mock.Object;
 			var result = sut.SetPlayer( value );
 			mock.Verify( field => field.CreateField( x, y, timestamp, value ) );
-		}
-		[TestCaseSource( nameof( makeFieldParameters ) )]
-		public void SetPlayerWithDefaultParameterCallsCreateFieldWithProperParameters( uint x, uint y, DateTime timestamp, IPlayer player )
-		{
-			var mock = new Mock<IField>();
-			mock.SetupGet( field => field.X ).Returns( x );
-			mock.SetupGet( field => field.Y ).Returns( y );
-			mock.SetupGet( field => field.Timestamp ).Returns( timestamp );
-			mock.SetupGet( field => field.Player ).Returns( player );
-			var sut = mock.Object;
-			var result = sut.SetPlayer();
-			mock.Verify( field => field.CreateField( x, y, timestamp, null ) );
 		}
 		#endregion
 	}

@@ -14,7 +14,7 @@ namespace Shared.Components.Pieces
 		public virtual DateTime Timestamp { get; }
 		#endregion
 		#region Piece
-		protected Piece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default( DateTime ) )
+		protected Piece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default )
 		{
 			Id = id;
 			Type = type;

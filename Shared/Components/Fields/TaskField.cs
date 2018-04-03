@@ -14,7 +14,7 @@ namespace Shared.Components.Fields
 		public virtual IFieldPiece Piece { get; }
 		#endregion
 		#region TaskField
-		public TaskField( uint x, uint y, DateTime timestamp = default( DateTime ), IPlayer player = null, int distanceToPiece = -1, IFieldPiece piece = null ) : base( x, y, timestamp, player )
+		public TaskField( uint x, uint y, DateTime timestamp = default, IPlayer player = null, int distanceToPiece = -1, IFieldPiece piece = null ) : base( x, y, timestamp, player )
 		{
 			DistanceToPiece = distanceToPiece;
 			Piece = piece;

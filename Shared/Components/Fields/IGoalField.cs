@@ -1,4 +1,6 @@
-﻿using Shared.Enums;
+﻿using Shared.Components.Players;
+using Shared.Enums;
+using System;
 
 namespace Shared.Components.Fields
 {
@@ -6,5 +8,6 @@ namespace Shared.Components.Fields
     {
         GoalFieldType Type { get; }
         TeamColour Team { get; }
+		IGoalField CreateGoalField( uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type );
     }
 }

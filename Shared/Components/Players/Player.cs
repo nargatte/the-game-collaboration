@@ -19,7 +19,7 @@ namespace Shared.Components.Players
 		public virtual IPlayerPiece Piece { get; }
 		#endregion
 		#region Player
-		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default( DateTime ), IField field = null, IPlayerPiece piece = null )
+		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )
 		{
 			Id = id;
 			Team = team;

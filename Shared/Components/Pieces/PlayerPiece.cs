@@ -13,7 +13,7 @@ namespace Shared.Components.Pieces
 		public virtual IPlayer Player { get; }
 		#endregion
 		#region PlayerPiece
-		public PlayerPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default( DateTime ), IPlayer player = null ) : base( id, type, timestamp ) => Player = player;
+		public PlayerPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, IPlayer player = null ) : base( id, type, timestamp ) => Player = player;
 		public PlayerPiece( IPlayerPiece piece ) : base( piece ) => Player = piece.Player;
 		#endregion
 	}
