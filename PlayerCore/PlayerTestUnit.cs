@@ -25,7 +25,7 @@ namespace PlayerCore
 
         public void PerformAction()
         {
-            strategy.PerfirmAction();
+            strategy.PerformAction();
         }
 
 

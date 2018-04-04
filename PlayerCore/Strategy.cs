@@ -101,7 +101,7 @@ namespace PlayerCore
             throw new Exception("Cannot localizate unknown goal");
         }
 
-        public void PerfirmAction()
+        public void PerformAction()
         {
             IField field = State.Field;
             var goalField = field as IGoalField;
