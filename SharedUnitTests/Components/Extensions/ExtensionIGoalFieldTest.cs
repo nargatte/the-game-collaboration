@@ -28,11 +28,7 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { default( DateTime ), null, GoalFieldType.Unknown, true },
 				new object[] { dateTimeExample, null, GoalFieldType.Unknown, false },
 				new object[] { default( DateTime ), playerExample, GoalFieldType.Unknown, false },
-				new object[] { dateTimeExample, playerExample, GoalFieldType.Unknown, false },
-				new object[] { default( DateTime ), null, GoalFieldType.Goal, false },
-				new object[] { dateTimeExample, null, GoalFieldType.NonGoal, false },
-				new object[] { default( DateTime ), playerExample, GoalFieldType.Goal, false },
-				new object[] { dateTimeExample, playerExample, GoalFieldType.NonGoal, false }
+				new object[] { default( DateTime ), null, GoalFieldType.Goal, false }
 			};
 			makeGoalFieldParameters = new object[]
 			{

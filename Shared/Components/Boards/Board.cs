@@ -49,7 +49,7 @@ namespace Shared.Components.Boards
 			else if( field is IGoalField goalField && value is IGoalField aGoalField )
 				UpdateGoalField( goalField, aGoalField );
 			else
-				throw new ArgumentOutOfRangeException( nameof( value ) );
+				throw new ArgumentException( nameof( value ) );
 		}
 		public override void SetPiece( IPiece value )
 		{
@@ -161,7 +161,7 @@ namespace Shared.Components.Boards
 						OnPlayerChanged( playerPiece.Player.Id );
 					}
 					else
-						throw new ArgumentOutOfRangeException( nameof( piece ) );
+						throw new ArgumentException( nameof( piece ) );
 				pieces[ value.Id ] = value;
 				OnPieceChanged( value.Id );
 			}
@@ -170,7 +170,7 @@ namespace Shared.Components.Boards
 			else if( value is IPlayerPiece aPlayerPiece && aPlayerPiece.Player != null )
 				SetPlayer( aPlayerPiece.Player );
 			else
-				throw new ArgumentOutOfRangeException( nameof( value ) );
+				throw new ArgumentException( nameof( value ) );
 		}
 		protected void UpdatePlayer( IPlayer player, IPlayer value )
 		{

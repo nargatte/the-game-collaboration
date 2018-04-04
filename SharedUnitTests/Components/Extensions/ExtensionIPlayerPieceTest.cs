@@ -28,11 +28,7 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { PieceType.Unknown, default( DateTime ), null, true },
 				new object[] { PieceType.Sham, default( DateTime ), null, false },
 				new object[] { PieceType.Unknown, dateTimeExample, null, false },
-				new object[] { PieceType.Sham, dateTimeExample, null, false },
-				new object[] { PieceType.Unknown, default( DateTime ), playerExample, false },
-				new object[] { PieceType.Sham, default( DateTime ), playerExample, false },
-				new object[] { PieceType.Unknown, dateTimeExample, playerExample, false },
-				new object[] { PieceType.Sham, dateTimeExample, playerExample, false }
+				new object[] { PieceType.Unknown, default( DateTime ), playerExample, false }
 			};
 			makePlayerPieceParameters = new object[]
 			{

@@ -28,11 +28,7 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { PieceType.Unknown, default( DateTime ), null, true },
 				new object[] { PieceType.Sham, default( DateTime ), null, false },
 				new object[] { PieceType.Unknown, dateTimeExample, null, false },
-				new object[] { PieceType.Sham, dateTimeExample, null, false },
-				new object[] { PieceType.Unknown, default( DateTime ), taskFieldExample, false },
-				new object[] { PieceType.Sham, default( DateTime ), taskFieldExample, false },
-				new object[] { PieceType.Unknown, dateTimeExample, taskFieldExample, false },
-				new object[] { PieceType.Sham, dateTimeExample, taskFieldExample, false }
+				new object[] { PieceType.Unknown, default( DateTime ), taskFieldExample, false }
 			};
 			makeFieldPieceParameters = new object[]
 			{

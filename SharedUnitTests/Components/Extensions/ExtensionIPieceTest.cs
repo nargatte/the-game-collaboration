@@ -23,8 +23,7 @@ namespace SharedUnitTests.Components.Extensions
 			{
 				new object[] { PieceType.Unknown, default( DateTime ), true },
 				new object[] { PieceType.Sham, default( DateTime ), false },
-				new object[] { PieceType.Unknown, dateTimeExample, false },
-				new object[] { PieceType.Sham, dateTimeExample, false }
+				new object[] { PieceType.Unknown, dateTimeExample, false }
 			};
 			makePieceParameters = new object[]
 			{
