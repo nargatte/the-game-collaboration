@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace Shared.Components.Boards
 {
-	public class Board : IBoard
+	public class Board : BoardBase
 	{
 		#region IBoard
-		public virtual uint Width { get; }
-		public virtual uint TasksHeight { get; }
-		public virtual uint GoalsHeight { get; }
-		public virtual uint Height { get; }
-		public virtual IEnumerable<IField> Fields
+		public override IEnumerable<IField> Fields
 		{
 			get
 			{
@@ -22,7 +19,7 @@ namespace Shared.Components.Boards
 					yield return field;
 			}
 		}
-		public virtual IEnumerable<IPiece> Pieces
+		public override IEnumerable<IPiece> Pieces
 		{
 			get
 			{
@@ -30,7 +27,7 @@ namespace Shared.Components.Boards
 					yield return piece.Value;
 			}
 		}
-		public virtual IEnumerable<IPlayer> Players
+		public override IEnumerable<IPlayer> Players
 		{
 			get
 			{
@@ -38,35 +35,30 @@ namespace Shared.Components.Boards
 					yield return player.Value;
 			}
 		}
-		public virtual IField GetField( uint x, uint y ) => x >= 0 && x < Width && y >= 0 && y < Height ? fields[ x, y ] : null;
-		public virtual IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : null;
-		public virtual IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : null;
-		public virtual bool SetField( IField value )
+		public override IField GetField( uint x, uint y ) => x < Width && y < Height ? fields[ x, y ] : null;
+		public override IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : null;
+		public override IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : null;
+		public override void SetField( IField value )
 		{
 			if( value is null )
-				return false;
+				return;
 			var field = GetField( value.X, value.Y );
 			if( field is null || field == value )
-				return false;
+				return;
 			if( field is ITaskField oldTask && value is ITaskField freshTask )
-				return UpdateTaskField( oldTask, freshTask );
+				UpdateTaskField( oldTask, freshTask );
 			if( field is IGoalField oldGoal && value is IGoalField freshGoal )
-				return UpdateGoalField( oldGoal, freshGoal );
-			return false;
+				UpdateGoalField( oldGoal, freshGoal );
 		}
-		public virtual bool SetPiece( IPiece value ) => throw new System.NotImplementedException();
-		public virtual bool SetPlayer( IPlayer value ) => throw new System.NotImplementedException();
+		public override void SetPiece( IPiece value ) => throw new NotImplementedException();
+		public override void SetPlayer( IPlayer value ) => throw new NotImplementedException();
 		#endregion
 		#region Board
 		private readonly IField[,] fields;
 		private readonly IDictionary<ulong, IPlayer> players;
 		private readonly IDictionary<ulong, IPiece> pieces;
-		public Board( uint width, uint tasksHeight, uint goalsHeight )
+		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
 		{
-			Width = width;
-			TasksHeight = tasksHeight;
-			GoalsHeight = goalsHeight;
-			Height = TasksHeight + 2 * GoalsHeight;
 			fields = new IField[ Width, Height ];
 			players = new Dictionary<ulong, IPlayer>();
 			pieces = new Dictionary<ulong, IPiece>();
@@ -84,8 +76,8 @@ namespace Shared.Components.Boards
 				for( uint j = 0; j < Width; ++j )
 					fields[ i, j ] = new GoalField( i, j, TeamColour.Red );
 		}
-		protected bool UpdateTaskField( ITaskField old, ITaskField fresh ) => throw new NotImplementedException();
-		protected bool UpdateGoalField( IGoalField old, IGoalField fresh ) => throw new NotImplementedException();
+		protected void UpdateTaskField( ITaskField old, ITaskField fresh ) => throw new NotImplementedException();
+		protected void UpdateGoalField( IGoalField old, IGoalField fresh ) => throw new NotImplementedException();
 		#endregion
 	}
 }
