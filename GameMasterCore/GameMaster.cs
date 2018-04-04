@@ -169,6 +169,7 @@ namespace GameMasterCore
 
         private ulong GenerateNewID()
         {
+            // HACK: should start from lowest positive integers instead of the whole ulong spectrum
             ulong id;
             var random = new Random();
             do
