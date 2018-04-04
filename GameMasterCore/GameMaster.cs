@@ -131,14 +131,15 @@ namespace GameMasterCore
         }
 
         public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
-        public DTO.Data PerformJoinGame(DTO.JoinGame joinGame)
+        public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
             var result = new DTO.Data();
+            // the player shouldn't know his id if he's been rejected :/
+            var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
 
             if (joinGame.gameName != config.GameDefinition.GameName)
             {
-                // TODO: rather a "rejecting" message
-                return result;
+                return rejectingMessage;
             }
 
             int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
@@ -157,14 +158,24 @@ namespace GameMasterCore
                 joinGame.preferredRole = PlayerType.Member;
             }
 
+            if (board.Players.Count() == config.GameDefinition.NumberOfPlayersPerTeam * 2)
+            {
+                return rejectingMessage;
+            }
+
 
             ulong id = GenerateNewID();
             var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
             // TODO: check for return type bool?
             board.SetPlayer(generatedPlayer);
             result.playerId = id;
-            
-            return result;
+            return new DTO.ConfirmJoiningGame()
+            {
+                gameId = 1,
+                playerId = id,
+                privateGuid = GenerateNewGUID(),
+                PlayerDefinition = new DTO.Player() { id = id, team = joinGame.preferredTeam, type = joinGame.preferredRole }
+            };
         }
 
         private ulong GenerateNewID()
@@ -177,6 +188,17 @@ namespace GameMasterCore
                 id = (ulong)((long)(random.Next() * int.MaxValue) + random.Next());
             } while (playerGuidToId.Values.Contains(id));
             return id;
+        }
+
+        private string GenerateNewGUID()
+        {
+            string guid;
+            var random = new Random();
+            do
+            {
+                guid = Guid.NewGuid().ToString();
+            } while (playerGuidToId.Keys.Contains(guid));
+            return guid;
         }
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
