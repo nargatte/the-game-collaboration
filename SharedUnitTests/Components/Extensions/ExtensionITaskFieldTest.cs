@@ -31,19 +31,8 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { default( DateTime ), null, -1, null, true },
 				new object[] { dateTimeExample, null, -1, null, false },
 				new object[] { default( DateTime ), playerExample, -1, null, false },
-				new object[] { dateTimeExample, playerExample, -1, null, false },
 				new object[] { default( DateTime ), null, 0, null, false },
-				new object[] { dateTimeExample, null, 1, null, false },
-				new object[] { default( DateTime ), playerExample, 2, null, false },
-				new object[] { dateTimeExample, playerExample, 3, null, false },
 				new object[] { default( DateTime ), null, -1, fieldPieceExample, false },
-				new object[] { dateTimeExample, null, -1, fieldPieceExample, false },
-				new object[] { default( DateTime ), playerExample, -1, fieldPieceExample, false },
-				new object[] { dateTimeExample, playerExample, -1, fieldPieceExample, false },
-				new object[] { default( DateTime ), null, 0, fieldPieceExample, false },
-				new object[] { dateTimeExample, null, 1, fieldPieceExample, false },
-				new object[] { default( DateTime ), playerExample, 2, fieldPieceExample, false },
-				new object[] { dateTimeExample, playerExample, 3, fieldPieceExample, false }
 			};
 			makeTaskFieldParameters = new object[]
 			{

@@ -31,11 +31,7 @@ namespace SharedUnitTests.Components.Extensions
 				new object[] { default( DateTime ), null, null, true },
 				new object[] { dateTimeExample, null, null, false },
 				new object[] { default( DateTime ), fieldExample, null, false },
-				new object[] { dateTimeExample, fieldExample, null, false },
-				new object[] { default( DateTime ), null, playerPieceExample, false },
-				new object[] { dateTimeExample, null, playerPieceExample, false },
-				new object[] { default( DateTime ), fieldExample, playerPieceExample, false },
-				new object[] { dateTimeExample, fieldExample, playerPieceExample, false }
+				new object[] { default( DateTime ), null, playerPieceExample, false }
 			};
 			makePlayerParameters = new object[]
 			{
