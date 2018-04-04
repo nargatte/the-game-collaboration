@@ -130,8 +130,54 @@ namespace GameMasterCore
             return result;
         }
 
-        public DTO.Data ConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
-        public DTO.Data JoinGame(DTO.JoinGame joinGame) => throw new NotImplementedException();
+        public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
+        public DTO.Data PerformJoinGame(DTO.JoinGame joinGame)
+        {
+            var result = new DTO.Data();
+
+            if (joinGame.gameName != config.GameDefinition.GameName)
+            {
+                // TODO: rather a "rejecting" message
+                return result;
+            }
+
+            int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
+
+            // if maximum player count reached then force change of teams
+            if (config.GameDefinition.NumberOfPlayersPerTeam == totalNumberOfPlayersOfSameColour)
+            {
+                joinGame.preferredTeam = joinGame.preferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
+            }
+
+            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.preferredTeam && player.Type == PlayerType.Leader).Count() > 0;
+
+            // if there is a leader already then modify the request accordingly
+            if (teamAlreadyHasLeader && joinGame.preferredRole == PlayerType.Leader)
+            {
+                joinGame.preferredRole = PlayerType.Member;
+            }
+
+
+            ulong id = GenerateNewID();
+            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
+            // TODO: check for return type bool?
+            board.SetPlayer(generatedPlayer);
+            result.playerId = id;
+            
+            return result;
+        }
+
+        private ulong GenerateNewID()
+        {
+            // HACK: should start from lowest positive integers instead of the whole ulong spectrum
+            ulong id;
+            var random = new Random();
+            do
+            {
+                id = (ulong)((long)(random.Next() * int.MaxValue) + random.Next());
+            } while (playerGuidToId.Values.Contains(id));
+            return id;
+        }
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
@@ -142,7 +188,7 @@ namespace GameMasterCore
         public DTO.Data PerformMove(DTO.Move moveRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
-            
+
             int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
             switch (moveRequest.direction)
             {
@@ -252,9 +298,9 @@ namespace GameMasterCore
             }
             IField targetField = playerPawn.Field;
             DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
-            if(targetField is ITaskField targetTaskField)
+            if (targetField is ITaskField targetTaskField)
             {
-                if(targetTaskField.Piece != null)
+                if (targetTaskField.Piece != null)
                 {
                     //target field has a piece on it already
                     //TODO: return field info, piece info and held piece info
@@ -296,14 +342,14 @@ namespace GameMasterCore
         #region IBoard to DTO converters
         private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            if(y<config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+            if (y < config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
                 return GetGoalFieldInfo(x, y);
             }
             return GetTaskFieldInfo(x, y, out pieces);
         }
-        
+
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
@@ -420,7 +466,7 @@ namespace GameMasterCore
                 {
                     x = (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
                     y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
-                    };
+                };
 
             }
 
