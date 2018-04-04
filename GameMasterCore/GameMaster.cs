@@ -133,7 +133,6 @@ namespace GameMasterCore
         public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
-            var result = new DTO.Data();
             // the player shouldn't know his id if he's been rejected :/
             var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
 
@@ -168,7 +167,6 @@ namespace GameMasterCore
             var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
             // TODO: check for return type bool?
             board.SetPlayer(generatedPlayer);
-            result.playerId = id;
             return new DTO.ConfirmJoiningGame()
             {
                 gameId = 1,
