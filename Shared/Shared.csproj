@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
+    <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
+    <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
     <Compile Include="Components\Events\PieceChangedArgs.cs" />
     <Compile Include="Components\Events\PlayerChangedArgs.cs" />

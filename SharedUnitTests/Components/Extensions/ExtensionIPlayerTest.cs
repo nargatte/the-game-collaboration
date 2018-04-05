@@ -112,6 +112,32 @@ namespace SharedUnitTests.Components.Extensions
 			var result = sut.SetPiece( value );
 			mock.Verify( player => player.CreatePlayer( id, team, type, timestamp, field, value ) );
 		}
+		[Test]
+		public void GetXReturnsNullWhenThereIsNoField()
+		{
+			var sut = Mock.Of<IPlayer>( player => player.Field == null );
+			Assert.IsNull( sut.GetX() );
+		}
+		[TestCase( 0u )]
+		[TestCase( 1u )]
+		public void GetXReturnsFieldX( uint x )
+		{
+			var sut = Mock.Of<IPlayer>( player => player.Field.X == x );
+			Assert.AreEqual( x, sut.GetX() );
+		}
+		[Test]
+		public void GetYReturnsNullWhenThereIsNoField()
+		{
+			var sut = Mock.Of<IPlayer>( player => player.Field == null );
+			Assert.IsNull( sut.GetY() );
+		}
+		[TestCase( 0u )]
+		[TestCase( 1u )]
+		public void GetXReturnsFieldY( uint y )
+		{
+			var sut = Mock.Of<IPlayer>( player => player.Field.Y == y );
+			Assert.AreEqual( y, sut.GetY() );
+		}
 		#endregion
 	}
 }
