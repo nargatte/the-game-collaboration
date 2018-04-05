@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\Boards\BoardBaseTest.cs" />
+    <Compile Include="Components\Boards\BoardTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIFieldPieceTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIFieldTest.cs" />
     <Compile Include="Components\Extensions\ExtensionIGoalFieldTest.cs" />

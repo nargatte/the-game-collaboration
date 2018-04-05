@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Shared.Components.Boards;
-using Shared.Components.Events;
 using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
@@ -89,13 +88,14 @@ namespace SharedUnitTests.Components.Boards
 		public void ConstructorFillsAllProperties( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory )
 		{
 			var sut = new BoardBaseTestType( width, tasksHeight, goalsHeight, factory );
+			uint height = tasksHeight + 2u * goalsHeight;
 			Assert.Multiple( () =>
 			{
 				Assert.AreEqual( width, sut.Width );
 				Assert.AreEqual( tasksHeight, sut.TasksHeight );
 				Assert.AreEqual( goalsHeight, sut.GoalsHeight );
 				Assert.AreSame( factory, sut.Factory );
-				Assert.AreEqual( tasksHeight + 2u * goalsHeight, sut.Height );
+				Assert.AreEqual( height, sut.Height );
 			} );
 		}
 		[TestCaseSource( nameof( constructorParameters ) )]

@@ -79,14 +79,14 @@ namespace Shared.Components.Boards
 		}
 		protected void InitializeFields()
 		{
-			for( uint i = 0; i < GoalsHeight; ++i )
-				for( uint j = 0; j < Width; ++j )
+			for( uint j = 0; j < GoalsHeight; ++j )
+				for( uint i = 0; i < Width; ++i )
 					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Blue );
-			for( uint i = GoalsHeight; i < Height - GoalsHeight; ++i )
-				for( uint j = 0; j < Width; ++j )
+			for( uint j = GoalsHeight; j < Height - GoalsHeight; ++j )
+				for( uint i = 0; i < Width; ++i )
 					fields[ i, j ] = Factory.TaskField.MakeTaskField( i, j );
-			for( uint i = Height - GoalsHeight; i < Height; ++i )
-				for( uint j = 0; j < Width; ++j )
+			for( uint j = Height - GoalsHeight; j < Height; ++j )
+				for( uint i = 0; i < Width; ++i )
 					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Red );
 		}
 		protected void UpdateTaskField( ITaskField field, ITaskField value )
