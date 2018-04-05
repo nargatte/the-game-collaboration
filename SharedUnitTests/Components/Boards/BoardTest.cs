@@ -2,6 +2,11 @@
 using NUnit.Framework;
 using Shared.Components.Boards;
 using Shared.Components.Factories;
+using Shared.Components.Fields;
+using Shared.Components.Pieces;
+using Shared.Components.Players;
+using Shared.Enums;
+using System;
 
 namespace SharedUnitTests.Components.Boards
 {
@@ -14,7 +19,8 @@ namespace SharedUnitTests.Components.Boards
 		static BoardTest()
 		{
 			var mock = new Mock<IBoardPrototypeFactory>();
-			//mock.Se
+			mock.Setup( factory => factory.GoalField.CreateGoalField( It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<TeamColour>(), It.IsAny<DateTime>(), It.IsAny<IPlayer>(), It.IsAny<GoalFieldType>() ) ).Returns( ( uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type ) => Mock.Of<IGoalField>( field => field.X == x && field.Y == y && field.Team == team && field.Timestamp == timestamp && field.Player == player && field.Type == type ) );
+			mock.Setup( factory => factory.TaskField.CreateTaskField( It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<DateTime>(), It.IsAny<IPlayer>(), It.IsAny<int>(), It.IsAny<IFieldPiece>() ) ).Returns( ( uint x, uint y, DateTime timestamp, IPlayer player, int distanceToPiece, IFieldPiece piece ) => Mock.Of<ITaskField>( field => field.X == x && field.Y == y && field.Timestamp == timestamp && field.Player == player && field.DistanceToPiece == distanceToPiece && field.Piece == piece ) );
 			exampleBoardPrototypeFactory = mock.Object;
 			constructorParameters = new object[]
 			{

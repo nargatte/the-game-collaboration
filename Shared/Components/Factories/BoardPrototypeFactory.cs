@@ -4,6 +4,9 @@ using Shared.Components.Players;
 
 namespace Shared.Components.Factories
 {
+	/// <summary>
+	/// robust
+	/// </summary>
 	public class BoardPrototypeFactory : IBoardPrototypeFactory
 	{
 		#region IBoardPrototypeFactory
