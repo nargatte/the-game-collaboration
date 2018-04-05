@@ -23,6 +23,7 @@ namespace GameMasterCore
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         Config.GameMasterSettings config;
+        public DTO.Game game { get; set; }
 
         public BlockingGameMaster()
         {
@@ -410,7 +411,12 @@ namespace GameMasterCore
                 gameId = 1,
                 playerId = id,
                 privateGuid = GenerateNewPlayerGUID(),
-                PlayerDefinition = new DTO.Player() { id = id, team = joinGame.preferredTeam, type = joinGame.preferredRole }
+                PlayerDefinition = new DTO.Player()
+                {
+                    id = id,
+                    team = joinGame.preferredTeam,
+                    type = joinGame.preferredRole
+                }
             };
         }
 
@@ -423,6 +429,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
+            // TODO: DTO.Data czy raczej DTO.PlayerMessage?
             DTO.Data result = PerformSynchronizedKnowledgeExchange(knowledgeExchangeRequest);
             Thread.Sleep((int)config.ActionCosts.KnowledgeExchangeDelay);
             return result;
