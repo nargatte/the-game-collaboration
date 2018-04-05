@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using PlayerCore;
+using Shared.Enums;
 using Shared.Messages.Communication;
 
 namespace PlayerCoreUnitTests

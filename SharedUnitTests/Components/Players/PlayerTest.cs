@@ -50,7 +50,7 @@ namespace SharedUnitTests.Components.Players
 			} );
 		}
 		[TestCaseSource( nameof( parametersWithCreatePlayerParameters ) )]
-		public void CreateFieldReturnsObjectWithFilledProperties( ulong id, TeamColour team, PlayerType type, ulong aId, TeamColour aTeam, PlayerType aType, DateTime aTimestamp, IField aField, IPlayerPiece aPiece )
+		public void CreatePlayerReturnsObjectWithFilledProperties( ulong id, TeamColour team, PlayerType type, ulong aId, TeamColour aTeam, PlayerType aType, DateTime aTimestamp, IField aField, IPlayerPiece aPiece )
 		{
 			var sut = new Player( id, team, type );
 			var result = sut.CreatePlayer( aId, aTeam, aType, aTimestamp, aField, aPiece );

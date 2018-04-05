@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared;
 using Shared.Components.Boards;
+using Shared.Components.Factories;
 using Shared.Components.Extensions;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
+using Shared.Components.Extensions;
 using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 
@@ -52,7 +54,8 @@ namespace GameMasterCore
             IBoard result = new Board(
                 config.GameDefinition.BoardWidth,
                 config.GameDefinition.TaskAreaLength,
-                config.GameDefinition.GoalAreaLength);
+                config.GameDefinition.GoalAreaLength,
+                new BoardPrototypeFactory());
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
@@ -131,8 +134,74 @@ namespace GameMasterCore
             return result;
         }
 
-        public DTO.Data ConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
-        public DTO.Data JoinGame(DTO.JoinGame joinGame) => throw new NotImplementedException();
+        public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
+        public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
+        {
+            // the player shouldn't know his id if he's been rejected :/
+            var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
+
+            if (joinGame.gameName != config.GameDefinition.GameName)
+            {
+                return rejectingMessage;
+            }
+
+            int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
+
+            // if maximum player count reached then force change of teams
+            if (config.GameDefinition.NumberOfPlayersPerTeam == totalNumberOfPlayersOfSameColour)
+            {
+                joinGame.preferredTeam = joinGame.preferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
+            }
+
+            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.preferredTeam && player.Type == PlayerType.Leader).Count() > 0;
+
+            // if there is a leader already then modify the request accordingly
+            if (teamAlreadyHasLeader && joinGame.preferredRole == PlayerType.Leader)
+            {
+                joinGame.preferredRole = PlayerType.Member;
+            }
+
+            if (board.Players.Count() == config.GameDefinition.NumberOfPlayersPerTeam * 2)
+            {
+                return rejectingMessage;
+            }
+
+
+            ulong id = GenerateNewID();
+            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
+            // TODO: check for return type bool?
+            board.SetPlayer(generatedPlayer);
+            return new DTO.ConfirmJoiningGame()
+            {
+                gameId = 1,
+                playerId = id,
+                privateGuid = GenerateNewGUID(),
+                PlayerDefinition = new DTO.Player() { id = id, team = joinGame.preferredTeam, type = joinGame.preferredRole }
+            };
+        }
+
+        private ulong GenerateNewID()
+        {
+            // HACK: should start from lowest positive integers instead of the whole ulong spectrum
+            ulong id;
+            var random = new Random();
+            do
+            {
+                id = (ulong)((long)(random.Next() * int.MaxValue) + random.Next());
+            } while (playerGuidToId.Values.Contains(id));
+            return id;
+        }
+
+        private string GenerateNewGUID()
+        {
+            string guid;
+            var random = new Random();
+            do
+            {
+                guid = Guid.NewGuid().ToString();
+            } while (playerGuidToId.Keys.Contains(guid));
+            return guid;
+        }
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
@@ -143,7 +212,7 @@ namespace GameMasterCore
         public DTO.Data PerformMove(DTO.Move moveRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
-            
+
             int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
             switch (moveRequest.direction)
             {
@@ -218,12 +287,8 @@ namespace GameMasterCore
                     playerId = playerPawn.Id
                 };
             }
-
-            //TODO: perform pickup itself [can't do now because of not clear info about SetPlayer and SetField usage]
-            //set player to contain the obtained piece
-            //??? board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, field:playerPawn.Field, piece: new PlayerPiece())
-            //set field to not contain the piece anymore
-
+            
+            board.SetPiece(board.Factory.PlayerPiece.MakePlayerPiece(id: piece.Id, timestamp: DateTime.Now, player: playerPawn));
 
             //prepare result data
             DTO.Data result = new DTO.Data
@@ -246,21 +311,48 @@ namespace GameMasterCore
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
-            IPiece heldPiecePawn = playerPawn.Piece;
+            IPlayerPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
                 return new DTO.Data { playerId = playerPawn.Id }; //player wanted to place inaccessible piece
             }
             IField targetField = playerPawn.Field;
-            DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
-            if(targetField is ITaskField targetTaskField)
+            //DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
+            if (targetField is ITaskField targetTaskField)
             {
-                if(targetTaskField.Piece != null)
+                if (targetTaskField.Piece != null)
                 {
                     //target field has a piece on it already
-                    //TODO: return field info, piece info and held piece info
+                    //return field info, piece info and held piece info
+                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
+                    DTO.Piece heldPieceToReturn = new DTO.Piece
+                    {
+                        id = heldPiecePawn.Id,
+                        playerId = heldPiecePawn.Player.Id
+                    };
+                    var piecesToReturn = pieceToReturn.ToList();
+                    piecesToReturn.Add(heldPieceToReturn);
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id,
+                        TaskFields = new DTO.TaskField[] { fieldToReturn },
+                        Pieces = piecesToReturn.ToArray()
+                    };
                 }
-                //TODO: place the Piece [more info on board's methods needed]
+                else
+                {
+                    //place piece on task field
+                    board.SetPiece(board.Factory.FieldPiece.MakeFieldPiece(id: heldPiecePawn.Id, timestamp: DateTime.Now, field: targetTaskField));
+
+                    //return new field data
+                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id,
+                        TaskFields = new DTO.TaskField[] { fieldToReturn },
+                        Pieces = pieceToReturn
+                    };
+                }
             }
             var targetGoalField = targetField as IGoalField;
             //zobacz czy może odłożyć
@@ -297,14 +389,14 @@ namespace GameMasterCore
         #region IBoard to DTO converters
         private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            if(y<config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+            if (y < config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
                 return GetGoalFieldInfo(x, y);
             }
             return GetTaskFieldInfo(x, y, out pieces);
         }
-        
+
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
@@ -421,7 +513,7 @@ namespace GameMasterCore
                 {
                     x = (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
                     y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
-                    };
+                };
 
             }
 
