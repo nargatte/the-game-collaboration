@@ -50,12 +50,31 @@ namespace GameMasterCore
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
             };
+
             //generate Goals for default config without goals
             var goalLocationsBlue = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, 0, result.GameDefinition.GoalAreaLength);
-            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength, result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength);
-            List<Config.GoalField> goals = new List<Config.GoalField>(goalLocationsBlue.Select(loc => new Config.GoalField { team = TeamColour.Blue, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
-            goals.AddRange(goalLocationsRed.Select(loc => new Config.GoalField { team = TeamColour.Red, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
-            result.GameDefinition.Goals = goals.ToArray();
+            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth,
+                result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength,
+                result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength);
+
+            result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
+                new Config.GoalField
+                {
+                    team = TeamColour.Blue,
+                    type = GoalFieldType.Goal,
+                    x = location.x,
+                    y = location.y
+                }
+            ).Concat(goalLocationsRed.Select(location =>
+                new Config.GoalField
+                {
+                    team = TeamColour.Red,
+                    type = GoalFieldType.Goal,
+                    x = location.x,
+                    y = location.y
+                }
+            )).ToArray();
+
             return result;
         }
 
