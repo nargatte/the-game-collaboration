@@ -100,7 +100,9 @@ namespace PlayerCore
                 ITaskField taskField = null;
                 if(field != null)
                     taskField = (ITaskField)Board.GetField(field.x, field.y);
-                Board.SetPiece(new FieldPiece(p.id, p.type, p.timestamp, taskField));
+
+                if (taskField != null)
+                    Board.SetPiece(new FieldPiece(p.id, p.type, p.timestamp, taskField));
             }
 
             foreach (var task in data.TaskFields)
