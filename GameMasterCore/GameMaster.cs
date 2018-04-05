@@ -340,6 +340,8 @@ namespace GameMasterCore
             }
         }
 
+        #endregion
+
         #region IGameMaster
         public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
