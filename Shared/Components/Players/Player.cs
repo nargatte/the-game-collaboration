@@ -1,7 +1,7 @@
-﻿using System;
-using Shared.Components.Fields;
+﻿using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Enums;
+using System;
 
 namespace Shared.Components.Players
 {
@@ -17,9 +17,10 @@ namespace Shared.Components.Players
 		public virtual DateTime Timestamp { get; }
 		public virtual IField Field { get; }
 		public virtual IPlayerPiece Piece { get; }
+		public virtual IPlayer CreatePlayer( ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece ) => new Player( id, team, type, timestamp, field, piece );
 		#endregion
 		#region Player
-		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default( DateTime ), IField field = null, IPlayerPiece piece = null )
+		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )
 		{
 			Id = id;
 			Team = team;
@@ -27,9 +28,6 @@ namespace Shared.Components.Players
 			Timestamp = timestamp;
 			Field = field;
 			Piece = piece;
-		}
-		public Player( IPlayer player ) : this( player.Id, player.Team, player.Type, player.Timestamp, player.Field, player.Piece )
-		{
 		}
 		#endregion
 	}
