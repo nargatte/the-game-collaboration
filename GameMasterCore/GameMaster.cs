@@ -17,13 +17,14 @@ using System.Threading;
 
 namespace GameMasterCore
 {
-    public class GameMaster : IGameMaster
+    public class BlockingGameMaster : IGameMaster
     {
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
+        int playerIDcounter = 0;
         Config.GameMasterSettings config;
 
-        public GameMaster()
+        public BlockingGameMaster()
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
@@ -34,7 +35,7 @@ namespace GameMasterCore
             board = PrepareBoard(new BoardPrototypeFactory());
         }
 
-        public GameMaster(Config.GameMasterSettings _config, IBoardPrototypeFactory _boardPrototypeFactory)
+        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardPrototypeFactory _boardPrototypeFactory)
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
@@ -52,10 +53,14 @@ namespace GameMasterCore
             };
 
             //generate Goals for default config without goals
-            var goalLocationsBlue = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, 0, result.GameDefinition.GoalAreaLength);
+            var goalLocationsBlue = GenerateRandomPlaces(6, 0,
+                result.GameDefinition.BoardWidth, 0,
+                result.GameDefinition.GoalAreaLength
+                );
             var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth,
                 result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength,
-                result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength);
+                result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength
+                );
 
             result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
                 new Config.GoalField
@@ -84,7 +89,8 @@ namespace GameMasterCore
                 config.GameDefinition.BoardWidth,
                 config.GameDefinition.TaskAreaLength,
                 config.GameDefinition.GoalAreaLength,
-                boardPrototypeFactory);
+                boardPrototypeFactory
+                );
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
@@ -100,11 +106,15 @@ namespace GameMasterCore
             //TODO: place players on the board
             var randomBluePlaces = GenerateRandomPlaces(
                 config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width, 0, board.TasksHeight);
+                0, board.Width,
+                0, board.TasksHeight
+                );
 
             var randomRedPlaces = GenerateRandomPlaces(
                 config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width, board.Height - board.TasksHeight, board.Height);
+                0, board.Width,
+                board.Height - board.TasksHeight, board.Height
+                );
 
             var players = new List<IPlayer>();
             var randomBluePlaceIterator = randomBluePlaces.GetEnumerator();
@@ -523,14 +533,15 @@ namespace GameMasterCore
         #region HelperMethods
         private ulong GenerateNewID()
         {
-            // HACK: should start from lowest positive integers instead of the whole ulong spectrum
-            ulong id;
-            var random = new Random();
-            do
-            {
-                id = (ulong)((long)(random.Next()) * int.MaxValue + random.Next());
-            } while (playerGuidToId.Values.Contains(id));
-            return id;
+            return (ulong)++playerIDcounter;
+            //// HACK: should start from lowest positive integers instead of the whole ulong spectrum
+            //ulong id;
+            //var random = new Random();
+            //do
+            //{
+            //    id = (ulong)((((long)random.Next()) << 32) + random.Next());
+            //} while (playerGuidToId.Values.Contains(id));
+            //return id;
         }
 
         private string GenerateNewGUID()
