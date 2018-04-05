@@ -18,13 +18,15 @@ using System.Threading;
 
 namespace GameMasterCore
 {
-    public class GameMaster : IGameMaster
+    public class BlockingGameMaster : IGameMaster
     {
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
+        int playerIDcounter = 0;
         Config.GameMasterSettings config;
+        public DTO.Game game { get; set; }
 
-        public GameMaster()
+        public BlockingGameMaster()
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
@@ -35,7 +37,7 @@ namespace GameMasterCore
             board = PrepareBoard(new BoardPrototypeFactory());
         }
 
-        public GameMaster(Config.GameMasterSettings _config, IBoardPrototypeFactory _boardPrototypeFactory)
+        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardPrototypeFactory _boardPrototypeFactory)
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
@@ -51,12 +53,35 @@ namespace GameMasterCore
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
             };
+
             //generate Goals for default config without goals
-            var goalLocationsBlue = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, 0, result.GameDefinition.GoalAreaLength);
-            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth, result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength, result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength);
-            List<Config.GoalField> goals = new List<Config.GoalField>(goalLocationsBlue.Select(loc => new Config.GoalField { team = TeamColour.Blue, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
-            goals.AddRange(goalLocationsRed.Select(loc => new Config.GoalField { team = TeamColour.Red, type = GoalFieldType.Goal, x = loc.x, y = loc.y }));
-            result.GameDefinition.Goals = goals.ToArray();
+            var goalLocationsBlue = GenerateRandomPlaces(6, 0,
+                result.GameDefinition.BoardWidth, 0,
+                result.GameDefinition.GoalAreaLength
+                );
+            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth,
+                result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength,
+                result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength
+                );
+
+            result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
+                new Config.GoalField
+                {
+                    team = TeamColour.Blue,
+                    type = GoalFieldType.Goal,
+                    x = location.x,
+                    y = location.y
+                }
+            ).Concat(goalLocationsRed.Select(location =>
+                new Config.GoalField
+                {
+                    team = TeamColour.Red,
+                    type = GoalFieldType.Goal,
+                    x = location.x,
+                    y = location.y
+                }
+            )).ToArray();
+
             return result;
         }
 
@@ -66,7 +91,8 @@ namespace GameMasterCore
                 config.GameDefinition.BoardWidth,
                 config.GameDefinition.TaskAreaLength,
                 config.GameDefinition.GoalAreaLength,
-                boardPrototypeFactory);
+                boardPrototypeFactory
+                );
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
@@ -82,11 +108,15 @@ namespace GameMasterCore
             //TODO: place players on the board
             var randomBluePlaces = GenerateRandomPlaces(
                 config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width, 0, board.TasksHeight);
+                0, board.Width,
+                0, board.TasksHeight
+                );
 
             var randomRedPlaces = GenerateRandomPlaces(
                 config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width, board.Height - board.TasksHeight, board.Height);
+                0, board.Width,
+                board.Height - board.TasksHeight, board.Height
+                );
 
             var players = new List<IPlayer>();
             var randomBluePlaceIterator = randomBluePlaces.GetEnumerator();
@@ -341,8 +371,16 @@ namespace GameMasterCore
             }
         }
 
+        #endregion
+
         #region IGameMaster
-        public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
+        public DTO.RegisteredGames PerformConfirmGameRegistration()
+        {
+            return new DTO.RegisteredGames()
+            {
+                GameInfo = new DTO.GameInfo[0]
+            };
+        }
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
             if (joinGame.gameName != config.GameDefinition.GameName
@@ -371,7 +409,7 @@ namespace GameMasterCore
 
 
 
-            ulong id = GenerateNewID();
+            ulong id = GenerateNewPlayerID();
             var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
             // TODO: check for return type bool?
             board.SetPlayer(generatedPlayer);
@@ -379,8 +417,13 @@ namespace GameMasterCore
             {
                 gameId = 1,
                 playerId = id,
-                privateGuid = GenerateNewGUID(),
-                PlayerDefinition = new DTO.Player() { id = id, team = joinGame.preferredTeam, type = joinGame.preferredRole }
+                privateGuid = GenerateNewPlayerGUID(),
+                PlayerDefinition = new DTO.Player()
+                {
+                    id = id,
+                    team = joinGame.preferredTeam,
+                    type = joinGame.preferredRole
+                }
             };
         }
 
@@ -393,6 +436,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
         {
+            // TODO: DTO.Data czy raczej DTO.PlayerMessage?
             DTO.Data result = PerformSynchronizedKnowledgeExchange(knowledgeExchangeRequest);
             Thread.Sleep((int)config.ActionCosts.KnowledgeExchangeDelay);
             return result;
@@ -430,7 +474,8 @@ namespace GameMasterCore
         #region IBoard to DTO converters
         private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            if (y < config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+            if (y < config.GameDefinition.GoalAreaLength
+                || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
                 return GetGoalFieldInfo(x, y);
@@ -440,9 +485,9 @@ namespace GameMasterCore
 
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
-            ITaskField currentField = board.GetField((uint)x, (uint)y) as ITaskField;
-            DTO.TaskField fieldToReturn = new DTO.TaskField
+            var piecesToReturn = new List<DTO.Piece>();
+            var currentField = board.GetField((uint)x, (uint)y) as ITaskField;
+            var fieldToReturn = new DTO.TaskField
             {
                 x = (uint)x,
                 y = (uint)y,
@@ -501,19 +546,20 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
-        private ulong GenerateNewID()
+        private ulong GenerateNewPlayerID()
         {
-            // HACK: should start from lowest positive integers instead of the whole ulong spectrum
-            ulong id;
-            var random = new Random();
-            do
-            {
-                id = (ulong)((long)(random.Next()) * int.MaxValue + random.Next());
-            } while (playerGuidToId.Values.Contains(id));
-            return id;
+            return (ulong)++playerIDcounter;
+            //// HACK: should start from lowest positive integers instead of the whole ulong spectrum
+            //ulong id;
+            //var random = new Random();
+            //do
+            //{
+            //    id = (ulong)((((long)random.Next()) << 32) + random.Next());
+            //} while (playerGuidToId.Values.Contains(id));
+            //return id;
         }
 
-        private string GenerateNewGUID()
+        private string GenerateNewPlayerGUID()
         {
             string guid;
             var random = new Random();
@@ -528,7 +574,11 @@ namespace GameMasterCore
 
         private TeamColour GetTeamColorFromCoordinateY(int y) => y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
 
-        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message) => board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
+        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message)
+        {
+            // TODO: verify gameID
+            return board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
+        }
 
         private PieceType GetRandomPieceType() =>
             new Random().NextDouble() < config.GameDefinition.ShamProbability ?
