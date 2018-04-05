@@ -401,7 +401,7 @@ namespace GameMasterCore
 
 
 
-            ulong id = GenerateNewID();
+            ulong id = GenerateNewPlayerID();
             var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
             // TODO: check for return type bool?
             board.SetPlayer(generatedPlayer);
@@ -409,7 +409,7 @@ namespace GameMasterCore
             {
                 gameId = 1,
                 playerId = id,
-                privateGuid = GenerateNewGUID(),
+                privateGuid = GenerateNewPlayerGUID(),
                 PlayerDefinition = new DTO.Player() { id = id, team = joinGame.preferredTeam, type = joinGame.preferredRole }
             };
         }
@@ -460,7 +460,8 @@ namespace GameMasterCore
         #region IBoard to DTO converters
         private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            if (y < config.GameDefinition.GoalAreaLength || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+            if (y < config.GameDefinition.GoalAreaLength
+                || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
                 return GetGoalFieldInfo(x, y);
@@ -470,9 +471,9 @@ namespace GameMasterCore
 
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            List<DTO.Piece> piecesToReturn = new List<DTO.Piece>();
-            ITaskField currentField = board.GetField((uint)x, (uint)y) as ITaskField;
-            DTO.TaskField fieldToReturn = new DTO.TaskField
+            var piecesToReturn = new List<DTO.Piece>();
+            var currentField = board.GetField((uint)x, (uint)y) as ITaskField;
+            var fieldToReturn = new DTO.TaskField
             {
                 x = (uint)x,
                 y = (uint)y,
@@ -531,7 +532,7 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
-        private ulong GenerateNewID()
+        private ulong GenerateNewPlayerID()
         {
             return (ulong)++playerIDcounter;
             //// HACK: should start from lowest positive integers instead of the whole ulong spectrum
@@ -544,7 +545,7 @@ namespace GameMasterCore
             //return id;
         }
 
-        private string GenerateNewGUID()
+        private string GenerateNewPlayerGUID()
         {
             string guid;
             var random = new Random();
@@ -559,7 +560,11 @@ namespace GameMasterCore
 
         private TeamColour GetTeamColorFromCoordinateY(int y) => y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
 
-        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message) => board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
+        private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message)
+        {
+            // TODO: verify gameID
+            return board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
+        }
 
         private PieceType GetRandomPieceType() =>
             new Random().NextDouble() < config.GameDefinition.ShamProbability ?
