@@ -377,7 +377,14 @@ namespace GameMasterCore
         {
             return new DTO.RegisteredGames()
             {
-                GameInfo = new DTO.GameInfo[0]
+                GameInfo = new DTO.GameInfo[]
+                {
+                    new DTO.GameInfo{
+                        blueTeamPlayers = (ulong)board.Players.Select(player => player.Team == TeamColour.Blue).Count(),
+                        redTeamPlayers = (ulong)board.Players.Select(player => player.Team == TeamColour.Red).Count(),
+                        gameName = config.GameDefinition.GameName
+                    }
+                }
             };
         }
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
