@@ -33,12 +33,18 @@ namespace Shared.Components.Boards
 		#region BoardBase
 		protected BoardBase( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory )
 		{
+			if( width == 0u )
+				throw new ArgumentOutOfRangeException( nameof( width ) );
+			if( tasksHeight == 0u )
+				throw new ArgumentOutOfRangeException( nameof( tasksHeight ) );
+			if( goalsHeight == 0u )
+				throw new ArgumentOutOfRangeException( nameof( goalsHeight ) );
+			if( factory is null )
+				throw new ArgumentNullException( nameof( factory ) );
 			Width = width;
 			TasksHeight = tasksHeight;
 			GoalsHeight = goalsHeight;
-			Height = TasksHeight + 2 * GoalsHeight;
-			if( factory is null )
-				throw new ArgumentNullException( nameof( factory ) );
+			Height = TasksHeight + 2u * GoalsHeight;
 			Factory = factory;
 		}
 		protected void OnEvent<T>( EventHandler<T> eventHandler, T eventArgs, [CallerMemberName] string eventName = null )
