@@ -1,5 +1,5 @@
-﻿using System;
-using Shared.Components.Players;
+﻿using Shared.Components.Players;
+using System;
 
 namespace Shared.Components.Fields
 {
@@ -13,17 +13,15 @@ namespace Shared.Components.Fields
 		public virtual uint Y { get; }
 		public virtual DateTime Timestamp { get; }
 		public virtual IPlayer Player { get; }
+		public abstract IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player );
 		#endregion
 		#region Field
-		protected Field( uint x, uint y, DateTime timestamp = default( DateTime ), IPlayer player = null )
+		protected Field( uint x, uint y, DateTime timestamp = default, IPlayer player = null )
 		{
 			X = x;
 			Y = y;
 			Timestamp = timestamp;
 			Player = player;
-		}
-		protected Field( IField field ) : this( field.X, field.Y, field.Timestamp, field.Player )
-		{
 		}
 		#endregion
 	}

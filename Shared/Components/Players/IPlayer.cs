@@ -13,5 +13,6 @@ namespace Shared.Components.Players
 		DateTime Timestamp { get; }
 		IField Field { get; }
 		IPlayerPiece Piece { get; }
+		IPlayer CreatePlayer( ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece );
 	}
 }

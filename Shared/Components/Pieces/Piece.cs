@@ -1,5 +1,5 @@
-﻿using System;
-using Shared.Enums;
+﻿using Shared.Enums;
+using System;
 
 namespace Shared.Components.Pieces
 {
@@ -12,16 +12,14 @@ namespace Shared.Components.Pieces
 		public virtual ulong Id { get; }
 		public virtual PieceType Type { get; }
 		public virtual DateTime Timestamp { get; }
+		public abstract IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp );
 		#endregion
 		#region Piece
-		protected Piece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default( DateTime ) )
+		protected Piece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default )
 		{
 			Id = id;
 			Type = type;
 			Timestamp = timestamp;
-		}
-		protected Piece( IPiece piece ) : this( piece.Id, piece.Type, piece.Timestamp )
-		{
 		}
 		#endregion
 	}

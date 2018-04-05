@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace Shared.Components.Boards
 {
-	public class Board : IBoard
+	public class Board : BoardBase
 	{
 		#region IBoard
-		public virtual uint Width { get; }
-		public virtual uint TasksHeight { get; }
-		public virtual uint GoalsHeight { get; }
-		public virtual uint Height { get; }
-		public virtual IEnumerable<IField> Fields
+		public override IEnumerable<IField> Fields
 		{
 			get
 			{
@@ -22,7 +20,7 @@ namespace Shared.Components.Boards
 					yield return field;
 			}
 		}
-		public virtual IEnumerable<IPiece> Pieces
+		public override IEnumerable<IPiece> Pieces
 		{
 			get
 			{
@@ -30,7 +28,7 @@ namespace Shared.Components.Boards
 					yield return piece.Value;
 			}
 		}
-		public virtual IEnumerable<IPlayer> Players
+		public override IEnumerable<IPlayer> Players
 		{
 			get
 			{
@@ -38,35 +36,42 @@ namespace Shared.Components.Boards
 					yield return player.Value;
 			}
 		}
-		public virtual IField GetField( uint x, uint y ) => x >= 0 && x < Width && y >= 0 && y < Height ? fields[ x, y ] : null;
-		public virtual IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : null;
-		public virtual IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : null;
-		public virtual bool SetField( IField value )
+		public override IField GetField( uint x, uint y ) => x < Width ? ( y < Height ? fields[ x, y ] : throw new ArgumentOutOfRangeException( nameof( y ) ) ) : throw new ArgumentOutOfRangeException( nameof( x ) );
+		public override IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : throw new ArgumentOutOfRangeException( nameof( id ) );
+		public override IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : throw new ArgumentOutOfRangeException( nameof( id ) );
+		public override void SetField( IField value )
 		{
 			if( value is null )
-				return false;
+				throw new ArgumentNullException( nameof( value ) );
 			var field = GetField( value.X, value.Y );
-			if( field is null || field == value )
-				return false;
-			if( field is ITaskField oldTask && value is ITaskField freshTask )
-				return UpdateTaskField( oldTask, freshTask );
-			if( field is IGoalField oldGoal && value is IGoalField freshGoal )
-				return UpdateGoalField( oldGoal, freshGoal );
-			return false;
+			if( field is ITaskField taskField && value is ITaskField aTaskField )
+				UpdateTaskField( taskField, aTaskField );
+			else if( field is IGoalField goalField && value is IGoalField aGoalField )
+				UpdateGoalField( goalField, aGoalField );
+			else
+				throw new ArgumentOutOfRangeException( nameof( value ) );
 		}
-		public virtual bool SetPiece( IPiece value ) => throw new System.NotImplementedException();
-		public virtual bool SetPlayer( IPlayer value ) => throw new System.NotImplementedException();
+		public override void SetPiece( IPiece value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			pieces.TryGetValue( value.Id, out var piece );
+			UpdatePiece( piece, value );
+		}
+		public override void SetPlayer( IPlayer value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			players.TryGetValue( value.Id, out var player );
+			UpdatePlayer( player, value );
+		}
 		#endregion
 		#region Board
 		private readonly IField[,] fields;
 		private readonly IDictionary<ulong, IPlayer> players;
 		private readonly IDictionary<ulong, IPiece> pieces;
-		public Board( uint width, uint tasksHeight, uint goalsHeight )
+		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
 		{
-			Width = width;
-			TasksHeight = tasksHeight;
-			GoalsHeight = goalsHeight;
-			Height = TasksHeight + 2 * GoalsHeight;
 			fields = new IField[ Width, Height ];
 			players = new Dictionary<ulong, IPlayer>();
 			pieces = new Dictionary<ulong, IPiece>();
@@ -76,16 +81,128 @@ namespace Shared.Components.Boards
 		{
 			for( uint i = 0; i < GoalsHeight; ++i )
 				for( uint j = 0; j < Width; ++j )
-					fields[ i, j ] = new GoalField( i, j, TeamColour.Blue );
+					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Blue );
 			for( uint i = GoalsHeight; i < Height - GoalsHeight; ++i )
 				for( uint j = 0; j < Width; ++j )
-					fields[ i, j ] = new TaskField( i, j );
+					fields[ i, j ] = Factory.TaskField.MakeTaskField( i, j );
 			for( uint i = Height - GoalsHeight; i < Height; ++i )
 				for( uint j = 0; j < Width; ++j )
-					fields[ i, j ] = new GoalField( i, j, TeamColour.Red );
+					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Red );
 		}
-		protected bool UpdateTaskField( ITaskField old, ITaskField fresh ) => throw new NotImplementedException();
-		protected bool UpdateGoalField( IGoalField old, IGoalField fresh ) => throw new NotImplementedException();
+		protected void UpdateTaskField( ITaskField field, ITaskField value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			if( field != value )
+			{
+				if( field != null )
+				{
+					if( field.Player != null )
+					{
+						fields[ field.X, field.Y ] = field.SetPlayer();
+						players[ field.Player.Id ] = field.Player.SetField();
+						OnFieldChanged( field.X, field.Y );
+						OnPlayerChanged( field.Player.Id );
+					}
+					if( field.Piece != null )
+					{
+						fields[ field.X, field.Y ] = field.SetPiece();
+						pieces[ field.Piece.Id ] = field.Piece.SetField();
+						OnFieldChanged( field.X, field.Y );
+						OnPieceChanged( field.Piece.Id );
+					}
+				}
+				fields[ value.X, value.Y ] = value;
+				OnFieldChanged( value.X, value.Y );
+			}
+			if( value.Player != null )
+				SetPlayer( value.Player );
+			if( value.Piece != null )
+				SetPiece( value.Piece );
+		}
+		protected void UpdateGoalField( IGoalField field, IGoalField value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			if( field != value )
+			{
+				if( field != null && field.Player != null )
+				{
+					fields[ field.X, field.Y ] = field.SetPlayer();
+					players[ field.Player.Id ] = field.Player.SetField();
+					OnFieldChanged( field.X, field.Y );
+					OnPlayerChanged( field.Player.Id );
+				}
+				fields[ value.X, value.Y ] = value;
+				OnFieldChanged( value.X, value.Y );
+			}
+			if( value.Player != null )
+				SetPlayer( value.Player );
+		}
+		protected void UpdatePiece( IPiece piece, IPiece value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			if( piece != value )
+			{
+				if( piece != null )
+					if( piece is IFieldPiece fieldPiece && fieldPiece.Field != null )
+					{
+						pieces[ fieldPiece.Id ] = fieldPiece.SetField();
+						fields[ fieldPiece.Field.X, fieldPiece.Field.Y ] = fieldPiece.Field.SetPiece();
+						OnPieceChanged( fieldPiece.Id );
+						OnFieldChanged( fieldPiece.Field.X, fieldPiece.Field.Y );
+					}
+					else if( piece is IPlayerPiece playerPiece && playerPiece.Player != null )
+					{
+						pieces[ playerPiece.Id ] = playerPiece.SetPlayer();
+						players[ playerPiece.Player.Id ] = playerPiece.Player.SetPiece();
+						OnPieceChanged( playerPiece.Id );
+						OnPlayerChanged( playerPiece.Player.Id );
+					}
+					else
+						throw new ArgumentOutOfRangeException( nameof( piece ) );
+				pieces[ value.Id ] = value;
+				OnPieceChanged( value.Id );
+			}
+			if( value is IFieldPiece aFieldPiece && aFieldPiece.Field != null )
+				SetField( aFieldPiece.Field );
+			else if( value is IPlayerPiece aPlayerPiece && aPlayerPiece.Player != null )
+				SetPlayer( aPlayerPiece.Player );
+			else
+				throw new ArgumentOutOfRangeException( nameof( value ) );
+		}
+		protected void UpdatePlayer( IPlayer player, IPlayer value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			if( player != value )
+			{
+				if( player != null )
+				{
+					if( player.Field != null )
+					{
+						players[ player.Id ] = player.SetField();
+						fields[ player.Field.X, player.Field.Y ] = player.Field.SetPlayer();
+						OnPlayerChanged( player.Id );
+						OnFieldChanged( player.Field.X, player.Field.Y );
+					}
+					if( player.Piece != null )
+					{
+						players[ player.Id ] = player.SetPiece();
+						pieces[ player.Piece.Id ] = player.Piece.SetPlayer();
+						OnPlayerChanged( player.Id );
+						OnPieceChanged( player.Piece.Id );
+					}
+				}
+				players[ value.Id ] = value;
+				OnPlayerChanged( value.Id );
+			}
+			if( value.Field != null )
+				SetField( value.Field );
+			if( value.Piece != null )
+				SetPiece( value.Piece );
+		}
 		#endregion
 	}
 }
