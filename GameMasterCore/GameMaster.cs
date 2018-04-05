@@ -24,6 +24,8 @@ namespace GameMasterCore
 
         public GameMaster()
         {
+            playerGuidToId = new Dictionary<string, ulong>();
+
             //prepare config
             config = PrepareDefaultConfig();
 
@@ -136,11 +138,11 @@ namespace GameMasterCore
         public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
-            // the player shouldn't know his id if he's been rejected :/
-            var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
-
-            if (joinGame.gameName != config.GameDefinition.GameName)
+            if (joinGame.gameName != config.GameDefinition.GameName
+                || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
+                // the player shouldn't know his id if he's been rejected :/
+                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
                 return rejectingMessage;
             }
 
@@ -159,11 +161,7 @@ namespace GameMasterCore
             {
                 joinGame.preferredRole = PlayerType.Member;
             }
-
-            if (board.Players.Count() == config.GameDefinition.NumberOfPlayersPerTeam * 2)
-            {
-                return rejectingMessage;
-            }
+            
 
 
             ulong id = GenerateNewID();
@@ -186,7 +184,7 @@ namespace GameMasterCore
             var random = new Random();
             do
             {
-                id = (ulong)((long)(random.Next() * int.MaxValue) + random.Next());
+                id = (ulong)((long)(random.Next()) * int.MaxValue + random.Next());
             } while (playerGuidToId.Values.Contains(id));
             return id;
         }

@@ -10,10 +10,6 @@ namespace GameMasterCore
 {
     public interface IGameMaster
     {
-        //IProxy proxy; //reference to CommunicationSubstitute
-        //IGame game;
-
-        //IGame InitializeGame(IGameConfiguration gameConfiguration);
         Data PerformMove(Move moveRequest);
         Data PerformDiscover(Discover discoverRequest);
         Data PerformPickUp(PickUpPiece pickUpRequest);
