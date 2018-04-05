@@ -373,7 +373,13 @@ namespace GameMasterCore
         #endregion
 
         #region IGameMaster
-        public DTO.Data PerformConfirmGameRegistration(DTO.RegisteredGames registeredGames) => throw new NotImplementedException();
+        public DTO.RegisteredGames PerformConfirmGameRegistration()
+        {
+            return new DTO.RegisteredGames()
+            {
+                GameInfo = new DTO.GameInfo[0]
+            };
+        }
         public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
             if (joinGame.gameName != config.GameDefinition.GameName
