@@ -13,7 +13,11 @@ namespace Shared.Components.Boards
     {
         public static IField GetField(this IBoard board, Location location) => board.GetField(location.x, location.y);
 
-        public static bool SetPlayer(this IBoard board, ulong id, Location location, DateTime timestamp) =>
-            board.SetPlayer(new Players.Player(board.GetPlayer(id), timestamp, board.GetField(location)));
+        public static void SetPlayerLocation(this IBoard board, ulong id,  Location location, DateTime dataTime)
+        {
+            var player = board.GetPlayer(id);
+            var field = board.GetField(location);
+            var newPlayer = new Players.Player(player.Id, player.Team, player.Type, dataTime, field, player.Piece);
+        }
     }
 }

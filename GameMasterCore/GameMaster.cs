@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared;
 using Shared.Components.Boards;
+using Shared.Components.Extensions;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;

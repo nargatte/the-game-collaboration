@@ -13,5 +13,7 @@ namespace Shared.Components.Extensions
 		public static IPlayer SetTimestamp( this IPlayer player, DateTime timestamp = default ) => player.CreatePlayer( player.Id, player.Team, player.Type, timestamp, player.Field, player.Piece );
 		public static IPlayer SetField( this IPlayer player, IField field = null ) => player.CreatePlayer( player.Id, player.Team, player.Type, player.Timestamp, field, player.Piece );
 		public static IPlayer SetPiece( this IPlayer player, IPlayerPiece piece = null ) => player.CreatePlayer( player.Id, player.Team, player.Type, player.Timestamp, player.Field, piece );
-	}
+        public static uint? GetX(this IPlayer player) => player?.Field.X;
+        public static uint? GetY(this IPlayer player) => player?.Field.Y;
+    }
 }

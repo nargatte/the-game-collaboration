@@ -6,6 +6,8 @@ using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
 using Shared.Components.Fields;
+using Shared.Components.Factories;
+using Shared.Components.Extensions;
 
 namespace PlayerCore
 {
@@ -57,7 +59,7 @@ namespace PlayerCore
             GameId = GameId;
             Game = game;
             Guid = playerGuid;
-            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight);
+            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardPrototypeFactory());
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
             PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
@@ -89,7 +91,7 @@ namespace PlayerCore
             }
 
             if(data.PlayerLocation != null)
-                Board.SetPlayer(Id, data.PlayerLocation, DateTime.Now);
+                Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
 
             foreach (Shared.Messages.Communication.Piece p in data.Pieces)
             {
@@ -105,7 +107,7 @@ namespace PlayerCore
                 IPlayer player = null;
                 if(task.playerIdSpecified == true)
                 {
-                    Board.SetPlayer(task.playerId, new Location() { x = task.x, y = task.y }, task.timestamp);
+                    Board.SetPlayerLocation(task.playerId, new Location() { x = task.x, y = task.y }, task.timestamp);
                     player = Board.GetPlayer(task.playerId);
                 }
 
@@ -117,7 +119,7 @@ namespace PlayerCore
                 IPlayer player = null;
                 if (goal.playerIdSpecified == true)
                 {
-                    Board.SetPlayer(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
+                    Board.SetPlayerLocation(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
                     player = Board.GetPlayer(goal.playerId);
                 }
 
