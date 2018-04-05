@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared;
 using Shared.Components.Boards;
+using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
+using Shared.Components.Extensions;
 using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 
@@ -51,7 +53,8 @@ namespace GameMasterCore
             IBoard result = new Board(
                 config.GameDefinition.BoardWidth,
                 config.GameDefinition.TaskAreaLength,
-                config.GameDefinition.GoalAreaLength);
+                config.GameDefinition.GoalAreaLength,
+                new BoardPrototypeFactory());
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
@@ -283,12 +286,8 @@ namespace GameMasterCore
                     playerId = playerPawn.Id
                 };
             }
-
-            //TODO: perform pickup itself [can't do now because of not clear info about SetPlayer and SetField usage]
-            //set player to contain the obtained piece
-            //??? board.SetPlayer(new Player(playerPawn.Id, playerPawn.Team, playerPawn.Type, field:playerPawn.Field, piece: new PlayerPiece())
-            //set field to not contain the piece anymore
-
+            
+            board.SetPiece(board.Factory.PlayerPiece.MakePlayerPiece(id: piece.Id, timestamp: DateTime.Now, player: playerPawn));
 
             //prepare result data
             DTO.Data result = new DTO.Data
@@ -311,21 +310,48 @@ namespace GameMasterCore
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
-            IPiece heldPiecePawn = playerPawn.Piece;
+            IPlayerPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
                 return new DTO.Data { playerId = playerPawn.Id }; //player wanted to place inaccessible piece
             }
             IField targetField = playerPawn.Field;
-            DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
+            //DTO.Field fieldToReturn = GetFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieces);
             if (targetField is ITaskField targetTaskField)
             {
                 if (targetTaskField.Piece != null)
                 {
                     //target field has a piece on it already
-                    //TODO: return field info, piece info and held piece info
+                    //return field info, piece info and held piece info
+                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
+                    DTO.Piece heldPieceToReturn = new DTO.Piece
+                    {
+                        id = heldPiecePawn.Id,
+                        playerId = heldPiecePawn.Player.Id
+                    };
+                    var piecesToReturn = pieceToReturn.ToList();
+                    piecesToReturn.Add(heldPieceToReturn);
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id,
+                        TaskFields = new DTO.TaskField[] { fieldToReturn },
+                        Pieces = piecesToReturn.ToArray()
+                    };
                 }
-                //TODO: place the Piece [more info on board's methods needed]
+                else
+                {
+                    //place piece on task field
+                    board.SetPiece(board.Factory.FieldPiece.MakeFieldPiece(id: heldPiecePawn.Id, timestamp: DateTime.Now, field: targetTaskField));
+
+                    //return new field data
+                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id,
+                        TaskFields = new DTO.TaskField[] { fieldToReturn },
+                        Pieces = pieceToReturn
+                    };
+                }
             }
             var targetGoalField = targetField as IGoalField;
             //zobacz czy może odłożyć
