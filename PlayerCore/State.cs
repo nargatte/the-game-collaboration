@@ -59,6 +59,7 @@ namespace PlayerCore
             GameId = GameId;
             Game = game;
             Guid = playerGuid;
+            Id = id;
             Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardPrototypeFactory());
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
