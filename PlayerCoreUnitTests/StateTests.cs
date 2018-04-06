@@ -3,18 +3,70 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using PlayerCore;
 using Shared.Components.Events;
-using Shared.Components.Factories;
-using Shared.Components.Fields;
-using Shared.Components.Pieces;
-using Shared.Components.Players;
 using Shared.Enums;
 using Shared.Messages.Communication;
 
 namespace PlayerCoreUnitTests
 {
     [TestFixture]
-    public class StateTests
+    public partial class StateTests
     {
+
+        private State GetState(uint id) => new State(GetGame(id), id, 0, string.Empty, new MockBoardFactory());
+
+        private Game GetGame(uint id)
+        {
+
+            Game game = new Game();
+            game.Board = new Shared.Messages.Communication.GameBoard();
+            game.Board.goalsHeight = 10;
+            game.Board.tasksHeight = 10;
+            game.Board.width = 10;
+            game.playerId = id;
+            game.PlayerLocation = new Location();
+            game.Players = new Shared.Messages.Communication.Player[1];
+            game.Players[0] = GetPlayer(id);
+            return game;
+        }
+
+        private Data GetData()
+        {
+            Data data = new Data();
+            data.TaskFields = new Shared.Messages.Communication.TaskField[0];
+            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
+            data.Pieces = new Shared.Messages.Communication.Piece[0];
+            data.PlayerLocation = new Location();
+            return data;
+        }
+
+        private Data GetDataWithLocation(uint x, uint y)
+        {
+            Data data = new Data();
+            data.TaskFields = new Shared.Messages.Communication.TaskField[0];
+            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
+            data.Pieces = new Shared.Messages.Communication.Piece[0];
+            data.PlayerLocation = new Location();
+            data.PlayerLocation.x = x;
+            data.PlayerLocation.y = y;
+
+            return data;
+        }
+
+        private Shared.Messages.Communication.Player GetPlayer(uint id)
+        {
+            Shared.Messages.Communication.Player player = new Shared.Messages.Communication.Player();
+            player.id = id;
+            return player;
+        }
+
+        private Shared.Messages.Communication.Piece GetPiece()
+        {
+            Shared.Messages.Communication.Piece piece = new Shared.Messages.Communication.Piece();
+            piece.type = PieceType.Unknown;
+            piece.timestamp = new System.DateTime(0);
+            return piece;
+        }
+
         [Test]
         public void ReceiveData_DataEmpty_NoChange()
         {
@@ -154,59 +206,6 @@ namespace PlayerCoreUnitTests
 
         }
 
-        private State GetState(uint id) => new State(GetGame(id),id,0,string.Empty);
-
-        private Game GetGame(uint id)
-        {
-            Game game = new Game();
-            game.Board = new Shared.Messages.Communication.GameBoard();
-            game.Board.goalsHeight = 10;
-            game.Board.tasksHeight = 10;
-            game.Board.width = 10;
-            game.playerId = id;
-            game.PlayerLocation = new Location();
-            game.Players = new Shared.Messages.Communication.Player[1];
-            game.Players[0] = GetPlayer(id);
-            return game;
-        }
-
-        private Data GetData()
-        {
-            Data data = new Data();
-            data.TaskFields = new Shared.Messages.Communication.TaskField[0];
-            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
-            data.Pieces = new Shared.Messages.Communication.Piece[0];
-            data.PlayerLocation = new Location();
-            return data;
-        }
-
-        private Data GetDataWithLocation(uint x, uint y)
-        {
-            Data data = new Data();
-            data.TaskFields = new Shared.Messages.Communication.TaskField[0];
-            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
-            data.Pieces = new Shared.Messages.Communication.Piece[0];
-            data.PlayerLocation = new Location();
-            data.PlayerLocation.x = x;
-            data.PlayerLocation.y = y;
-           
-            return data;
-        }
-
-        private Shared.Messages.Communication.Player GetPlayer(uint id)
-        {
-            Shared.Messages.Communication.Player player = new Shared.Messages.Communication.Player();
-            player.id = id;
-            return player;
-        }
-
-        private Shared.Messages.Communication.Piece GetPiece()
-        {
-            Shared.Messages.Communication.Piece piece = new Shared.Messages.Communication.Piece();
-            piece.type = PieceType.Unknown;
-            piece.timestamp = new System.DateTime(0);
-            return piece;
-        }
     }
 
 }

@@ -54,13 +54,13 @@ namespace PlayerCore
         public Shared.Messages.Communication.Piece HoldingPiece { get; private set; }
 
 
-        public State(Game game, ulong id, ulong gameId, string playerGuid)
+        public State(Game game, ulong id, ulong gameId, string playerGuid, IBoardFactory boardFactory)
         {
             GameId = GameId;
             Game = game;
             Guid = playerGuid;
             Id = id;
-            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardComponentFactory());
+            Board = boardFactory.CreateBoard(Game.Board.width, Game.Board.tasksHeight, Game.Board.goalsHeight);
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
             PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
