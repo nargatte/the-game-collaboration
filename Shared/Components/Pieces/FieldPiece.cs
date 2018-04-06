@@ -19,9 +19,10 @@ namespace Shared.Components.Pieces
 			{
 				if( field != value )
 				{
-					if( field != null )
-						field.Piece = null;
+					var aField = field;
 					field = value;
+					if( aField != null )
+						aField.Piece = null;
 					if( field != null )
 						field.Piece = this;
 				}
