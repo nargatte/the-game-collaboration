@@ -52,8 +52,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GameMasterCore\GameMasterCore.csproj">
+      <Project>{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}</Project>
+      <Name>GameMasterCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PlayerCore\PlayerCore.csproj">
+      <Project>{d6d23f13-b83a-4739-861d-6690d28dfa16}</Project>
+      <Name>PlayerCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
-      <Project>{20d54140-ccfe-4767-90a4-f5f093a296f3}</Project>
+      <Project>{20D54140-CCFE-4767-90A4-F5F093A296F3}</Project>
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
