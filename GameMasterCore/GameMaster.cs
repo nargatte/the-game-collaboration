@@ -105,10 +105,7 @@ namespace GameMasterCore
                     result.SetField(
                         result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.NonGoal)
                         );
-
-
-            //TODO: generate and place pieces
-            
+                        
             GenerateRandomPlaces(
                 config.GameDefinition.InitialNumberOfPieces,
                 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
@@ -308,11 +305,28 @@ namespace GameMasterCore
                     }
                 }
                 var targetGoalField = targetField as IGoalField;
-                //TODO placing a piece on a GoalField
-                //zobacz czy może odłożyć
-                //zobacz czy zyskuje punkt
-                //zobacz czy koniec gry
-                throw new NotImplementedException();
+                
+                if(heldPiecePawn.Type == PieceType.Sham)
+                {
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id
+                    };
+                }
+
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y);
+                if (targetGoalField.Type == GoalFieldType.Goal)
+                {
+                    //if goal, make a non-goal and remove piece from the player
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                }
+                return new DTO.Data
+                {
+                    playerId = playerPawn.Id,
+                    GoalFields = new DTO.GoalField[] { GoalToReturn }
+                };
             }
         }
 
