@@ -23,6 +23,7 @@ namespace GameMasterCore
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
+        int pieceIDcounter = 0;
         Config.GameMasterSettings config;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
 
@@ -105,43 +106,14 @@ namespace GameMasterCore
                         result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.NonGoal)
                         );
 
-            //TODO: place players on the board
-            var randomBluePlaces = GenerateRandomPlaces(
-                config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width,
-                0, board.TasksHeight
-                );
-
-            var randomRedPlaces = GenerateRandomPlaces(
-                config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width,
-                board.Height - board.TasksHeight, board.Height
-                );
-
-            var players = new List<IPlayer>();
-            var randomBluePlaceIterator = randomBluePlaces.GetEnumerator();
-            var randomRedPlaceIterator = randomBluePlaces.GetEnumerator();
-            // place blue players
-            for (int i = 0; i < config.GameDefinition.NumberOfPlayersPerTeam; i++)
-            {
-                if (!randomBluePlaceIterator.MoveNext())
-                {
-                    // shouldn't happen
-                    break;
-                }
-
-                // create blue players and add them to the board with randomBluePlaceIterator.Current position
-
-            }
-            // do the same with red players
 
             //TODO: generate and place pieces
-
-            //GenerateRandomPlaces(
-            //    config.GameDefinition.InitialNumberOfPieces,
-            //    0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
-            //        place => board.SetPiece(new FieldPiece(???))
-            //    );
+            
+            GenerateRandomPlaces(
+                config.GameDefinition.InitialNumberOfPieces,
+                0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
+                    place => board.SetPiece(board.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)board.GetField(place)))
+                );
 
             return result;
         }
