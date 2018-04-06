@@ -60,7 +60,7 @@ namespace PlayerCore
             Game = game;
             Guid = playerGuid;
             Id = id;
-            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardPrototypeFactory());
+            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardComponentFactory());
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
             PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
@@ -68,14 +68,14 @@ namespace PlayerCore
 
             TeamColour = player.team;
 
-            IPlayer boardPlayer = new Shared.Components.Players.Player(id, player.team, player.type,
+            IPlayer boardPlayer = Board.Factory.MakePlayer(id, player.team, player.type,
                 DateTime.Now,
                 Board.GetField(game.PlayerLocation));
 
             Board.SetPlayer(boardPlayer);
             foreach (var pl in Game.Players.Where(p => p.id!=Id))
             {
-                Board.SetPlayer(new Shared.Components.Players.Player(pl.id, pl.team, pl.type));
+                Board.SetPlayer(Board.Factory.MakePlayer(pl.id, pl.team, pl.type));
             }
         }
 
