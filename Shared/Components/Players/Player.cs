@@ -1,4 +1,5 @@
-﻿using Shared.Components.Fields;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Enums;
 using System;
@@ -12,21 +13,42 @@ namespace Shared.Components.Players
 		public virtual TeamColour Team { get; set; }
 		public virtual PlayerType Type { get; set; }
 		public virtual DateTime Timestamp { get; set; }
-		public virtual IField Field { get; set; }
-		public virtual IPlayerPiece Piece { get; set; }
+		private IField field;
+		public virtual IField Field
+		{
+			get => field;
+			set
+			{
+				if( field != value )
+				{
+					if( field != null )
+						field.Player = null;
+					field = value;
+					if( field != null )
+						field.Player = this;
+				}
+			}
+		}
+		private IPlayerPiece piece;
+		public virtual IPlayerPiece Piece
+		{
+			get => piece;
+			set
+			{
+				if( piece != value )
+				{
+					if( piece != null )
+						piece.Player = null;
+					piece = value;
+					if( piece != null )
+						piece.Player = this;
+				}
+			}
+		}
 		public virtual IPlayer ClonePlayer()
 		{
 			var player = new Player( Id, Team, Type, Timestamp, null, null );
-			var field = Field;
-			var piece = Piece;
-			Field = null;
-			Piece = null;
-			var aField = field.CloneField();
-			var aPiece = piece.ClonePlayerPiece();
-			Field = field;
-			Piece = piece;
-			player.Field = aField;
-			player.Piece = aPiece;
+			this.Clone( player );
 			return player;
 		}
 		#endregion
