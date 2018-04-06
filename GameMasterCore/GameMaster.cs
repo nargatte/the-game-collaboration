@@ -604,7 +604,7 @@ namespace GameMasterCore
             }
 
             int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
-            var random = new Random();
+            var random = new Random(1234);
             var placeToPieceId = new Dictionary<int, int>();
 
             for (int i = 0; i < n; i++)
@@ -638,7 +638,10 @@ namespace GameMasterCore
                 };
 
             }
-
+            if (coordinateListToReturn.Where(loc => loc == null).Count() > 0)
+            {
+                throw new Exception("Swap error");
+            }
             return coordinateListToReturn.ToList();
         }
         #endregion
