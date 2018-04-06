@@ -5,7 +5,6 @@ using Shared.Components.Pieces;
 using Shared.Components.Players;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Shared.Components.Boards
 {
@@ -19,7 +18,7 @@ namespace Shared.Components.Boards
 		public abstract IEnumerable<IField> Fields { get; }
 		public abstract IEnumerable<IPiece> Pieces { get; }
 		public abstract IEnumerable<IPlayer> Players { get; }
-		public virtual IBoardPrototypeFactory Factory { get; }
+		public virtual IBoardComponentFactory Factory { get; }
 		public abstract IField GetField( uint x, uint y );
 		public abstract IPiece GetPiece( ulong id );
 		public abstract IPlayer GetPlayer( ulong id );
@@ -31,7 +30,7 @@ namespace Shared.Components.Boards
 		public virtual event EventHandler<PlayerChangedArgs> PlayerChanged = delegate { };
 		#endregion
 		#region BoardBase
-		protected BoardBase( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory )
+		protected BoardBase( uint width, uint tasksHeight, uint goalsHeight, IBoardComponentFactory factory )
 		{
 			if( width == 0u )
 				throw new ArgumentOutOfRangeException( nameof( width ) );
@@ -47,24 +46,9 @@ namespace Shared.Components.Boards
 			Height = TasksHeight + 2u * GoalsHeight;
 			Factory = factory;
 		}
-		protected void OnEvent<T>( EventHandler<T> eventHandler, T eventArgs, [CallerMemberName] string eventName = null )
-		{
-			var exceptionList = new List<Exception>();
-			foreach( EventHandler<T> handler in eventHandler.GetInvocationList() )
-				try
-				{
-					handler( this, eventArgs );
-				}
-				catch( Exception exception )
-				{
-					exceptionList.Add( exception );
-				}
-			if( exceptionList.Count > 0 )
-				throw new AggregateException( $"Exceptions thrown by event subscribers called in { eventName }.", exceptionList );
-		}
-		protected void OnFieldChanged( uint x, uint y ) => OnEvent( FieldChanged, new FieldChangedArgs( x, y ) );
-		protected void OnPieceChanged( ulong id ) => OnEvent( PieceChanged, new PieceChangedArgs( id ) );
-		protected void OnPlayerChanged( ulong id ) => OnEvent( PlayerChanged, new PlayerChangedArgs( id ) );
+		protected void OnFieldChanged( uint x, uint y ) => EventHelper.OnEvent( this, FieldChanged, new FieldChangedArgs( x, y ) );
+		protected void OnPieceChanged( ulong id ) => EventHelper.OnEvent( this, PieceChanged, new PieceChangedArgs( id ) );
+		protected void OnPlayerChanged( ulong id ) => EventHelper.OnEvent( this, PlayerChanged, new PlayerChangedArgs( id ) );
 		#endregion
 	}
 }

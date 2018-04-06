@@ -1,23 +1,56 @@
-﻿using Shared.Components.Fields;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Enums;
 using System;
 
 namespace Shared.Components.Players
 {
-	/// <summary>
-	/// immutable
-	/// </summary>
 	public class Player : IPlayer
 	{
 		#region IPlayer
-		public virtual ulong Id { get; }
-		public virtual TeamColour Team { get; }
-		public virtual PlayerType Type { get; }
-		public virtual DateTime Timestamp { get; }
-		public virtual IField Field { get; }
-		public virtual IPlayerPiece Piece { get; }
-		public virtual IPlayer CreatePlayer( ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece ) => new Player( id, team, type, timestamp, field, piece );
+		public virtual ulong Id { get; set; }
+		public virtual TeamColour Team { get; set; }
+		public virtual PlayerType Type { get; set; }
+		public virtual DateTime Timestamp { get; set; }
+		private IField field;
+		public virtual IField Field
+		{
+			get => field;
+			set
+			{
+				if( field != value )
+				{
+					if( field != null )
+						field.Player = null;
+					field = value;
+					if( field != null )
+						field.Player = this;
+				}
+			}
+		}
+		private IPlayerPiece piece;
+		public virtual IPlayerPiece Piece
+		{
+			get => piece;
+			set
+			{
+				if( piece != value )
+				{
+					if( piece != null )
+						piece.Player = null;
+					piece = value;
+					if( piece != null )
+						piece.Player = this;
+				}
+			}
+		}
+		public virtual IPlayer ClonePlayer()
+		{
+			var player = new Player( Id, Team, Type, Timestamp, null, null );
+			this.Clone( player );
+			return player;
+		}
 		#endregion
 		#region Player
 		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )

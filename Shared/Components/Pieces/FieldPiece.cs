@@ -1,20 +1,38 @@
-﻿using Shared.Components.Fields;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Fields;
 using Shared.Enums;
 using System;
 
 namespace Shared.Components.Pieces
 {
-	/// <summary>
-	/// immutable
-	/// </summary>
 	public class FieldPiece : Piece, IFieldPiece
 	{
 		#region Piece
-		public override IPiece CreatePiece( ulong id, PieceType type, DateTime timestamp ) => new FieldPiece( id, type, timestamp );
+		public override IPiece ClonePiece() => CloneFieldPiece();
 		#endregion
 		#region IFieldPiece
-		public virtual ITaskField Field { get; }
-		public virtual IFieldPiece CreateFieldPiece( ulong id, PieceType type, DateTime timestamp, ITaskField field ) => new FieldPiece( id, type, timestamp, field );
+		private ITaskField field;
+		public virtual ITaskField Field
+		{
+			get => field;
+			set
+			{
+				if( field != value )
+				{
+					if( field != null )
+						field.Piece = null;
+					field = value;
+					if( field != null )
+						field.Piece = this;
+				}
+			}
+		}
+		public virtual IFieldPiece CloneFieldPiece()
+		{
+			var piece = new FieldPiece( Id, Type, Timestamp, null );
+			this.Clone( piece );
+			return piece;
+		}
 		#endregion
 		#region FieldPiece
 		public FieldPiece( ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, ITaskField field = null ) : base( id, type, timestamp ) => Field = field;

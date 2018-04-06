@@ -1,21 +1,24 @@
-﻿using Shared.Components.Players;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Players;
 using Shared.Enums;
 using System;
 
 namespace Shared.Components.Fields
 {
-	/// <summary>
-	/// immutable
-	/// </summary>
 	public class GoalField : Field, IGoalField
 	{
 		#region Field
-		public override IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player ) => throw new NotSupportedException();
+		public override IField CloneField() => CloneGoalField();
 		#endregion
 		#region IGoalField
-		public virtual GoalFieldType Type { get; }
-		public virtual TeamColour Team { get; }
-		public virtual IGoalField CreateGoalField( uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type ) => new GoalField( x, y, team, timestamp, player, type );
+		public virtual GoalFieldType Type { get; set; }
+		public virtual TeamColour Team { get; set; }
+		public virtual IGoalField CloneGoalField()
+		{
+			var field = new GoalField( X, Y, Team, Timestamp, null, Type );
+			this.Clone( field );
+			return field;
+		}
 		#endregion
 		#region GoalField
 		public GoalField( uint x, uint y, TeamColour team, DateTime timestamp = default, IPlayer player = null, GoalFieldType type = GoalFieldType.Unknown ) : base( x, y, timestamp, player )

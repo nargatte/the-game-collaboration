@@ -5,10 +5,10 @@ namespace Shared.Components.Fields
 {
 	public interface IField
     {
-		uint X { get; }
-		uint Y { get; }
-        DateTime Timestamp { get; }
-        IPlayer Player { get; }
-		IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player );
+		uint X { get; set; }
+		uint Y { get; set; }
+        DateTime Timestamp { get; set; }
+        IPlayer Player { get; set; }
+		IField CloneField();
     }
 }

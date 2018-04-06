@@ -3,17 +3,29 @@ using System;
 
 namespace Shared.Components.Fields
 {
-	/// <summary>
-	/// immutable
-	/// </summary>
 	public abstract class Field : IField
 	{
 		#region IField
-		public virtual uint X { get; }
-		public virtual uint Y { get; }
-		public virtual DateTime Timestamp { get; }
-		public virtual IPlayer Player { get; }
-		public abstract IField CreateField( uint x, uint y, DateTime timestamp, IPlayer player );
+		public virtual uint X { get; set; }
+		public virtual uint Y { get; set; }
+		public virtual DateTime Timestamp { get; set; }
+		private IPlayer player;
+		public virtual IPlayer Player
+		{
+			get => player;
+			set
+			{
+				if( player != value )
+				{
+					if( player != null )
+						player.Field = null;
+					player = value;
+					if( player != null )
+						player.Field = this;
+				}
+			}
+		}
+		public abstract IField CloneField();
 		#endregion
 		#region Field
 		protected Field( uint x, uint y, DateTime timestamp = default, IPlayer player = null )
