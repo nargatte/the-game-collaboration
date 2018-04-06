@@ -105,7 +105,7 @@ namespace GameMasterCore
                     result.SetField(
                         result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.NonGoal)
                         );
-                        
+
             GenerateRandomPlaces(
                 config.GameDefinition.InitialNumberOfPieces,
                 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
@@ -305,8 +305,8 @@ namespace GameMasterCore
                     }
                 }
                 var targetGoalField = targetField as IGoalField;
-                
-                if(heldPiecePawn.Type == PieceType.Sham)
+
+                if (heldPiecePawn.Type == PieceType.Sham)
                 {
                     board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                     return new DTO.Data
@@ -421,26 +421,6 @@ namespace GameMasterCore
             };
         }
 
-        private IField GetAvailableFieldByTeam(TeamColour preferredTeam)
-        {
-            var position = new DTO.Location();
-            switch (preferredTeam)
-            {
-                case TeamColour.Red:
-                    do
-                    {
-                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
-                    } while (board.GetField(position).Player != null);
-                    return board.GetField(position);
-                case TeamColour.Blue:
-                    do
-                    {
-                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
-                    } while (board.GetField(position).Player != null);
-                    return board.GetField(position);
-            }
-            throw new ArgumentException("Invalid team colour");
-        }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
@@ -572,6 +552,27 @@ namespace GameMasterCore
                 guid = Guid.NewGuid().ToString();
             } while (playerGuidToId.Keys.Contains(guid));
             return guid;
+        }
+
+        private IField GetAvailableFieldByTeam(TeamColour preferredTeam)
+        {
+            var position = new DTO.Location();
+            switch (preferredTeam)
+            {
+                case TeamColour.Red:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+                case TeamColour.Blue:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+            }
+            throw new ArgumentException("Invalid team colour");
         }
 
         private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
