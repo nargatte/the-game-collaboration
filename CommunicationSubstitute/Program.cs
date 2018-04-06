@@ -87,6 +87,17 @@ namespace CommunicationSubstitute
                 redThreads[i] = new Thread(() => PlayerThread(bluePlayers[i], myConfirm.playerId));
             }
 
+            // blue wait
+            for (ulong i = 0; i < registerGame.GameInfo[0].blueTeamPlayers; i++)
+            {
+                blueThreads[i].Join();
+            }
+
+            // red wait
+            for (ulong i = 0; i < registerGame.GameInfo[0].redTeamPlayers; i++)
+            {
+                redThreads[i].Join();
+            }
         }
 
         static readonly Dictionary<ulong, bool> EndGame =  new Dictionary<ulong, bool>();

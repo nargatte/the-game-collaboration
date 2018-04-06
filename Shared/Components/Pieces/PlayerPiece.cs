@@ -19,9 +19,10 @@ namespace Shared.Components.Pieces
 			{
 				if( player != value )
 				{
-					if( player != null )
-						player.Piece = null;
+					var aPlayer = player;
 					player = value;
+					if( aPlayer != null )
+						aPlayer.Piece = null;
 					if( player != null )
 						player.Piece = this;
 				}
