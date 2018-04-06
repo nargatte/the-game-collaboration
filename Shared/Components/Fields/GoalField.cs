@@ -1,4 +1,5 @@
-﻿using Shared.Components.Players;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Players;
 using Shared.Enums;
 using System;
 
@@ -15,11 +16,7 @@ namespace Shared.Components.Fields
 		public virtual IGoalField CloneGoalField()
 		{
 			var field = new GoalField( X, Y, Team, Timestamp, null, Type );
-			var player = Player;
-			Player = null;
-			var aPlayer = player.ClonePlayer();
-			Player = player;
-			field.Player = aPlayer;
+			this.Clone( field );
 			return field;
 		}
 		#endregion

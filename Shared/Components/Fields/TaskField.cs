@@ -1,4 +1,5 @@
-﻿using Shared.Components.Pieces;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Pieces;
 using Shared.Components.Players;
 using System;
 
@@ -30,16 +31,7 @@ namespace Shared.Components.Fields
 		public virtual ITaskField CloneTaskField()
 		{
 			var field = new TaskField( X, Y, Timestamp, null, DistanceToPiece, null );
-			var player = Player;
-			var piece = Piece;
-			Player = null;
-			Piece = null;
-			var aPlayer = player.ClonePlayer();
-			var aPiece = piece.CloneFieldPiece();
-			Player = player;
-			Piece = piece;
-			field.Player = aPlayer;
-			field.Piece = aPiece;
+			this.Clone( field );
 			return field;
 		}
 		#endregion
