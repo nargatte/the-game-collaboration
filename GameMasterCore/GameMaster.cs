@@ -24,7 +24,7 @@ namespace GameMasterCore
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         Config.GameMasterSettings config;
-        public Dictionary< ulong, DTO.Game> game { get; set; } // for process game by communication substitute
+        public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
 
         public BlockingGameMaster()
         {
@@ -34,15 +34,15 @@ namespace GameMasterCore
             config = GenerateDefaultConfig();
 
             //generate board itself from config
-            board = PrepareBoard(new BoardPrototypeFactory());
+            board = PrepareBoard(new BoardComponentFactory());
         }
 
-        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardPrototypeFactory _boardPrototypeFactory)
+        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardComponentFactory _boardComponentFactory)
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
             config = _config;
-            board = PrepareBoard(_boardPrototypeFactory);
+            board = PrepareBoard(_boardComponentFactory);
         }
 
         #region Preparation
@@ -85,24 +85,24 @@ namespace GameMasterCore
             return result;
         }
 
-        private IBoard PrepareBoard(IBoardPrototypeFactory boardPrototypeFactory)
+        private IBoard PrepareBoard(IBoardComponentFactory boardComponentFactory)
         {
             IBoard result = new Board(
                 config.GameDefinition.BoardWidth,
                 config.GameDefinition.TaskAreaLength,
                 config.GameDefinition.GoalAreaLength,
-                boardPrototypeFactory
+                boardComponentFactory
                 );
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
                 result.SetField(
-                    result.Factory.GoalField.MakeGoalField(gf.x, gf.y, gf.team, DateTime.Now, type: GoalFieldType.Goal)
+                    result.Factory.CreateGoalField(gf.x, gf.y, gf.team, DateTime.Now, null, GoalFieldType.Goal)
                     );
             //set the rest of GoalArea fields as NonGoals
             foreach (var f in result.Fields)
                 if (f is IGoalField gf && gf.Type == GoalFieldType.Unknown)
                     result.SetField(
-                        result.Factory.GoalField.MakeGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, type: GoalFieldType.NonGoal)
+                        result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.NonGoal)
                         );
 
             //TODO: place players on the board
@@ -235,7 +235,7 @@ namespace GameMasterCore
                 }
 
                 //move
-                board.SetPlayer(board.Factory.Player.MakePlayer(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
+                board.SetPlayer(board.Factory.CreatePlayer(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
 
                 //return information about current field and new player location
                 var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
@@ -267,7 +267,7 @@ namespace GameMasterCore
                     };
                 }
 
-                board.SetPiece(board.Factory.PlayerPiece.MakePlayerPiece(id: piece.Id, timestamp: DateTime.Now, player: playerPawn));
+                board.SetPiece(board.Factory.CreatePlayerPiece(piece.Id, piece.Type, DateTime.Now, playerPawn));
 
                 //prepare result data
                 DTO.Data result = new DTO.Data
@@ -323,7 +323,7 @@ namespace GameMasterCore
                     else
                     {
                         //place piece on task field
-                        board.SetPiece(board.Factory.FieldPiece.MakeFieldPiece(id: heldPiecePawn.Id, timestamp: DateTime.Now, field: targetTaskField));
+                        board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, targetTaskField));
 
                         //return new field data
                         DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
@@ -417,7 +417,8 @@ namespace GameMasterCore
 
 
             ulong id = GenerateNewPlayerID();
-            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole);
+            var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
+            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer);
             // TODO: check for return type bool?
             board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
@@ -432,6 +433,27 @@ namespace GameMasterCore
                     type = joinGame.preferredRole
                 }
             };
+        }
+
+        private IField GetAvailableFieldByTeam(TeamColour preferredTeam)
+        {
+            var position = new DTO.Location();
+            switch (preferredTeam)
+            {
+                case TeamColour.Red:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+                case TeamColour.Blue:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+            }
+            throw new ArgumentException("Invalid team colour");
         }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
