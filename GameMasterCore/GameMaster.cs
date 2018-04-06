@@ -604,7 +604,7 @@ namespace GameMasterCore
             }
 
             int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
-            var random = new Random();
+            var random = new Random(123456);
             var placeToPieceId = new Dictionary<int, int>();
 
             for (int i = 0; i < n; i++)
@@ -624,7 +624,7 @@ namespace GameMasterCore
                 }
                 else
                 {
-                    placeToPieceId[randomPlace] = i;
+                    placeToPieceId[randomPlace] = placeToPieceId[i];
                     placeToPieceId.Remove(i);
                 }
             }
@@ -638,6 +638,11 @@ namespace GameMasterCore
                 };
 
             }
+
+            //if (coordinateListToReturn.Contains(null))
+            //{
+            //    throw new Exception("Incorrect swap");
+            //}
 
             return coordinateListToReturn.ToList();
         }
