@@ -17,7 +17,7 @@ namespace Shared.Components.Boards
 		IEnumerable<IField> Fields { get; }
 		IEnumerable<IPiece> Pieces { get; }
 		IEnumerable<IPlayer> Players { get; }
-		IBoardPrototypeFactory Factory { get; }
+		IBoardComponentFactory Factory { get; }
 		IField GetField( uint x, uint y );
 		IPiece GetPiece( ulong id );
 		IPlayer GetPlayer( ulong id );

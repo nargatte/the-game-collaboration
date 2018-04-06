@@ -70,7 +70,7 @@ namespace Shared.Components.Boards
 		private readonly IField[,] fields;
 		private readonly IDictionary<ulong, IPlayer> players;
 		private readonly IDictionary<ulong, IPiece> pieces;
-		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
+		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardComponentFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
 		{
 			fields = new IField[ Width, Height ];
 			players = new Dictionary<ulong, IPlayer>();

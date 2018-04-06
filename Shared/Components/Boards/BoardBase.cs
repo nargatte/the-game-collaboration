@@ -18,7 +18,7 @@ namespace Shared.Components.Boards
 		public abstract IEnumerable<IField> Fields { get; }
 		public abstract IEnumerable<IPiece> Pieces { get; }
 		public abstract IEnumerable<IPlayer> Players { get; }
-		public virtual IBoardPrototypeFactory Factory { get; }
+		public virtual IBoardComponentFactory Factory { get; }
 		public abstract IField GetField( uint x, uint y );
 		public abstract IPiece GetPiece( ulong id );
 		public abstract IPlayer GetPlayer( ulong id );
@@ -30,7 +30,7 @@ namespace Shared.Components.Boards
 		public virtual event EventHandler<PlayerChangedArgs> PlayerChanged = delegate { };
 		#endregion
 		#region BoardBase
-		protected BoardBase( uint width, uint tasksHeight, uint goalsHeight, IBoardPrototypeFactory factory )
+		protected BoardBase( uint width, uint tasksHeight, uint goalsHeight, IBoardComponentFactory factory )
 		{
 			if( width == 0u )
 				throw new ArgumentOutOfRangeException( nameof( width ) );
