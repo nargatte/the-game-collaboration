@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>CommunicationSubstitute</RootNamespace>
-    <AssemblyName>CommunicationSubstitute</AssemblyName>
+    <ProjectGuid>{77C2E050-CC8B-40CC-9D27-9810E86BC09B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ConsoleApp1</RootNamespace>
+    <AssemblyName>ConsoleApp1</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,9 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,20 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GameMasterCore\GameMasterCore.csproj">
-      <Project>{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}</Project>
-      <Name>GameMasterCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PlayerCore\PlayerCore.csproj">
-      <Project>{d6d23f13-b83a-4739-861d-6690d28dfa16}</Project>
-      <Name>PlayerCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shared\Shared.csproj">
-      <Project>{20D54140-CCFE-4767-90A4-F5F093A296F3}</Project>
-      <Name>Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

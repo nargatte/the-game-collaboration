@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Shared;
 using Shared.Components.Boards;
 using Shared.Components.Factories;
+using Shared.Components.Extensions;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
@@ -23,7 +24,7 @@ namespace GameMasterCore
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         Config.GameMasterSettings config;
-        public DTO.Game game { get; set; }
+        public Dictionary< ulong, DTO.Game> game { get; set; } // for process game by communication substitute
 
         public BlockingGameMaster()
         {

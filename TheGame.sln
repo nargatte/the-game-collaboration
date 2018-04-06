@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationSubstitute", "CommunicationSubstitute\CommunicationSubstitute.csproj", "{8F8A0B43-1715-477B-AA0C-806C27CD6DB9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6D23F13-B83A-4739-861D-6690D28DFA16} = {D6D23F13-B83A-4739-861D-6690D28DFA16}
+		{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7} = {A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{20D54140-CCFE-4767-90A4-F5F093A296F3}"
 EndProject
@@ -39,19 +43,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMasterCore", "GameMasterCore\GameMasterCore.csproj", "{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
-		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServerCore", "CommunicationServerCore\CommunicationServerCore.csproj", "{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}"
 	ProjectSection(ProjectDependencies) = postProject
 		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
-		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerCore", "PlayerCore\PlayerCore.csproj", "{D6D23F13-B83A-4739-861D-6690D28DFA16}"
 	ProjectSection(ProjectDependencies) = postProject
 		{20D54140-CCFE-4767-90A4-F5F093A296F3} = {20D54140-CCFE-4767-90A4-F5F093A296F3}
-		{8F8A0B43-1715-477B-AA0C-806C27CD6DB9} = {8F8A0B43-1715-477B-AA0C-806C27CD6DB9}
 	EndProjectSection
 EndProject
 Global

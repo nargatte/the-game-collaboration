@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Components\Players\Player.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
     <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />
