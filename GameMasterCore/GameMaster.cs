@@ -401,8 +401,9 @@ namespace GameMasterCore
             }
 
 
-
             ulong id = GenerateNewPlayerID();
+            string guid = GenerateNewPlayerGUID();
+            playerGuidToId.Add(guid, id);
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
             var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
@@ -410,7 +411,7 @@ namespace GameMasterCore
             {
                 gameId = 1,
                 playerId = id,
-                privateGuid = GenerateNewPlayerGUID(),
+                privateGuid = guid,
                 PlayerDefinition = new DTO.Player()
                 {
                     id = id,
