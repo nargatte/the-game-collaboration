@@ -404,8 +404,7 @@ namespace GameMasterCore
 
             ulong id = GenerateNewPlayerID();
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
-            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer);
-            // TODO: check for return type bool?
+            var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
             {
