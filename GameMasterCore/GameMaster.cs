@@ -560,18 +560,7 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
-        private ulong GenerateNewPlayerID()
-        {
-            return (ulong)++playerIDcounter;
-            //// HACK: should start from lowest positive integers instead of the whole ulong spectrum
-            //ulong id;
-            //var random = new Random();
-            //do
-            //{
-            //    id = (ulong)((((long)random.Next()) << 32) + random.Next());
-            //} while (playerGuidToId.Values.Contains(id));
-            //return id;
-        }
+        private ulong GenerateNewPlayerID() => (ulong)++playerIDcounter;
 
         private string GenerateNewPlayerGUID()
         {
