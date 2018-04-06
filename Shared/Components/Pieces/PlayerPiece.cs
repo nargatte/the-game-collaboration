@@ -1,4 +1,5 @@
-﻿using Shared.Components.Players;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Players;
 using Shared.Enums;
 using System;
 
@@ -10,10 +11,26 @@ namespace Shared.Components.Pieces
 		public override IPiece ClonePiece() => ClonePlayerPiece();
 		#endregion
 		#region IPlayerPiece
-		public virtual IPlayer Player { get; set; }
+		private IPlayer player;
+		public virtual IPlayer Player
+		{
+			get => player;
+			set
+			{
+				if( player != value )
+				{
+					if( player != null )
+						player.Piece = null;
+					player = value;
+					if( player != null )
+						player.Piece = this;
+				}
+			}
+		}
 		public virtual IPlayerPiece ClonePlayerPiece()
 		{
 			var piece = new PlayerPiece( Id, Type, Timestamp, null );
+			this.Clone( piece );
 			return piece;
 		}
 		#endregion

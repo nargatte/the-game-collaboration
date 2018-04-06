@@ -1,4 +1,5 @@
-﻿using Shared.Components.Fields;
+﻿using Shared.Components.Extensions;
+using Shared.Components.Fields;
 using Shared.Enums;
 using System;
 
@@ -10,10 +11,26 @@ namespace Shared.Components.Pieces
 		public override IPiece ClonePiece() => CloneFieldPiece();
 		#endregion
 		#region IFieldPiece
-		public virtual ITaskField Field { get; set; }
+		private ITaskField field;
+		public virtual ITaskField Field
+		{
+			get => field;
+			set
+			{
+				if( field != value )
+				{
+					if( field != null )
+						field.Piece = null;
+					field = value;
+					if( field != null )
+						field.Piece = this;
+				}
+			}
+		}
 		public virtual IFieldPiece CloneFieldPiece()
 		{
 			var piece = new FieldPiece( Id, Type, Timestamp, null );
+			this.Clone( piece );
 			return piece;
 		}
 		#endregion
