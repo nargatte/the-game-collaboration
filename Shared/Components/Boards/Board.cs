@@ -36,9 +36,9 @@ namespace Shared.Components.Boards
 					yield return player.Value.ClonePlayer();
 			}
 		}
-		public override IField GetField( uint x, uint y ) => x < Width ? ( y < Height ? fields[ x, y ] : throw new ArgumentOutOfRangeException( nameof( y ) ) ) : throw new ArgumentOutOfRangeException( nameof( x ) );
-		public override IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : throw new ArgumentOutOfRangeException( nameof( id ) );
-		public override IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : throw new ArgumentOutOfRangeException( nameof( id ) );
+		public override IField GetField( uint x, uint y ) => x < Width ? ( y < Height ? fields[ x, y ].CloneField() : throw new ArgumentOutOfRangeException( nameof( y ) ) ) : throw new ArgumentOutOfRangeException( nameof( x ) );
+		public override IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece.ClonePiece() : throw new ArgumentOutOfRangeException( nameof( id ) );
+		public override IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player.ClonePlayer() : throw new ArgumentOutOfRangeException( nameof( id ) );
 		public override void SetField( IField value )
 		{
 			if( value is null )
@@ -85,7 +85,9 @@ namespace Shared.Components.Boards
 		{
 			if( value is null )
 				throw new ArgumentNullException( nameof( value ) );
-			var field = GetField( value.X, value.Y );
+			if( value.X >= Width || value.Y >= Height )
+				throw new ArgumentOutOfRangeException( nameof( value ) );
+			var field = fields[ value.X, value.Y ];
 			if( field is ITaskField taskField && value is ITaskField aTaskField )
 				UpdateTaskField( taskField, aTaskField );
 			else if( field is IGoalField goalField && value is IGoalField aGoalField )
