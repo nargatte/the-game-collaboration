@@ -17,7 +17,7 @@ namespace Shared.Components.Boards
 			get
 			{
 				foreach( var field in fields )
-					yield return field;
+					yield return field.CloneField();
 			}
 		}
 		public override IEnumerable<IPiece> Pieces
@@ -25,7 +25,7 @@ namespace Shared.Components.Boards
 			get
 			{
 				foreach( var piece in pieces )
-					yield return piece.Value;
+					yield return piece.Value.ClonePiece();
 			}
 		}
 		public override IEnumerable<IPlayer> Players
@@ -33,13 +33,55 @@ namespace Shared.Components.Boards
 			get
 			{
 				foreach( var player in players )
-					yield return player.Value;
+					yield return player.Value.ClonePlayer();
 			}
 		}
 		public override IField GetField( uint x, uint y ) => x < Width ? ( y < Height ? fields[ x, y ] : throw new ArgumentOutOfRangeException( nameof( y ) ) ) : throw new ArgumentOutOfRangeException( nameof( x ) );
 		public override IPiece GetPiece( ulong id ) => pieces.TryGetValue( id, out var piece ) ? piece : throw new ArgumentOutOfRangeException( nameof( id ) );
 		public override IPlayer GetPlayer( ulong id ) => players.TryGetValue( id, out var player ) ? player : throw new ArgumentOutOfRangeException( nameof( id ) );
 		public override void SetField( IField value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			UpdateField( value.CloneField() );
+		}
+		public override void SetPiece( IPiece value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			UpdatePiece( value.ClonePiece() );
+		}
+		public override void SetPlayer( IPlayer value )
+		{
+			if( value is null )
+				throw new ArgumentNullException( nameof( value ) );
+			UpdatePlayer( value.ClonePlayer() );
+		}
+		#endregion
+		#region Board
+		private readonly IField[,] fields;
+		private readonly IDictionary<ulong, IPiece> pieces;
+		private readonly IDictionary<ulong, IPlayer> players;
+		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardComponentFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
+		{
+			fields = new IField[ Width, Height ];
+			pieces = new Dictionary<ulong, IPiece>();
+			players = new Dictionary<ulong, IPlayer>();
+			InitializeFields();
+		}
+		protected void InitializeFields()
+		{
+			for( uint j = 0; j < GoalsHeight; ++j )
+				for( uint i = 0; i < Width; ++i )
+					fields[ i, j ] = Factory.MakeGoalField( i, j, TeamColour.Blue );
+			for( uint j = GoalsHeight; j < Height - GoalsHeight; ++j )
+				for( uint i = 0; i < Width; ++i )
+					fields[ i, j ] = Factory.MakeTaskField( i, j );
+			for( uint j = Height - GoalsHeight; j < Height; ++j )
+				for( uint i = 0; i < Width; ++i )
+					fields[ i, j ] = Factory.MakeGoalField( i, j, TeamColour.Red );
+		}
+		protected void UpdateField( IField value )
 		{
 			if( value is null )
 				throw new ArgumentNullException( nameof( value ) );
@@ -51,43 +93,19 @@ namespace Shared.Components.Boards
 			else
 				throw new ArgumentException( nameof( value ) );
 		}
-		public override void SetPiece( IPiece value )
+		protected void UpdatePiece( IPiece value )
 		{
 			if( value is null )
 				throw new ArgumentNullException( nameof( value ) );
 			pieces.TryGetValue( value.Id, out var piece );
 			UpdatePiece( piece, value );
 		}
-		public override void SetPlayer( IPlayer value )
+		protected void UpdatePlayer( IPlayer value )
 		{
 			if( value is null )
 				throw new ArgumentNullException( nameof( value ) );
 			players.TryGetValue( value.Id, out var player );
 			UpdatePlayer( player, value );
-		}
-		#endregion
-		#region Board
-		private readonly IField[,] fields;
-		private readonly IDictionary<ulong, IPlayer> players;
-		private readonly IDictionary<ulong, IPiece> pieces;
-		public Board( uint width, uint tasksHeight, uint goalsHeight, IBoardComponentFactory factory ) : base( width, tasksHeight, goalsHeight, factory )
-		{
-			fields = new IField[ Width, Height ];
-			players = new Dictionary<ulong, IPlayer>();
-			pieces = new Dictionary<ulong, IPiece>();
-			InitializeFields();
-		}
-		protected void InitializeFields()
-		{
-			//for( uint j = 0; j < GoalsHeight; ++j )
-			//	for( uint i = 0; i < Width; ++i )
-			//		fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Blue );
-			//for( uint j = GoalsHeight; j < Height - GoalsHeight; ++j )
-			//	for( uint i = 0; i < Width; ++i )
-			//		fields[ i, j ] = Factory.TaskField.MakeTaskField( i, j );
-			//for( uint j = Height - GoalsHeight; j < Height; ++j )
-			//	for( uint i = 0; i < Width; ++i )
-			//		fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Red );
 		}
 		protected void UpdateTaskField( ITaskField field, ITaskField value )
 		{
@@ -99,26 +117,36 @@ namespace Shared.Components.Boards
 				{
 					if( field.Player != null )
 					{
-						//fields[ field.X, field.Y ] = field.SetPlayer();
-						//players[ field.Player.Id ] = field.Player.SetField();
-						//OnFieldChanged( field.X, field.Y );
-						//OnPlayerChanged( field.Player.Id );
+						var player = field.Player;
+						field.Player = null;
+						OnFieldChanged( field.X, field.Y );
+						OnPlayerChanged( player.Id );
 					}
 					if( field.Piece != null )
 					{
-						//fields[ field.X, field.Y ] = field.SetPiece();
-						//pieces[ field.Piece.Id ] = field.Piece.SetField();
-						//OnFieldChanged( field.X, field.Y );
-						//OnPieceChanged( field.Piece.Id );
+						var piece = field.Piece;
+						field.Piece = null;
+						OnFieldChanged( field.X, field.Y );
+						OnPieceChanged( piece.Id );
 					}
 				}
 				fields[ value.X, value.Y ] = value;
 				OnFieldChanged( value.X, value.Y );
 			}
 			if( value.Player != null )
-				SetPlayer( value.Player );
+			{
+				var player = value.Player;
+				value.Player = null;
+				UpdatePlayer( player );
+				value.Player = player;
+			}
 			if( value.Piece != null )
-				SetPiece( value.Piece );
+			{
+				var piece = value.Piece;
+				value.Piece = null;
+				UpdatePiece( piece );
+				value.Piece = piece;
+			}
 		}
 		protected void UpdateGoalField( IGoalField field, IGoalField value )
 		{
@@ -128,16 +156,21 @@ namespace Shared.Components.Boards
 			{
 				if( field != null && field.Player != null )
 				{
-					//fields[ field.X, field.Y ] = field.SetPlayer();
-					//players[ field.Player.Id ] = field.Player.SetField();
-					//OnFieldChanged( field.X, field.Y );
-					//OnPlayerChanged( field.Player.Id );
+					var player = field.Player;
+					field.Player = null;
+					OnFieldChanged( field.X, field.Y );
+					OnPlayerChanged( player.Id );
 				}
 				fields[ value.X, value.Y ] = value;
 				OnFieldChanged( value.X, value.Y );
 			}
 			if( value.Player != null )
-				SetPlayer( value.Player );
+			{
+				var player = value.Player;
+				value.Player = null;
+				UpdatePlayer( player );
+				value.Player = player;
+			}
 		}
 		protected void UpdatePiece( IPiece piece, IPiece value )
 		{
@@ -148,17 +181,17 @@ namespace Shared.Components.Boards
 				if( piece != null )
 					if( piece is IFieldPiece fieldPiece && fieldPiece.Field != null )
 					{
-						//pieces[ fieldPiece.Id ] = fieldPiece.SetField();
-						//fields[ fieldPiece.Field.X, fieldPiece.Field.Y ] = fieldPiece.Field.SetPiece();
-						//OnPieceChanged( fieldPiece.Id );
-						//OnFieldChanged( fieldPiece.Field.X, fieldPiece.Field.Y );
+						var field = fieldPiece.Field;
+						fieldPiece.Field = null;
+						OnPieceChanged( fieldPiece.Id );
+						OnFieldChanged( field.X, field.Y );
 					}
 					else if( piece is IPlayerPiece playerPiece && playerPiece.Player != null )
 					{
-						//pieces[ playerPiece.Id ] = playerPiece.SetPlayer();
-						//players[ playerPiece.Player.Id ] = playerPiece.Player.SetPiece();
-						//OnPieceChanged( playerPiece.Id );
-						//OnPlayerChanged( playerPiece.Player.Id );
+						var player = playerPiece.Player;
+						playerPiece.Player = null;
+						OnPieceChanged( playerPiece.Id );
+						OnPlayerChanged( player.Id );
 					}
 					else
 						throw new ArgumentException( nameof( piece ) );
@@ -166,9 +199,19 @@ namespace Shared.Components.Boards
 				OnPieceChanged( value.Id );
 			}
 			if( value is IFieldPiece aFieldPiece && aFieldPiece.Field != null )
-				SetField( aFieldPiece.Field );
+			{
+				var field = aFieldPiece.Field;
+				aFieldPiece.Field = null;
+				UpdateField( field );
+				aFieldPiece.Field = field;
+			}
 			else if( value is IPlayerPiece aPlayerPiece && aPlayerPiece.Player != null )
-				SetPlayer( aPlayerPiece.Player );
+			{
+				var player = aPlayerPiece.Player;
+				aPlayerPiece.Player = null;
+				UpdatePlayer( player );
+				aPlayerPiece.Player = player;
+			}
 			else
 				throw new ArgumentException( nameof( value ) );
 		}
@@ -182,26 +225,36 @@ namespace Shared.Components.Boards
 				{
 					if( player.Field != null )
 					{
-						//players[ player.Id ] = player.SetField();
-						//fields[ player.Field.X, player.Field.Y ] = player.Field.SetPlayer();
-						//OnPlayerChanged( player.Id );
-						//OnFieldChanged( player.Field.X, player.Field.Y );
+						var field = player.Field;
+						player.Field = null;
+						OnPlayerChanged( player.Id );
+						OnFieldChanged( field.X, field.Y );
 					}
 					if( player.Piece != null )
 					{
-						//players[ player.Id ] = player.SetPiece();
-						//pieces[ player.Piece.Id ] = player.Piece.SetPlayer();
-						//OnPlayerChanged( player.Id );
-						//OnPieceChanged( player.Piece.Id );
+						var piece = player.Piece;
+						player.Piece = null;
+						OnPlayerChanged( player.Id );
+						OnPieceChanged( piece.Id );
 					}
 				}
 				players[ value.Id ] = value;
 				OnPlayerChanged( value.Id );
 			}
 			if( value.Field != null )
-				SetField( value.Field );
+			{
+				var field = value.Field;
+				value.Field = null;
+				UpdateField( field );
+				value.Field = field;
+			}
 			if( value.Piece != null )
-				SetPiece( value.Piece );
+			{
+				var piece = value.Piece;
+				value.Piece = null;
+				UpdatePiece( piece );
+				value.Piece = piece;
+			}
 		}
 		#endregion
 	}
