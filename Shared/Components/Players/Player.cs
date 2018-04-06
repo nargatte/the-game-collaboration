@@ -5,19 +5,30 @@ using System;
 
 namespace Shared.Components.Players
 {
-	/// <summary>
-	/// immutable
-	/// </summary>
 	public class Player : IPlayer
 	{
 		#region IPlayer
-		public virtual ulong Id { get; }
-		public virtual TeamColour Team { get; }
-		public virtual PlayerType Type { get; }
-		public virtual DateTime Timestamp { get; }
-		public virtual IField Field { get; }
-		public virtual IPlayerPiece Piece { get; }
-		public virtual IPlayer CreatePlayer( ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece ) => new Player( id, team, type, timestamp, field, piece );
+		public virtual ulong Id { get; set; }
+		public virtual TeamColour Team { get; set; }
+		public virtual PlayerType Type { get; set; }
+		public virtual DateTime Timestamp { get; set; }
+		public virtual IField Field { get; set; }
+		public virtual IPlayerPiece Piece { get; set; }
+		public virtual IPlayer ClonePlayer()
+		{
+			var player = new Player( Id, Team, Type, Timestamp, null, null );
+			var field = Field;
+			var piece = Piece;
+			Field = null;
+			Piece = null;
+			var aField = field.CloneField();
+			var aPiece = piece.ClonePlayerPiece();
+			Field = field;
+			Piece = piece;
+			player.Field = aField;
+			player.Piece = aPiece;
+			return player;
+		}
 		#endregion
 		#region Player
 		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )

@@ -79,15 +79,15 @@ namespace Shared.Components.Boards
 		}
 		protected void InitializeFields()
 		{
-			for( uint j = 0; j < GoalsHeight; ++j )
-				for( uint i = 0; i < Width; ++i )
-					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Blue );
-			for( uint j = GoalsHeight; j < Height - GoalsHeight; ++j )
-				for( uint i = 0; i < Width; ++i )
-					fields[ i, j ] = Factory.TaskField.MakeTaskField( i, j );
-			for( uint j = Height - GoalsHeight; j < Height; ++j )
-				for( uint i = 0; i < Width; ++i )
-					fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Red );
+			//for( uint j = 0; j < GoalsHeight; ++j )
+			//	for( uint i = 0; i < Width; ++i )
+			//		fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Blue );
+			//for( uint j = GoalsHeight; j < Height - GoalsHeight; ++j )
+			//	for( uint i = 0; i < Width; ++i )
+			//		fields[ i, j ] = Factory.TaskField.MakeTaskField( i, j );
+			//for( uint j = Height - GoalsHeight; j < Height; ++j )
+			//	for( uint i = 0; i < Width; ++i )
+			//		fields[ i, j ] = Factory.GoalField.MakeGoalField( i, j, TeamColour.Red );
 		}
 		protected void UpdateTaskField( ITaskField field, ITaskField value )
 		{
@@ -99,17 +99,17 @@ namespace Shared.Components.Boards
 				{
 					if( field.Player != null )
 					{
-						fields[ field.X, field.Y ] = field.SetPlayer();
-						players[ field.Player.Id ] = field.Player.SetField();
-						OnFieldChanged( field.X, field.Y );
-						OnPlayerChanged( field.Player.Id );
+						//fields[ field.X, field.Y ] = field.SetPlayer();
+						//players[ field.Player.Id ] = field.Player.SetField();
+						//OnFieldChanged( field.X, field.Y );
+						//OnPlayerChanged( field.Player.Id );
 					}
 					if( field.Piece != null )
 					{
-						fields[ field.X, field.Y ] = field.SetPiece();
-						pieces[ field.Piece.Id ] = field.Piece.SetField();
-						OnFieldChanged( field.X, field.Y );
-						OnPieceChanged( field.Piece.Id );
+						//fields[ field.X, field.Y ] = field.SetPiece();
+						//pieces[ field.Piece.Id ] = field.Piece.SetField();
+						//OnFieldChanged( field.X, field.Y );
+						//OnPieceChanged( field.Piece.Id );
 					}
 				}
 				fields[ value.X, value.Y ] = value;
@@ -128,10 +128,10 @@ namespace Shared.Components.Boards
 			{
 				if( field != null && field.Player != null )
 				{
-					fields[ field.X, field.Y ] = field.SetPlayer();
-					players[ field.Player.Id ] = field.Player.SetField();
-					OnFieldChanged( field.X, field.Y );
-					OnPlayerChanged( field.Player.Id );
+					//fields[ field.X, field.Y ] = field.SetPlayer();
+					//players[ field.Player.Id ] = field.Player.SetField();
+					//OnFieldChanged( field.X, field.Y );
+					//OnPlayerChanged( field.Player.Id );
 				}
 				fields[ value.X, value.Y ] = value;
 				OnFieldChanged( value.X, value.Y );
@@ -148,17 +148,17 @@ namespace Shared.Components.Boards
 				if( piece != null )
 					if( piece is IFieldPiece fieldPiece && fieldPiece.Field != null )
 					{
-						pieces[ fieldPiece.Id ] = fieldPiece.SetField();
-						fields[ fieldPiece.Field.X, fieldPiece.Field.Y ] = fieldPiece.Field.SetPiece();
-						OnPieceChanged( fieldPiece.Id );
-						OnFieldChanged( fieldPiece.Field.X, fieldPiece.Field.Y );
+						//pieces[ fieldPiece.Id ] = fieldPiece.SetField();
+						//fields[ fieldPiece.Field.X, fieldPiece.Field.Y ] = fieldPiece.Field.SetPiece();
+						//OnPieceChanged( fieldPiece.Id );
+						//OnFieldChanged( fieldPiece.Field.X, fieldPiece.Field.Y );
 					}
 					else if( piece is IPlayerPiece playerPiece && playerPiece.Player != null )
 					{
-						pieces[ playerPiece.Id ] = playerPiece.SetPlayer();
-						players[ playerPiece.Player.Id ] = playerPiece.Player.SetPiece();
-						OnPieceChanged( playerPiece.Id );
-						OnPlayerChanged( playerPiece.Player.Id );
+						//pieces[ playerPiece.Id ] = playerPiece.SetPlayer();
+						//players[ playerPiece.Player.Id ] = playerPiece.Player.SetPiece();
+						//OnPieceChanged( playerPiece.Id );
+						//OnPlayerChanged( playerPiece.Player.Id );
 					}
 					else
 						throw new ArgumentException( nameof( piece ) );
@@ -182,17 +182,17 @@ namespace Shared.Components.Boards
 				{
 					if( player.Field != null )
 					{
-						players[ player.Id ] = player.SetField();
-						fields[ player.Field.X, player.Field.Y ] = player.Field.SetPlayer();
-						OnPlayerChanged( player.Id );
-						OnFieldChanged( player.Field.X, player.Field.Y );
+						//players[ player.Id ] = player.SetField();
+						//fields[ player.Field.X, player.Field.Y ] = player.Field.SetPlayer();
+						//OnPlayerChanged( player.Id );
+						//OnFieldChanged( player.Field.X, player.Field.Y );
 					}
 					if( player.Piece != null )
 					{
-						players[ player.Id ] = player.SetPiece();
-						pieces[ player.Piece.Id ] = player.Piece.SetPlayer();
-						OnPlayerChanged( player.Id );
-						OnPieceChanged( player.Piece.Id );
+						//players[ player.Id ] = player.SetPiece();
+						//pieces[ player.Piece.Id ] = player.Piece.SetPlayer();
+						//OnPlayerChanged( player.Id );
+						//OnPieceChanged( player.Piece.Id );
 					}
 				}
 				players[ value.Id ] = value;

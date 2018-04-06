@@ -1,13 +1,11 @@
-﻿using Shared.Components.Players;
-using Shared.Enums;
-using System;
+﻿using Shared.Enums;
 
 namespace Shared.Components.Fields
 {
 	public interface IGoalField : IField
     {
-        GoalFieldType Type { get; }
-        TeamColour Team { get; }
-		IGoalField CreateGoalField( uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type );
-    }
+        GoalFieldType Type { get; set; }
+        TeamColour Team { get; set; }
+		IGoalField CloneGoalField();
+	}
 }
