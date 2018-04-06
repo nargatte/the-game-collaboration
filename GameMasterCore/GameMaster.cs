@@ -52,7 +52,10 @@ namespace GameMasterCore
             var result = new Config.GameMasterSettings
             {
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
-                GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
+                GameDefinition = new Config.GameMasterSettingsGameDefinition()
+                {
+                    GameName = "default game"
+                }, //default GameDefinition, without Goals(!) and Name
             };
 
             //generate Goals for default config without goals
@@ -595,7 +598,7 @@ namespace GameMasterCore
         private List<DTO.Location> GenerateRandomPlaces(
             uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
         {
-            if (maxXExclusive <= minYInclusive || maxYExclusive <= minYInclusive)
+            if (maxXExclusive <= minXInclusive || maxYExclusive <= minYInclusive)
             {
                 throw new ArgumentOutOfRangeException("Incorrectly defined rectangle");
             }
@@ -625,7 +628,7 @@ namespace GameMasterCore
                     placeToPieceId.Remove(i);
                 }
             }
-            var coordinateListToReturn = new List<DTO.Location>((int)n);
+            var coordinateListToReturn = new DTO.Location[n];
             foreach (var keyValue in placeToPieceId)
             {
                 coordinateListToReturn[keyValue.Value] = new DTO.Location()
@@ -636,7 +639,7 @@ namespace GameMasterCore
 
             }
 
-            return coordinateListToReturn;
+            return coordinateListToReturn.ToList();
         }
         #endregion
     }
