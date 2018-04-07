@@ -21,6 +21,7 @@ namespace GameMasterCore
 {
     public class BlockingGameMaster : IGameMaster, IReadOnlyBoard
     {
+        Random random = new Random(123456);
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
@@ -639,7 +640,6 @@ namespace GameMasterCore
             }
 
             int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
-            var random = new Random(123456);
             var placeToPieceId = new Dictionary<int, int>();
 
             for (int i = 0; i < n; i++)
