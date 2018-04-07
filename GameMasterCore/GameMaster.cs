@@ -527,7 +527,7 @@ namespace GameMasterCore
                 y = (uint)y,
                 timestamp = DateTime.Now,
             };
-            if (currentField.Piece != null) //piece on the board
+            if (currentField?.Piece != null) //piece on the board
             {
                 fieldToReturn.pieceId = currentField.Piece.Id;
                 piecesToReturn.Add(new DTO.Piece
@@ -537,7 +537,7 @@ namespace GameMasterCore
                     timestamp = DateTime.Now
                 });
             }
-            if (currentField.Player != null)
+            if (currentField?.Player != null)
             {
                 fieldToReturn.playerId = (ulong)currentField.Player.Id;
                 if (board.GetPlayer((ulong)currentField.Player.Id).Piece != null) //check for held piece
