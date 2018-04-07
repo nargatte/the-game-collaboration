@@ -382,7 +382,7 @@ namespace GameMasterCore
             if (joinGame.gameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                // the player shouldn't know his id if he's been rejected :/
+                // player shouldn't know their id if they're been rejected :/
                 var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
                 return rejectingMessage;
             }
