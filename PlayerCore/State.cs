@@ -54,7 +54,7 @@ namespace PlayerCore
         public Shared.Messages.Communication.Piece HoldingPiece { get; private set; }
 
 
-        public State(Game game, ulong id, ulong gameId, string playerGuid, IBoardFactory boardFactory)
+        public State(Game game, ulong id, ulong gameId, string playerGuid, BoardFactory boardFactory)
         {
             GameId = GameId;
             Game = game;

@@ -12,7 +12,7 @@ namespace PlayerCoreUnitTests
     public partial class StateTests
     {
 
-        private State GetState(uint id) => new State(GetGame(id), id, 0, string.Empty, new MockBoardFactory());
+        private State GetState(uint id) => new State(GetGame(id), id, 0, string.Empty, new Shared.Components.Factories.BoardFactory());
 
         private Game GetGame(uint id)
         {
