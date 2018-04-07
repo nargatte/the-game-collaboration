@@ -21,9 +21,9 @@ namespace CommunicationSubstitute
         {
             var gameMaster = new BlockingGameMaster();
 
-             var dupa =   (object s,  e) => {
-                    
-                }
+            gameMaster.Log += (s,  e) => {
+                Console.WriteLine($" {}");
+            }
 
             var registerGame = gameMaster.PerformConfirmGameRegistration();
             var gameInfo = registerGame.GameInfo[0];
