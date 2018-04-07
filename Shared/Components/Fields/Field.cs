@@ -17,9 +17,10 @@ namespace Shared.Components.Fields
 			{
 				if( player != value )
 				{
-					if( player != null )
-						player.Field = null;
+					var aPlayer = player;
 					player = value;
+					if( aPlayer != null )
+						aPlayer.Field = null;
 					if( player != null )
 						player.Field = this;
 				}

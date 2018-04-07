@@ -23,6 +23,7 @@ namespace GameMasterCore
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
+        int pieceIDcounter = 0;
         Config.GameMasterSettings config;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
 
@@ -51,7 +52,10 @@ namespace GameMasterCore
             var result = new Config.GameMasterSettings
             {
                 ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
-                GameDefinition = new Config.GameMasterSettingsGameDefinition(), //default GameDefinition, without Goals(!) and Name
+                GameDefinition = new Config.GameMasterSettingsGameDefinition()
+                {
+                    GameName = "default game"
+                }, //default GameDefinition, without Goals(!) and Name
             };
 
             //generate Goals for default config without goals
@@ -105,43 +109,11 @@ namespace GameMasterCore
                         result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.NonGoal)
                         );
 
-            //TODO: place players on the board
-            var randomBluePlaces = GenerateRandomPlaces(
-                config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width,
-                0, board.TasksHeight
+            GenerateRandomPlaces(
+                config.GameDefinition.InitialNumberOfPieces,
+                0, result.Width, result.GoalsHeight, result.Height - result.GoalsHeight).ForEach(
+                    place => result.SetPiece(result.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
                 );
-
-            var randomRedPlaces = GenerateRandomPlaces(
-                config.GameDefinition.NumberOfPlayersPerTeam,
-                0, board.Width,
-                board.Height - board.TasksHeight, board.Height
-                );
-
-            var players = new List<IPlayer>();
-            var randomBluePlaceIterator = randomBluePlaces.GetEnumerator();
-            var randomRedPlaceIterator = randomBluePlaces.GetEnumerator();
-            // place blue players
-            for (int i = 0; i < config.GameDefinition.NumberOfPlayersPerTeam; i++)
-            {
-                if (!randomBluePlaceIterator.MoveNext())
-                {
-                    // shouldn't happen
-                    break;
-                }
-
-                // create blue players and add them to the board with randomBluePlaceIterator.Current position
-
-            }
-            // do the same with red players
-
-            //TODO: generate and place pieces
-
-            //GenerateRandomPlaces(
-            //    config.GameDefinition.InitialNumberOfPieces,
-            //    0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
-            //        place => board.SetPiece(new FieldPiece(???))
-            //    );
 
             return result;
         }
@@ -336,11 +308,28 @@ namespace GameMasterCore
                     }
                 }
                 var targetGoalField = targetField as IGoalField;
-                //TODO placing a piece on a GoalField
-                //zobacz czy może odłożyć
-                //zobacz czy zyskuje punkt
-                //zobacz czy koniec gry
-                throw new NotImplementedException();
+
+                if (heldPiecePawn.Type == PieceType.Sham)
+                {
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    return new DTO.Data
+                    {
+                        playerId = playerPawn.Id
+                    };
+                }
+
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y);
+                if (targetGoalField.Type == GoalFieldType.Goal)
+                {
+                    //if goal, make a non-goal and remove piece from the player
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                }
+                return new DTO.Data
+                {
+                    playerId = playerPawn.Id,
+                    GoalFields = new DTO.GoalField[] { GoalToReturn }
+                };
             }
         }
 
@@ -415,17 +404,17 @@ namespace GameMasterCore
             }
 
 
-
             ulong id = GenerateNewPlayerID();
+            string guid = GenerateNewPlayerGUID();
+            playerGuidToId.Add(guid, id);
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
-            var generatedPlayer = new Player(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer);
-            // TODO: check for return type bool?
+            var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
             {
                 gameId = 1,
                 playerId = id,
-                privateGuid = GenerateNewPlayerGUID(),
+                privateGuid = guid,
                 PlayerDefinition = new DTO.Player()
                 {
                     id = id,
@@ -435,26 +424,6 @@ namespace GameMasterCore
             };
         }
 
-        private IField GetAvailableFieldByTeam(TeamColour preferredTeam)
-        {
-            var position = new DTO.Location();
-            switch (preferredTeam)
-            {
-                case TeamColour.Red:
-                    do
-                    {
-                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
-                    } while (board.GetField(position).Player != null);
-                    return board.GetField(position);
-                case TeamColour.Blue:
-                    do
-                    {
-                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
-                    } while (board.GetField(position).Player != null);
-                    return board.GetField(position);
-            }
-            throw new ArgumentException("Invalid team colour");
-        }
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
@@ -575,18 +544,7 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
-        private ulong GenerateNewPlayerID()
-        {
-            return (ulong)++playerIDcounter;
-            //// HACK: should start from lowest positive integers instead of the whole ulong spectrum
-            //ulong id;
-            //var random = new Random();
-            //do
-            //{
-            //    id = (ulong)((((long)random.Next()) << 32) + random.Next());
-            //} while (playerGuidToId.Values.Contains(id));
-            //return id;
-        }
+        private ulong GenerateNewPlayerID() => (ulong)++playerIDcounter;
 
         private string GenerateNewPlayerGUID()
         {
@@ -597,6 +555,27 @@ namespace GameMasterCore
                 guid = Guid.NewGuid().ToString();
             } while (playerGuidToId.Keys.Contains(guid));
             return guid;
+        }
+
+        private IField GetAvailableFieldByTeam(TeamColour preferredTeam)
+        {
+            var position = new DTO.Location();
+            switch (preferredTeam)
+            {
+                case TeamColour.Red:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+                case TeamColour.Blue:
+                    do
+                    {
+                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
+            }
+            throw new ArgumentException("Invalid team colour");
         }
 
         private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
@@ -619,13 +598,13 @@ namespace GameMasterCore
         private List<DTO.Location> GenerateRandomPlaces(
             uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
         {
-            if (maxXExclusive <= minYInclusive || maxYExclusive <= minYInclusive)
+            if (maxXExclusive <= minXInclusive || maxYExclusive <= minYInclusive)
             {
                 throw new ArgumentOutOfRangeException("Incorrectly defined rectangle");
             }
 
             int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
-            var random = new Random();
+            var random = new Random(123456);
             var placeToPieceId = new Dictionary<int, int>();
 
             for (int i = 0; i < n; i++)
@@ -645,22 +624,27 @@ namespace GameMasterCore
                 }
                 else
                 {
-                    placeToPieceId[randomPlace] = i;
+                    placeToPieceId[randomPlace] = placeToPieceId[i];
                     placeToPieceId.Remove(i);
                 }
             }
-            var coordinateListToReturn = new List<DTO.Location>((int)n);
+            var coordinateListToReturn = new DTO.Location[n];
             foreach (var keyValue in placeToPieceId)
             {
                 coordinateListToReturn[keyValue.Value] = new DTO.Location()
                 {
-                    x = (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
+                    x = (uint)(minXInclusive + (keyValue.Key % (maxXExclusive - minXInclusive))),
                     y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
                 };
 
             }
 
-            return coordinateListToReturn;
+            //if (coordinateListToReturn.Contains(null))
+            //{
+            //    throw new Exception("Incorrect swap");
+            //}
+
+            return coordinateListToReturn.ToList();
         }
         #endregion
     }
