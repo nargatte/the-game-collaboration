@@ -12,7 +12,7 @@ namespace Shared.Components.Extensions
 			( piece as IPiece ).Clone( aPiece );
 			var player = piece.Player;
 			piece.Player = null;
-			var aPlayer = player.ClonePlayer();
+			var aPlayer = player?.ClonePlayer();
 			piece.Player = player;
 			aPiece.Player = aPlayer;
 		}
