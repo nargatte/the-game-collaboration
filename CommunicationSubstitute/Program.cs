@@ -133,7 +133,7 @@ namespace CommunicationSubstitute
                     endGame = EndGame[args.id];
                 }
 
-            } while (endGame);
+            } while (!endGame);
         }
 
         private class PlayerThreadArgs
