@@ -21,9 +21,11 @@ namespace CommunicationSubstitute
         {
             var gameMaster = new BlockingGameMaster();
 
-             var dupa =   (object s,  e) => {
-                    
-                }
+            gameMaster.Log += (s, e) =>
+            {
+                Console.WriteLine(
+                    $" {e.Type,20} {e.Timestamp,20} {e.GameId,2} {e.PlayerId,3} {e.PlayerGuid.Substring(0, 4),5} {e.Colour,10} {e.Role,10}");
+            };
 
             var registerGame = gameMaster.PerformConfirmGameRegistration();
             var gameInfo = registerGame.GameInfo[0];
@@ -73,7 +75,12 @@ namespace CommunicationSubstitute
                             EndGame[myConfirm.playerId] = true;
                         }
                     });
-                blueThreads[i] = new Thread(() => PlayerThread(bluePlayers[i], myConfirm.playerId));
+                blueThreads[i] = new Thread(PlayerThread);
+                blueThreads[i].Start(new PlayerThreadArgs
+                {
+                    id = myConfirm.playerId,
+                    player = bluePlayers[i]
+                });
             }
 
             // red player create
@@ -90,10 +97,13 @@ namespace CommunicationSubstitute
                             EndGame[myConfirm.playerId] = true;
                         }
                     });
-                redThreads[i] = new Thread(() => PlayerThread(bluePlayers[i], myConfirm.playerId));
+                redThreads[i] = new Thread(PlayerThread);
+                redThreads[i].Start(new PlayerThreadArgs
+                {
+                    id = myConfirm.playerId,
+                    player = redPlayers[i]
+                });
             }
-
-
 
             // blue wait
             for (ulong i = 0; i < registerGame.GameInfo[0].blueTeamPlayers; i++)
@@ -110,19 +120,26 @@ namespace CommunicationSubstitute
 
         static readonly Dictionary<ulong, bool> EndGame =  new Dictionary<ulong, bool>();
 
-        private static void PlayerThread(PlayerInGame player, ulong id)
+        private static void PlayerThread(object object_args)
         {
+            PlayerThreadArgs args = object_args as PlayerThreadArgs;
             bool endGame;
             do
             {
-                player.PerformAction();
+                args.player.PerformAction();
 
                 lock (EndGame)
                 {
-                    endGame = EndGame[id];
+                    endGame = EndGame[args.id];
                 }
 
             } while (endGame);
+        }
+
+        private class PlayerThreadArgs
+        {
+            public PlayerInGame player;
+            public ulong id;
         }
     }
 }
