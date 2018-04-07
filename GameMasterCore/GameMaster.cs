@@ -15,10 +15,11 @@ using Shared.Components.Extensions;
 using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
+using Shared.Components.Events;
 
 namespace GameMasterCore
 {
-    public class BlockingGameMaster : IGameMaster
+    public class BlockingGameMaster : IGameMaster, IReadOnlyBoard
     {
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
@@ -467,6 +468,8 @@ namespace GameMasterCore
             Thread.Sleep((int)config.ActionCosts.TestDelay);
             return result;
         }
+
+        public virtual event EventHandler<LogArgs> Log = delegate { };
         #endregion
 
         #region IBoard to DTO converters
@@ -639,15 +642,13 @@ namespace GameMasterCore
 
             }
 
-            //if (coordinateListToReturn.Contains(null))
-            //{
-            //    throw new Exception("Incorrect swap");
-            //}
-
             return coordinateListToReturn.ToList();
         }
+
+        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role) 
+            => EventHelper.OnEvent(this, Log, new LogArgs(type, timestamp, gameId, playerId, playerGuid, colour, role));
         #endregion
-        
+
         #region TEMP, to change in future stages
         public DTO.Game GetGame(string guid)
         {
@@ -666,6 +667,77 @@ namespace GameMasterCore
                 Board = new DTO.GameBoard() { goalsHeight = board.GoalsHeight, tasksHeight = board.TasksHeight, width = board.Width },
                 PlayerLocation = new DTO.Location() { x = player.GetX().Value, y = player.GetY().Value }
             };
+        }
+        #endregion
+
+        #region IReadOnlyBoard
+        public uint Width => board.Width;
+
+        public uint TasksHeight => board.TasksHeight;
+
+        public uint GoalsHeight => board.GoalsHeight;
+
+        public uint Height => board.Height;
+
+        public IEnumerable<IField> Fields => board.Fields;
+
+        public IEnumerable<IPiece> Pieces => board.Pieces;
+
+        public IEnumerable<IPlayer> Players => board.Players;
+
+        public IBoardComponentFactory Factory => board.Factory;
+
+        public event EventHandler<FieldChangedArgs> FieldChanged
+        {
+            add
+            {
+                board.FieldChanged += value;
+            }
+
+            remove
+            {
+                board.FieldChanged -= value;
+            }
+        }
+
+        public event EventHandler<PieceChangedArgs> PieceChanged
+        {
+            add
+            {
+                board.PieceChanged += value;
+            }
+
+            remove
+            {
+                board.PieceChanged -= value;
+            }
+        }
+
+        public event EventHandler<PlayerChangedArgs> PlayerChanged
+        {
+            add
+            {
+                board.PlayerChanged += value;
+            }
+
+            remove
+            {
+                board.PlayerChanged -= value;
+            }
+        }
+        public IField GetField(uint x, uint y)
+        {
+            return board.GetField(x, y);
+        }
+
+        public IPiece GetPiece(ulong id)
+        {
+            return board.GetPiece(id);
+        }
+
+        public IPlayer GetPlayer(ulong id)
+        {
+            return board.GetPlayer(id);
         }
         #endregion
     }

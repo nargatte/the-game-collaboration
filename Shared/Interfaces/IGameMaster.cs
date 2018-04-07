@@ -1,4 +1,6 @@
-﻿using Shared.Messages.Communication;
+﻿using Shared.Components.Events;
+using Shared.Messages.Communication;
+using System;
 
 namespace GameMasterCore
 {
@@ -12,6 +14,8 @@ namespace GameMasterCore
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
         PlayerMessage PerformJoinGame(JoinGame joinGame);
+        event EventHandler<LogArgs> Log;
+
 #warning TEMP, to change in future stages
         Game GetGame(string guid);
     }
