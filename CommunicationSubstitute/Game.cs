@@ -10,7 +10,7 @@ namespace CommunicationSubstitute
 {
     public class Game
     {
-        public IGameMaster GameMaster;
+        public BlockingGameMaster GameMaster;
 
         public GameInfo GameInfo;
 
@@ -23,6 +23,9 @@ namespace CommunicationSubstitute
 
         readonly Dictionary<ulong, bool> EndGame = new Dictionary<ulong, bool>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Initialize()
         {
             GameMaster = new BlockingGameMaster();
@@ -71,7 +74,7 @@ namespace CommunicationSubstitute
             }
         }
 
-        public void RunPlayers()
+        public void CreatePlayers()
         {
             // blue player create
             for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
@@ -88,11 +91,6 @@ namespace CommunicationSubstitute
                         }
                     });
                 BlueThreads[i] = new Thread(PlayerThread);
-                BlueThreads[i].Start(new PlayerThreadArgs
-                {
-                    id = myConfirm.playerId,
-                    player = BluePlayers[i]
-                });
             }
 
             // red player create
@@ -110,6 +108,26 @@ namespace CommunicationSubstitute
                         }
                     });
                 RedThreads[i] = new Thread(PlayerThread);
+            }
+        }
+
+        public void StartPlayers()
+        {
+            // blue player create
+            for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
+            {
+                var myConfirm = BlueConfirms[i];
+                BlueThreads[i].Start(new PlayerThreadArgs
+                {
+                    id = myConfirm.playerId,
+                    player = BluePlayers[i]
+                });
+            }
+
+            // red player create
+            for (ulong i = 0; i < GameInfo.redTeamPlayers; i++)
+            {
+                var myConfirm = RedConfirms[i];
                 RedThreads[i].Start(new PlayerThreadArgs
                 {
                     id = myConfirm.playerId,

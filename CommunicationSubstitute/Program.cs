@@ -22,7 +22,14 @@ namespace CommunicationSubstitute
             Game g = new Game();
             g.Initialize();
             g.RegisterPlayers();
-            g.RunPlayers();
+            g.CreatePlayers();
+            // all playeyers have bords
+            // g.BluePlayers[0].State.Board
+            // g.GameInfo.blueTeamPlayers
+            // g.BluePlayers[0].State.Id
+            // g.GameMaster.Board
+            // g.GameMaster.Log
+            g.StartPlayers();
             g.JoinPlayers();
         }
     }
