@@ -111,8 +111,8 @@ namespace GameMasterCore
 
             GenerateRandomPlaces(
                 config.GameDefinition.InitialNumberOfPieces,
-                0, board.Width, board.TasksHeight, board.Height - board.TasksHeight).ForEach(
-                    place => board.SetPiece(board.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)board.GetField(place)))
+                0, result.Width, result.GoalsHeight, result.Height - result.GoalsHeight).ForEach(
+                    place => result.SetPiece(result.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
                 );
 
             return result;
