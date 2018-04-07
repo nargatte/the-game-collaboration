@@ -126,6 +126,9 @@ namespace GameMasterCore
             lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
+
+                OnLog("discover", DateTime.Now, 1, playerPawn.Id, discoverRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+
                 //Prepare partial result structures
                 List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
                 List<DTO.Piece> resultPieces = new List<DTO.Piece>();
@@ -162,6 +165,8 @@ namespace GameMasterCore
             lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
+
+                OnLog("move", DateTime.Now, 1, playerPawn.Id, moveRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
                 int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
                 switch (moveRequest.direction)
@@ -229,6 +234,9 @@ namespace GameMasterCore
             lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
+
+                OnLog("pickup", DateTime.Now, 1, playerPawn.Id, pickUpRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+
                 ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
                 IPiece piece = field.Piece;
 
@@ -266,6 +274,9 @@ namespace GameMasterCore
             lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
+
+                OnLog("place", DateTime.Now, 1, playerPawn.Id, placeRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+
                 IPlayerPiece heldPiecePawn = playerPawn.Piece;
                 if (heldPiecePawn == null)
                 {
@@ -339,6 +350,9 @@ namespace GameMasterCore
             lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
+
+                OnLog("test", DateTime.Now, 1, playerPawn.Id, testPieceRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+
                 IPiece heldPiecePawn = playerPawn.Piece;
                 if (heldPiecePawn == null)
                 {
@@ -371,8 +385,8 @@ namespace GameMasterCore
                 GameInfo = new DTO.GameInfo[]
                 {
                     new DTO.GameInfo{
-                        blueTeamPlayers = (ulong)board.Players.Select(player => player.Team == TeamColour.Blue).Count(),
-                        redTeamPlayers = (ulong)board.Players.Select(player => player.Team == TeamColour.Red).Count(),
+                        blueTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
+                        redTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
                         gameName = config.GameDefinition.GameName
                     }
                 }
@@ -645,7 +659,7 @@ namespace GameMasterCore
             return coordinateListToReturn.ToList();
         }
 
-        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role) 
+        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role)
             => EventHelper.OnEvent(this, Log, new LogArgs(type, timestamp, gameId, playerId, playerGuid, colour, role));
         #endregion
 
