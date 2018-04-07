@@ -9,7 +9,7 @@ namespace Shared.Components.Extensions
 			( field as IField ).Clone( aField );
 			var piece = field.Piece;
 			field.Piece = null;
-			var aPiece = piece.CloneFieldPiece();
+			var aPiece = piece?.CloneFieldPiece();
 			field.Piece = piece;
 			aField.Piece = aPiece;
 		}
