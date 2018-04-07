@@ -1,8 +1,6 @@
-﻿using System;
-using GameMasterCore;
+﻿using GameMasterCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Shared.Messages.Communication;
 using DTO = Shared.Messages.Communication;
 
 namespace GameMasterCoreUnitTests
@@ -23,10 +21,10 @@ namespace GameMasterCoreUnitTests
             };
 
 
-            PlayerMessage result = gameMaster.PerformJoinGame(joinGameMessage);
+            DTO.PlayerMessage result = gameMaster.PerformJoinGame(joinGameMessage);
 
-            Assert.IsTrue(result is ConfirmJoiningGame);
-            DTO.Player resultPlayer = ((ConfirmJoiningGame)result).PlayerDefinition;
+            Assert.IsTrue(result is DTO.ConfirmJoiningGame);
+            DTO.Player resultPlayer = ((DTO.ConfirmJoiningGame)result).PlayerDefinition;
             Assert.AreEqual(resultPlayer.team, joinGameMessage.preferredTeam);
             Assert.AreEqual(resultPlayer.type, joinGameMessage.preferredRole);
         }
