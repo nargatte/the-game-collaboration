@@ -21,9 +21,9 @@ namespace PlayerCore
             State.EndGame += endGame;
         }
 
-        public void PerformAction()
+        public Data PerformAction()
         {
-            Strategy.PerformAction();
+            return Strategy.PerformAction();
         }
 
 

@@ -101,7 +101,7 @@ namespace PlayerCore
             throw new Exception("Cannot localizate unknown goal");
         }
 
-        public void PerformAction()
+        public Data PerformAction()
         {
             IField field = State.Field;
             var goalField = field as IGoalField;
@@ -113,49 +113,46 @@ namespace PlayerCore
                 {
                     if (State.TeamColour == Shared.Enums.TeamColour.Red) // Must go down
                     {
-                        GameMaster.PerformMove(SetCommunicationData(new Move
+                        return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             direction = Shared.Enums.MoveType.Down,
                             directionSpecified = true
                         }));
-                        return;
                     }
                     else // Must go up
                     {
-                        GameMaster.PerformMove(SetCommunicationData(new Move
+                        var data = GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             direction = Shared.Enums.MoveType.Up,
                             directionSpecified = true
                         }));
                         DiscoveryCount = 0;
-                        return;
+                        return data;
                     }
                 }
                 else // Player is standing in task field
                 {
                     if (taskField.Piece != null) // Player is standing on piece
                     {
-                        GameMaster.PerformPickUp(SetCommunicationData(new PickUpPiece())); // Pick up piece
-                        return;
+                        return GameMaster.PerformPickUp(SetCommunicationData(new PickUpPiece())); // Pick up piece
                     }
                     else
                     {
                         if(DiscoveryCount == 0) // Discover every 3 movements
                         {
-                            GameMaster.PerformDiscover(SetCommunicationData(new Discover()));
+                            var data = GameMaster.PerformDiscover(SetCommunicationData(new Discover()));
                             DiscoveryCount = DiscoveryCountMax;
-                            return;
+                            return data;
                         }
                         DiscoveryCount--;
 
                         //Make movement towards piece
 
-                        GameMaster.PerformMove(SetCommunicationData(new Move
+                        return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             direction = DirectionToPiece(),
                             directionSpecified = true
                         }));
-                        return;
                     }
                 }
 
@@ -164,50 +161,44 @@ namespace PlayerCore
             {
                 if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown) // Piece state is unknown
                 {
-                    GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
-                    return;
+                    return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
                 }
                 else if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham) // Bad piece, put it back
                 {
-                    GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
-                    return;
+                    return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                 }
                 else // Piece is ok
                 {
                     if(goalField != null && goalField.Type == Shared.Enums.GoalFieldType.Unknown) // Player is standing in goal field
                     {
-                        GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
-                        return;
+                        return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                     }
                     else if (taskField != null) // Player is standing in task field
                     {
                         if (State.TeamColour == Shared.Enums.TeamColour.Red) // Must go up
                         {
-                            GameMaster.PerformMove(SetCommunicationData(new Move
+                            return GameMaster.PerformMove(SetCommunicationData(new Move
                             {
                                 direction = Shared.Enums.MoveType.Up,
                                 directionSpecified = true
                             }));
-                            return;
                         }
                         else // Must go down
                         {
-                            GameMaster.PerformMove(SetCommunicationData(new Move
+                            return GameMaster.PerformMove(SetCommunicationData(new Move
                             {
                                 direction = Shared.Enums.MoveType.Down,
                                 directionSpecified = true
                             }));
-                            return;
                         }
                     }
                     else // Must looking for unnknown goal field
                     {
-                        GameMaster.PerformMove(SetCommunicationData(new Move
+                        return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             direction = DirectionToUnknownGoal(),
                             directionSpecified = true
                         }));
-                        return;
                     }
 
                 }

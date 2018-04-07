@@ -23,9 +23,6 @@ namespace CommunicationSubstitute
 
         readonly Dictionary<ulong, bool> EndGame = new Dictionary<ulong, bool>();
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Initialize()
         {
             GameMaster = new BlockingGameMaster();
@@ -157,7 +154,7 @@ namespace CommunicationSubstitute
             bool endGame;
             do
             {
-                args.player.PerformAction();
+                args.player.State.ReceiveData(args.player.PerformAction());
 
                 lock (EndGame)
                 {
