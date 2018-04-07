@@ -47,6 +47,7 @@
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
+    <Compile Include="Components\Events\LogArgs.cs" />
     <Compile Include="Components\Events\PieceChangedArgs.cs" />
     <Compile Include="Components\Events\PlayerChangedArgs.cs" />
     <Compile Include="Components\Extensions\ExtensionIBoardComponentFactory.cs" />

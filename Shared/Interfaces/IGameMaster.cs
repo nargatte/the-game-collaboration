@@ -1,10 +1,4 @@
-﻿using Shared;
-using Shared.Messages.Communication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared.Messages.Communication;
 
 namespace GameMasterCore
 {
@@ -18,5 +12,7 @@ namespace GameMasterCore
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
         PlayerMessage PerformJoinGame(JoinGame joinGame);
+#warning TEMP, to change in future stages
+        Game GetGame(string guid);
     }
 }

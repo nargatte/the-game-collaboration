@@ -8,7 +8,7 @@ namespace Shared.Components.Extensions
 		{
 			var player = field.Player;
 			field.Player = null;
-			var aPlayer = player.ClonePlayer();
+			var aPlayer = player?.ClonePlayer();
 			field.Player = player;
 			aField.Player = aPlayer;
 		}
