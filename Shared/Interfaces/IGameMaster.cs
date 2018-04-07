@@ -12,5 +12,7 @@ namespace GameMasterCore
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
         PlayerMessage PerformJoinGame(JoinGame joinGame);
+#warning TEMP, to change in future stages
+        Game GetGame(string guid);
     }
 }

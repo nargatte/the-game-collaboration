@@ -31,10 +31,10 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
-            //prepare default config
+            // prepare default config
             config = GenerateDefaultConfig();
 
-            //generate board itself from config
+            // generate board itself from config
             board = PrepareBoard(new BoardComponentFactory());
         }
 
@@ -51,7 +51,7 @@ namespace GameMasterCore
         {
             var result = new Config.GameMasterSettings
             {
-                ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
+                ActionCosts = new Config.GameMasterSettingsActionCosts(), // default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition()
                 {
                     GameName = "default game"
@@ -645,6 +645,27 @@ namespace GameMasterCore
             //}
 
             return coordinateListToReturn.ToList();
+        }
+        #endregion
+        
+        #region TEMP, to change in future stages
+        public DTO.Game GetGame(string guid)
+        {
+            IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
+            var players = board.Players.Select(p => new DTO.Player()
+            {
+                id = p.Id,
+                team = p.Team,
+                type = p.Type
+            });
+
+            return new DTO.Game()
+            {
+                playerId = player.Id,
+                Players = players.ToArray(),
+                Board = new DTO.GameBoard() { goalsHeight = board.GoalsHeight, tasksHeight = board.TasksHeight, width = board.Width },
+                PlayerLocation = new DTO.Location() { x = player.GetX().Value, y = player.GetY().Value }
+            };
         }
         #endregion
     }
