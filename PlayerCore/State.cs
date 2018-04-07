@@ -31,8 +31,8 @@ namespace PlayerCore
             {
                 IPlayer player = Board.GetPlayer(Id);
                 Location location = new Location();
-                location.x = player.GetX() ?? throw new NullReferenceException("Player from board has not set x property");
-                location.y = player.GetY() ?? throw new NullReferenceException("Player from board has not set y property");
+                location.x = (uint)player.GetX();//?? throw new NullReferenceException("Player from board has not set x property");
+                location.y = (uint)player.GetY();// ?? throw new NullReferenceException("Player from board has not set y property");
                 return location;
             }
         }
@@ -54,13 +54,13 @@ namespace PlayerCore
         public Shared.Messages.Communication.Piece HoldingPiece { get; private set; }
 
 
-        public State(Game game, ulong id, ulong gameId, string playerGuid)
+        public State(Game game, ulong id, ulong gameId, string playerGuid, BoardFactory boardFactory)
         {
             GameId = GameId;
             Game = game;
             Guid = playerGuid;
             Id = id;
-            Board = new Board(game.Board.width, game.Board.tasksHeight, game.Board.goalsHeight, new BoardComponentFactory());
+            Board = boardFactory.CreateBoard(Game.Board.width, Game.Board.tasksHeight, Game.Board.goalsHeight);
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
             PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
@@ -76,6 +76,7 @@ namespace PlayerCore
             foreach (var pl in Game.Players.Where(p => p.id!=Id))
             {
                 Board.SetPlayer(Board.Factory.MakePlayer(pl.id, pl.team, pl.type));
+
             }
         }
 
@@ -91,8 +92,12 @@ namespace PlayerCore
                 return;
             }
 
-            if(data.PlayerLocation != null)
+            if (data.PlayerLocation != null)
+            {
                 Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
+
+            }
+
 
             foreach (Shared.Messages.Communication.Piece p in data.Pieces)
             {
@@ -102,7 +107,7 @@ namespace PlayerCore
                     taskField = (ITaskField)Board.GetField(field.x, field.y);
 
                 if (taskField != null)
-                    Board.SetPiece(new FieldPiece(p.id, p.type, p.timestamp, taskField));
+                    Board.SetPiece(Board.Factory.CreateFieldPiece(p.id, p.type, p.timestamp, taskField));
             }
 
             foreach (var task in data.TaskFields)
@@ -114,7 +119,7 @@ namespace PlayerCore
                     player = Board.GetPlayer(task.playerId);
                 }
 
-                Board.SetField(new Shared.Components.Fields.TaskField(task.x, task.y, task.timestamp, player, task.distanceToPiece));
+                Board.SetField(Board.Factory.MakeTaskField(task.x, task.y, task.timestamp, player, task.distanceToPiece));
             }
 
             foreach (var goal in data.GoalFields)
@@ -126,7 +131,7 @@ namespace PlayerCore
                     player = Board.GetPlayer(goal.playerId);
                 }
 
-                Board.SetField(new Shared.Components.Fields.GoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
+                Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
             }
         }
     }

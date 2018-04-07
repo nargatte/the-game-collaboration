@@ -17,7 +17,8 @@ namespace Shared.Components.Boards
         {
             var player = board.GetPlayer(id);
             var field = board.GetField(location);
-            var newPlayer = new Players.Player(player.Id, player.Team, player.Type, dataTime, field, player.Piece);
+            var newPlayer = board.Factory.CreatePlayer(player.Id, player.Team, player.Type, dataTime, field, player.Piece);
+            board.SetPlayer(newPlayer);
         }
     }
 }

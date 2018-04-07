@@ -34,7 +34,7 @@ namespace PlayerCore
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
-            var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp) as IEnumerable<ITaskField>;
+            var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp).OfType<ITaskField>();
             var lastChcekFields = fieldsSortedByTime.Where(f => f.Timestamp == fieldsSortedByTime.FirstOrDefault().Timestamp);
             if (lastChcekFields.Count() < 4)
                 throw new Exception("To little descoverd fields");
