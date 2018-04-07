@@ -26,6 +26,7 @@ namespace GameMasterCore
         int playerIDcounter = 0;
         int pieceIDcounter = 0;
         Config.GameMasterSettings config;
+        int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
 
         public BlockingGameMaster()
@@ -100,9 +101,15 @@ namespace GameMasterCore
                 );
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
+            {
+                if (gf.team == TeamColour.Red)
+                    redGoalsToScore++;
+                else
+                    blueGoalsToScore++;
                 result.SetField(
                     result.Factory.CreateGoalField(gf.x, gf.y, gf.team, DateTime.Now, null, GoalFieldType.Goal)
                     );
+            }
             //set the rest of GoalArea fields as NonGoals
             foreach (var f in result.Fields)
                 if (f is IGoalField gf && gf.Type == GoalFieldType.Unknown)
@@ -336,9 +343,15 @@ namespace GameMasterCore
                     //if goal, make a non-goal and remove piece from the player
                     board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                    //and decrease goals to go
+                    if (targetGoalField.Team == TeamColour.Red)
+                        redGoalsToScore--;
+                    else
+                        blueGoalsToScore--;
                 }
                 return new DTO.Data
                 {
+                    gameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
                     playerId = playerPawn.Id,
                     GoalFields = new DTO.GoalField[] { GoalToReturn }
                 };
@@ -442,6 +455,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
+            if (CheckWin(discoverRequest.playerGuid, out DTO.Data finalMessage)) return finalMessage;
             DTO.Data result = PerformSynchronizedDiscover(discoverRequest);
             Thread.Sleep((int)config.ActionCosts.DiscoverDelay);
             return result;
@@ -457,6 +471,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformMove(DTO.Move moveRequest)
         {
+            if (CheckWin(moveRequest.playerGuid, out DTO.Data finalMessage)) return finalMessage;
             DTO.Data result = PerformSynchronizedMove(moveRequest);
             Thread.Sleep((int)config.ActionCosts.MoveDelay);
             return result;
@@ -464,6 +479,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
+            if (CheckWin(pickUpRequest.playerGuid, out DTO.Data finalMessage)) return finalMessage;
             DTO.Data result = PerformSynchronizedPickUp(pickUpRequest);
             Thread.Sleep((int)config.ActionCosts.PickUpDelay);
             return result;
@@ -471,6 +487,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
+            if (CheckWin(placeRequest.playerGuid, out DTO.Data finalMessage)) return finalMessage;
             DTO.Data result = PerformSynchronizedPlace(placeRequest);
             Thread.Sleep((int)config.ActionCosts.PlacingDelay);
             return result;
@@ -478,6 +495,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformTestPiece(DTO.TestPiece testPieceRequest)
         {
+            if (CheckWin(testPieceRequest.playerGuid, out DTO.Data finalMessage)) return finalMessage;
             DTO.Data result = PerformSynchronizedTestPiece(testPieceRequest);
             Thread.Sleep((int)config.ActionCosts.TestDelay);
             return result;
@@ -657,6 +675,24 @@ namespace GameMasterCore
             }
 
             return coordinateListToReturn.ToList();
+        }
+
+        private bool CheckWin(string guid, out DTO.Data message)
+        {
+            if (redGoalsToScore == 0 || blueGoalsToScore == 0)
+            {
+                IPlayer player = GetPlayer(GetPlayerIdFromGuid(guid));
+                bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
+                OnLog(win ? "victory!" : "defeat", DateTime.Now, 1, player.Id, guid, player.Team, player.Type);
+                message = new DTO.Data
+                {
+                    gameFinished = true,
+                    playerId = GetPlayerIdFromGuid(guid)
+                };
+                return true;
+            }
+            message = null;
+            return false;
         }
 
         protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role)
