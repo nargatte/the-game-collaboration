@@ -10,6 +10,7 @@ using Shared.Messages.Configuration;
 using PlayerCore;
 using Shared.Enums;
 using Shared.Messages.Communication;
+using Shared.Components.Events;
 
 namespace CommunicationSubstitute
 {
@@ -19,6 +20,11 @@ namespace CommunicationSubstitute
         static void Main(string[] args)
         {
             var gameMaster = new BlockingGameMaster();
+
+             var dupa =   (object s,  e) => {
+                    
+                }
+
             var registerGame = gameMaster.PerformConfirmGameRegistration();
             var gameInfo = registerGame.GameInfo[0];
 
@@ -57,7 +63,7 @@ namespace CommunicationSubstitute
             for (ulong i = 0; i < registerGame.GameInfo[0].blueTeamPlayers; i++)
             {
                 var myConfirm = blueConfirms[i];
-                var game = gameMaster.game[myConfirm.playerId];
+                var game = gameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
                 bluePlayers[i] = new PlayerInGame(gameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
@@ -74,7 +80,7 @@ namespace CommunicationSubstitute
             for (ulong i = 0; i < registerGame.GameInfo[0].redTeamPlayers; i++)
             {
                 var myConfirm = redConfirms[i];
-                var game = gameMaster.game[myConfirm.playerId];
+                var game = gameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
                 redPlayers[i] = new PlayerInGame(gameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
@@ -86,6 +92,8 @@ namespace CommunicationSubstitute
                     });
                 redThreads[i] = new Thread(() => PlayerThread(bluePlayers[i], myConfirm.playerId));
             }
+
+
 
             // blue wait
             for (ulong i = 0; i < registerGame.GameInfo[0].blueTeamPlayers; i++)
@@ -113,6 +121,7 @@ namespace CommunicationSubstitute
                 {
                     endGame = EndGame[id];
                 }
+
             } while (endGame);
         }
     }

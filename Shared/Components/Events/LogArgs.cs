@@ -3,7 +3,7 @@ using System;
 
 namespace Shared.Components.Events
 {
-	class LogArgs : EventArgs
+	public class LogArgs : EventArgs
 	{
 		string Type { get; }
 		DateTime Timestamp { get; }
