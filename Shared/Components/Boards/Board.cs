@@ -181,38 +181,50 @@ namespace Shared.Components.Boards
 			if( piece != value )
 			{
 				if( piece != null )
-					if( piece is IFieldPiece fieldPiece && fieldPiece.Field != null )
+					if( piece is IFieldPiece fieldPiece )
 					{
-						var field = fieldPiece.Field;
-						fieldPiece.Field = null;
-						OnPieceChanged( fieldPiece.Id );
-						OnFieldChanged( field.X, field.Y );
+						if( fieldPiece.Field != null )
+						{
+							var field = fieldPiece.Field;
+							fieldPiece.Field = null;
+							OnPieceChanged( fieldPiece.Id );
+							OnFieldChanged( field.X, field.Y );
+						}
 					}
-					else if( piece is IPlayerPiece playerPiece && playerPiece.Player != null )
+					else if( piece is IPlayerPiece playerPiece )
 					{
-						var player = playerPiece.Player;
-						playerPiece.Player = null;
-						OnPieceChanged( playerPiece.Id );
-						OnPlayerChanged( player.Id );
+						if( playerPiece.Player != null )
+						{
+							var player = playerPiece.Player;
+							playerPiece.Player = null;
+							OnPieceChanged( playerPiece.Id );
+							OnPlayerChanged( player.Id );
+						}
 					}
 					else
 						throw new ArgumentException( nameof( piece ) );
 				pieces[ value.Id ] = value;
 				OnPieceChanged( value.Id );
 			}
-			if( value is IFieldPiece aFieldPiece && aFieldPiece.Field != null )
+			if( value is IFieldPiece aFieldPiece )
 			{
-				var field = aFieldPiece.Field;
-				aFieldPiece.Field = null;
-				UpdateField( field );
-				aFieldPiece.Field = field;
+				if( aFieldPiece.Field != null )
+				{
+					var field = aFieldPiece.Field;
+					aFieldPiece.Field = null;
+					UpdateField( field );
+					aFieldPiece.Field = field;
+				}
 			}
-			else if( value is IPlayerPiece aPlayerPiece && aPlayerPiece.Player != null )
+			else if( value is IPlayerPiece aPlayerPiece )
 			{
-				var player = aPlayerPiece.Player;
-				aPlayerPiece.Player = null;
-				UpdatePlayer( player );
-				aPlayerPiece.Player = player;
+				if( aPlayerPiece.Player != null )
+				{
+					var player = aPlayerPiece.Player;
+					aPlayerPiece.Player = null;
+					UpdatePlayer( player );
+					aPlayerPiece.Player = player;
+				}
 			}
 			else
 				throw new ArgumentException( nameof( value ) );
