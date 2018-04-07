@@ -21,7 +21,7 @@ namespace PlayerCore
 
         Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
 
-        public event EventHandler EndGame; 
+        public event EventHandler EndGame;
 
         public IBoard Board { get; }
 
@@ -72,8 +72,11 @@ namespace PlayerCore
                 DateTime.Now,
                 Board.GetField(game.PlayerLocation));
 
+
+
             Board.SetPlayer(boardPlayer);
-            foreach (var pl in Game.Players.Where(p => p.id!=Id))
+            
+            foreach (var pl in Game.Players.Where(p => p.id != Id))
             {
                 Board.SetPlayer(Board.Factory.MakePlayer(pl.id, pl.team, pl.type));
             }
@@ -91,24 +94,25 @@ namespace PlayerCore
                 return;
             }
 
-            if(data.PlayerLocation != null)
+            if (data.PlayerLocation != null)
                 Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
 
             foreach (Shared.Messages.Communication.Piece p in data.Pieces)
             {
                 var field = data.TaskFields.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
-                ITaskField taskField = null;
-                if(field != null)
-                    taskField = (ITaskField)Board.GetField(field.x, field.y);
+                IField taskField = null;
+
+                if (field != null)
+                    taskField = (IField)Board.GetField(field.x, field.y);
 
                 if (taskField != null)
-                    Board.SetPiece(new FieldPiece(p.id, p.type, p.timestamp, taskField));
+                    Board.SetPiece(new FieldPiece(p.id, p.type, p.timestamp, (ITaskField)taskField));
             }
 
             foreach (var task in data.TaskFields)
             {
                 IPlayer player = null;
-                if(task.playerIdSpecified == true)
+                if (task.playerIdSpecified == true)
                 {
                     Board.SetPlayerLocation(task.playerId, new Location() { x = task.x, y = task.y }, task.timestamp);
                     player = Board.GetPlayer(task.playerId);
