@@ -15,10 +15,11 @@ using Shared.Components.Extensions;
 using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
+using Shared.Components.Events;
 
 namespace GameMasterCore
 {
-    public class BlockingGameMaster : IGameMaster
+    public class BlockingGameMaster : IGameMaster, IReadOnlyBoard
     {
         IBoard board;
         Dictionary<string, ulong> playerGuidToId;
@@ -31,10 +32,10 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
 
-            //prepare default config
+            // prepare default config
             config = GenerateDefaultConfig();
 
-            //generate board itself from config
+            // generate board itself from config
             board = PrepareBoard(new BoardComponentFactory());
         }
 
@@ -51,7 +52,7 @@ namespace GameMasterCore
         {
             var result = new Config.GameMasterSettings
             {
-                ActionCosts = new Config.GameMasterSettingsActionCosts(), //default ActionCosts
+                ActionCosts = new Config.GameMasterSettingsActionCosts(), // default ActionCosts
                 GameDefinition = new Config.GameMasterSettingsGameDefinition()
                 {
                     GameName = "default game"
@@ -382,7 +383,7 @@ namespace GameMasterCore
             if (joinGame.gameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                // the player shouldn't know his id if he's been rejected :/
+                // player shouldn't know their id if they're been rejected :/
                 var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
                 return rejectingMessage;
             }
@@ -467,6 +468,8 @@ namespace GameMasterCore
             Thread.Sleep((int)config.ActionCosts.TestDelay);
             return result;
         }
+
+        public virtual event EventHandler<LogArgs> Log = delegate { };
         #endregion
 
         #region IBoard to DTO converters
@@ -639,12 +642,102 @@ namespace GameMasterCore
 
             }
 
-            //if (coordinateListToReturn.Contains(null))
-            //{
-            //    throw new Exception("Incorrect swap");
-            //}
-
             return coordinateListToReturn.ToList();
+        }
+
+        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role) 
+            => EventHelper.OnEvent(this, Log, new LogArgs(type, timestamp, gameId, playerId, playerGuid, colour, role));
+        #endregion
+
+        #region TEMP, to change in future stages
+        public DTO.Game GetGame(string guid)
+        {
+            IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
+            var players = board.Players.Select(p => new DTO.Player()
+            {
+                id = p.Id,
+                team = p.Team,
+                type = p.Type
+            });
+
+            return new DTO.Game()
+            {
+                playerId = player.Id,
+                Players = players.ToArray(),
+                Board = new DTO.GameBoard() { goalsHeight = board.GoalsHeight, tasksHeight = board.TasksHeight, width = board.Width },
+                PlayerLocation = new DTO.Location() { x = player.GetX().Value, y = player.GetY().Value }
+            };
+        }
+        #endregion
+
+        #region IReadOnlyBoard
+        public uint Width => board.Width;
+
+        public uint TasksHeight => board.TasksHeight;
+
+        public uint GoalsHeight => board.GoalsHeight;
+
+        public uint Height => board.Height;
+
+        public IEnumerable<IField> Fields => board.Fields;
+
+        public IEnumerable<IPiece> Pieces => board.Pieces;
+
+        public IEnumerable<IPlayer> Players => board.Players;
+
+        public IBoardComponentFactory Factory => board.Factory;
+
+        public event EventHandler<FieldChangedArgs> FieldChanged
+        {
+            add
+            {
+                board.FieldChanged += value;
+            }
+
+            remove
+            {
+                board.FieldChanged -= value;
+            }
+        }
+
+        public event EventHandler<PieceChangedArgs> PieceChanged
+        {
+            add
+            {
+                board.PieceChanged += value;
+            }
+
+            remove
+            {
+                board.PieceChanged -= value;
+            }
+        }
+
+        public event EventHandler<PlayerChangedArgs> PlayerChanged
+        {
+            add
+            {
+                board.PlayerChanged += value;
+            }
+
+            remove
+            {
+                board.PlayerChanged -= value;
+            }
+        }
+        public IField GetField(uint x, uint y)
+        {
+            return board.GetField(x, y);
+        }
+
+        public IPiece GetPiece(ulong id)
+        {
+            return board.GetPiece(id);
+        }
+
+        public IPlayer GetPlayer(ulong id)
+        {
+            return board.GetPlayer(id);
         }
         #endregion
     }
