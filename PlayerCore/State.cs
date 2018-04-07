@@ -31,8 +31,8 @@ namespace PlayerCore
             {
                 IPlayer player = Board.GetPlayer(Id);
                 Location location = new Location();
-                location.x = player.GetX() ?? throw new NullReferenceException("Player from board has not set x property");
-                location.y = player.GetY() ?? throw new NullReferenceException("Player from board has not set y property");
+                location.x = (uint)player.GetX();//?? throw new NullReferenceException("Player from board has not set x property");
+                location.y = (uint)player.GetY();// ?? throw new NullReferenceException("Player from board has not set y property");
                 return location;
             }
         }
@@ -76,6 +76,7 @@ namespace PlayerCore
             foreach (var pl in Game.Players.Where(p => p.id!=Id))
             {
                 Board.SetPlayer(Board.Factory.MakePlayer(pl.id, pl.team, pl.type));
+
             }
         }
 
@@ -91,8 +92,12 @@ namespace PlayerCore
                 return;
             }
 
-            if(data.PlayerLocation != null)
+            if (data.PlayerLocation != null)
+            {
                 Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
+
+            }
+
 
             foreach (Shared.Messages.Communication.Piece p in data.Pieces)
             {
