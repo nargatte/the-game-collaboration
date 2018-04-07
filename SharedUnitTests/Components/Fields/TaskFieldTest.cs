@@ -13,23 +13,35 @@ namespace SharedUnitTests.Components.Fields
 		#region Data
 		private static readonly DateTime dateTimeExample;
 		private static readonly IPlayer playerExample;
+		private static readonly IPlayer playerExample2;
 		private static readonly IFieldPiece fieldPieceExample;
 		private static readonly object[] constructorParameters;
 		private static readonly object[] parametersWithSetParameters;
+		private static readonly object[] parametersWithSetPlayerParameter;
 		static TaskFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
 			playerExample = Mock.Of<IPlayer>();
+			var mockPlayer = new Mock<IPlayer>();
+			mockPlayer.SetupProperty( player => player.Field );
+			playerExample2 = mockPlayer.Object;
 			fieldPieceExample = Mock.Of<IFieldPiece>();
 			constructorParameters = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null, -1, null },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 4, fieldPieceExample }
+				new object[] { 0u, 1u, default( DateTime ), null, -1, null },
+				new object[] { 2u, 3u, dateTimeExample, playerExample, 4, fieldPieceExample }
 			};
 			parametersWithSetParameters = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null, -1, null, 5u, 7u, dateTimeExample, 9 },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 4, fieldPieceExample, 6u, 8u, default( DateTime ), 10 }
+				new object[] { 0u, 1u, default( DateTime ), null, -1, null, 2u, 3u, dateTimeExample, 4 },
+				new object[] { 5u, 6u, dateTimeExample, playerExample, 7, fieldPieceExample, 8u, 9u, default( DateTime ), 10 }
+			};
+			parametersWithSetPlayerParameter = new object[]
+			{
+				new object[] { 0u, 1u, default( DateTime ), null, -1, null, null },
+				new object[] { 3u, 4u, dateTimeExample, playerExample, 5, fieldPieceExample, null },
+				new object[] { 6u, 7u, default( DateTime ), null, -1, null, playerExample2 },
+				new object[] { 8u, 9u, dateTimeExample, playerExample, 10, fieldPieceExample, playerExample2 }
 			};
 		}
 		#endregion
@@ -64,6 +76,22 @@ namespace SharedUnitTests.Components.Fields
 				Assert.AreEqual( aY, sut.Y );
 				Assert.AreEqual( aTimestamp, sut.Timestamp );
 				Assert.AreEqual( aDistanceToPiece, sut.DistanceToPiece );
+			} );
+		}
+		[TestCaseSource( nameof( parametersWithSetPlayerParameter ) )]
+		public void SetPlayerTracksValueAndLinksObjects( uint x, uint y, DateTime timestamp, IPlayer player, int distanceToPiece, IFieldPiece piece, IPlayer value )
+		{
+			var sut = new TaskField( x, y, timestamp, player )
+			{
+				Player = value
+			};
+			Assert.Multiple( () =>
+			{
+				Assert.AreSame( value, sut.Player );
+				if( player != null )
+					Assert.IsNull( player.Field );
+				if( value != null )
+					Assert.AreSame( sut, sut.Player.Field );
 			} );
 		}
 		#endregion

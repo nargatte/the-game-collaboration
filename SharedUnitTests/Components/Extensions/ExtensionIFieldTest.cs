@@ -13,11 +13,13 @@ namespace SharedUnitTests.Components.Extensions
 		#region Data
 		private static readonly DateTime dateTimeExample;
 		private static readonly IPlayer playerExample;
+		private static readonly IPlayer playerExample2;
 		private static readonly object[] parametersWithIsDefault;
 		static ExtensionIFieldTest()
 		{
 			dateTimeExample = DateTime.Now;
 			playerExample = Mock.Of<IPlayer>();
+			playerExample2 = Mock.Of<IPlayer>( p => p.ClonePlayer() == playerExample );
 			parametersWithIsDefault = new object[]
 			{
 				new object[] { default( DateTime ), null, true },
@@ -28,7 +30,7 @@ namespace SharedUnitTests.Components.Extensions
 		#endregion
 		#region Test
 		[Test]
-		public void CloneCallsPlayerCloneAndAssignsResult()
+		public void CloneDeepCopiesPlayerAndAssigns()
 		{
 			var player = Mock.Of<IPlayer>( p => p.ClonePlayer() == playerExample );
 			var mockField = new Mock<IField>();
