@@ -633,7 +633,7 @@ namespace GameMasterCore
             {
                 coordinateListToReturn[keyValue.Value] = new DTO.Location()
                 {
-                    x = (uint)(minXInclusive + (keyValue.Key / (maxYExclusive - minYInclusive))),
+                    x = (uint)(minXInclusive + (keyValue.Key % (maxXExclusive - minXInclusive))),
                     y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
                 };
 
