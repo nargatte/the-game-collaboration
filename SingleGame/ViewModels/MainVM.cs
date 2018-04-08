@@ -56,7 +56,7 @@ namespace SingleGame.ViewModels
 			RedPlayerCount = Model.RedPlayerCount;
 			for( int i = 0; i < RedPlayerCount; ++i )
 				RedPlayers.Add( new PlayerVM( Model.GetRedBoard( i ), Model.GetRedId( i ) ) );
-			BluePlayerCount = Model.RedPlayerCount;
+			BluePlayerCount = Model.BluePlayerCount;
 			for( int i = 0; i < BluePlayerCount; ++i )
 				BluePlayers.Add( new PlayerVM( Model.GetBlueBoard( i ), Model.GetBlueId( i ) ) );
 		}
