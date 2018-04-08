@@ -30,12 +30,18 @@ namespace PlayerCore
         }
 
         const int DiscoveryCountMax = 3;
-        private int DiscoveryCount = DiscoveryCountMax;
+        private int DiscoveryCount = 0;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
             var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp).OfType<ITaskField>();
-            var lastChcekFields = fieldsSortedByTime.Where(f => f.Timestamp == fieldsSortedByTime.FirstOrDefault().Timestamp);
+            //foreach (var taskField in fieldsSortedByTime)
+            //{
+            //    if (taskField.Timestamp == DateTime.MinValue)
+            //        break;
+            //    Console.WriteLine(taskField.Timestamp.Ticks + "  " + taskField.Timestamp.ToString());
+            //}
+            var lastChcekFields = fieldsSortedByTime.Where(f => f.Timestamp.Ticks >= fieldsSortedByTime.FirstOrDefault().Timestamp.Ticks - 100000000);
             if (lastChcekFields.Count() < 4)
                 throw new Exception("To little descoverd fields");
 

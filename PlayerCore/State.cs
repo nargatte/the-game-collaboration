@@ -39,10 +39,7 @@ namespace PlayerCore
 
         public IField Field
         {
-            get
-            {
-                return Board.GetField(Location);
-            }
+            get => Board.GetPlayer(Id).Field ?? throw new Exception("Player Field is null");
         }
 
         public ulong GameId { get; }
@@ -56,7 +53,7 @@ namespace PlayerCore
 
         public State(Game game, ulong id, ulong gameId, string playerGuid, BoardFactory boardFactory)
         {
-            GameId = GameId;
+            GameId = gameId;
             Game = game;
             Guid = playerGuid;
             Id = id;
@@ -82,6 +79,9 @@ namespace PlayerCore
 
         public void ReceiveData(Data data)
         {
+            Console.WriteLine($"Data players id {Id}");
+            Console.WriteLine(data);
+
             HoldingPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
 
             if (data.gameFinished == true)
