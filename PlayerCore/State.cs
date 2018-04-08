@@ -52,7 +52,7 @@ namespace PlayerCore
 
         public TeamColour TeamColour { get; private set; }
 
-        public Shared.Messages.Communication.Piece HoldingPiece { get; private set; }
+        public Shared.Messages.Communication.Piece HoldingPiece { get; set; }
 
 
         public State(Game game, ulong id, ulong gameId, string playerGuid, BoardFactory boardFactory)
@@ -87,7 +87,10 @@ namespace PlayerCore
         {
             ReceiveDataLog?.Invoke(this, data);
 
-            HoldingPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
+            var dataPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id) ?? HoldingPiece;
+            if (dataPiece != null && dataPiece.type == PieceType.Unknown)
+                dataPiece.type = HoldingPiece?.type ?? PieceType.Unknown;
+            HoldingPiece = dataPiece;
 
             LastDiscoveryCount = (data.TaskFields?.Length ?? 0) > 2 ? data.TaskFields.Length : LastDiscoveryCount;
 

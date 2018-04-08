@@ -165,12 +165,14 @@ namespace PlayerCore
                 }
                 else if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham) // Bad piece, put it back
                 {
+                    State.HoldingPiece = null;
                     return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                 }
                 else // Piece is ok
                 {
                     if(goalField != null && goalField.Type == Shared.Enums.GoalFieldType.Unknown) // Player is standing in goal field
                     {
+                        State.HoldingPiece = null;
                         return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                     }
                     else if (taskField != null) // Player is standing in task field

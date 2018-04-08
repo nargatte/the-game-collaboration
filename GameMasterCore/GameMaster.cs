@@ -234,6 +234,7 @@ namespace GameMasterCore
 
                 //return information about current field and new player location
                 var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
+
                 DTO.Data result = new DTO.Data
                 {
                     playerId = playerPawn.Id,
