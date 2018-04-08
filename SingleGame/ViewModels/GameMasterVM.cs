@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using Shared.Components.Events;
 using Shared.Interfaces;
 using SingleGame.ViewModels.Base;
@@ -36,7 +37,7 @@ namespace SingleGame.ViewModels
 			gameMaster = aGameMaster;
 			Initialize();
 		}
-		protected void Initialize() => gameMaster.Log += ( s, e ) => Log.Add( e );
+		protected void Initialize() => gameMaster.Log += ( s, e ) => Application.Current.Dispatcher.Invoke( () => Log.Add( e ) );
 		protected void MakeBoardVM() => Board = new BoardVM( gameMaster.Board );
 		#endregion
 	}
