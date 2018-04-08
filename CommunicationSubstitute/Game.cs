@@ -6,6 +6,7 @@ using PlayerCore;
 using Shared.Enums;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
+using Shared.Messages.Configuration;
 
 namespace CommunicationSubstitute
 {
@@ -31,7 +32,7 @@ namespace CommunicationSubstitute
             GameMaster.Log += (s, e) =>
             {
                 Console.WriteLine(
-                    $" {e.Type,7} {e.Timestamp,20} {e.GameId,2} {e.PlayerId,3} {e.PlayerGuid.Substring(0, 4),5} {e.Colour,10} {e.Role,10}");
+                    $" {e.Type,10} {e.Timestamp,20} {e.GameId,2} {e.PlayerId,3} {e.PlayerGuid.Substring(0, 4),5} {e.Colour,7} {e.Role,10}");
             };
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
