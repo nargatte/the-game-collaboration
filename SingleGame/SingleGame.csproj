@@ -60,6 +60,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\Dictionaries\StyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dictionaries\VVMDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GameMasterV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainW.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -73,8 +85,12 @@
     <Compile Include="ViewModels\BoardVM.cs" />
     <Compile Include="ViewModels\Commands\AsyncCommand.cs" />
     <Compile Include="ViewModels\Commands\AsyncCommandBase.cs" />
+    <Compile Include="ViewModels\FieldVM.cs" />
     <Compile Include="ViewModels\GameMasterVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
+    <Compile Include="Views\GameMasterV.xaml.cs">
+      <DependentUpon>GameMasterV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainW.xaml.cs">
       <DependentUpon>MainW.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -112,6 +128,10 @@
     <ProjectReference Include="..\CommunicationSubstitute\CommunicationSubstitute.csproj">
       <Project>{8f8a0b43-1715-477b-aa0c-806c27cd6db9}</Project>
       <Name>CommunicationSubstitute</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameMasterCore\GameMasterCore.csproj">
+      <Project>{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}</Project>
+      <Name>GameMasterCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\PlayerCore\PlayerCore.csproj">
       <Project>{D6D23F13-B83A-4739-861D-6690D28DFA16}</Project>

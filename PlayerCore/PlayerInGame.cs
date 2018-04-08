@@ -1,6 +1,6 @@
 ﻿using System;
-using GameMasterCore;
 using Shared.Components.Factories;
+using Shared.Interfaces;
 using Shared.Messages.Communication;
 
 namespace PlayerCore

@@ -16,13 +16,15 @@ using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
+using Shared.Interfaces;
 
 namespace GameMasterCore
 {
-    public class BlockingGameMaster : IGameMaster, IReadOnlyBoard
+    public class BlockingGameMaster : IGameMaster//, IReadOnlyBoard
     {
         Random random = new Random(123456);
-        public IBoard Board;
+		public virtual IReadOnlyBoard Board => board;
+        public IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         int pieceIDcounter = 0;
@@ -38,7 +40,7 @@ namespace GameMasterCore
             config = GenerateDefaultConfig();
 
             // generate board itself from config
-            Board = PrepareBoard(new BoardComponentFactory());
+            board = PrepareBoard(new BoardComponentFactory());
         }
 
         public BlockingGameMaster(Config.GameMasterSettings _config, IBoardComponentFactory _boardComponentFactory)
@@ -46,7 +48,7 @@ namespace GameMasterCore
             playerGuidToId = new Dictionary<string, ulong>();
 
             config = _config;
-            Board = PrepareBoard(_boardComponentFactory);
+            board = PrepareBoard(_boardComponentFactory);
         }
 
         #region Preparation
@@ -131,7 +133,7 @@ namespace GameMasterCore
         #region Synced helper methods for IGameMaster
         private DTO.Data PerformSynchronizedDiscover(DTO.Discover discoverRequest)
         {
-            lock (Board)
+            lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
 
@@ -141,11 +143,11 @@ namespace GameMasterCore
                 List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
                 List<DTO.Piece> resultPieces = new List<DTO.Piece>();
                 //Perform discover on 3x3 
-                for (int y = Math.Max((int)Board.GoalsHeight, (int)playerPawn.GetY().Value - 1);
-                    y <= Math.Min(playerPawn.GetY().Value + 1, (int)Board.Height - (int)Board.GoalsHeight - 1);
+                for (int y = Math.Max((int)board.GoalsHeight, (int)playerPawn.GetY().Value - 1);
+                    y <= Math.Min(playerPawn.GetY().Value + 1, (int)board.Height - (int)board.GoalsHeight - 1);
                     ++y)
                     for (int x = Math.Max(0, (int)playerPawn.GetX().Value - 1);
-                        x <= Math.Min(playerPawn.GetX().Value + 1, (int)Board.Width - 1);
+                        x <= Math.Min(playerPawn.GetX().Value + 1, (int)board.Width - 1);
                         ++x)
                     {
                         DTO.TaskField fieldToReturn = GetTaskFieldInfo(x, y, out DTO.Piece[] pieces);
@@ -170,7 +172,7 @@ namespace GameMasterCore
 
         private DTO.Data PerformSynchronizedMove(DTO.Move moveRequest)
         {
-            lock (Board)
+            lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
 
@@ -195,10 +197,10 @@ namespace GameMasterCore
                         break;
                 }
 
-                targetY = (int) Math.Max(Math.Min(targetY, Board.Height), 0);
-                targetX = (int) Math.Max(Math.Min(targetX, Board.Width), 0);
+                targetY = (int) Math.Max(Math.Min(targetY, board.Height), 0);
+                targetX = (int) Math.Max(Math.Min(targetX, board.Width), 0);
 
-                IField targetField = Board.GetField((uint)targetX, (uint)targetY);
+                IField targetField = board.GetField((uint)targetX, (uint)targetY);
                 //check for invalid moves
                 if (targetField == null
                     || (targetField is IGoalField gf && gf.Team != playerPawn.Team))
@@ -225,7 +227,7 @@ namespace GameMasterCore
                 }
 
                 //move
-                Board.SetPlayer(Board.Factory.CreatePlayer(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
+                board.SetPlayer(board.Factory.CreatePlayer(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
 
                 //return information about current field and new player location
                 var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
@@ -243,13 +245,13 @@ namespace GameMasterCore
 
         private DTO.Data PerformSynchronizedPickUp(DTO.PickUpPiece pickUpRequest)
         {
-            lock (Board)
+            lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
 
                 OnLog("pickup", DateTime.Now, 1, playerPawn.Id, pickUpRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
-                ITaskField field = (Board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
+                ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
                 IPiece piece = field.Piece;
 
                 if (piece == null)
@@ -260,7 +262,7 @@ namespace GameMasterCore
                     };
                 }
 
-                Board.SetPiece(Board.Factory.CreatePlayerPiece(piece.Id, piece.Type, DateTime.Now, playerPawn));
+                board.SetPiece(board.Factory.CreatePlayerPiece(piece.Id, piece.Type, DateTime.Now, playerPawn));
 
                 //prepare result data
                 DTO.Data result = new DTO.Data
@@ -283,7 +285,7 @@ namespace GameMasterCore
 
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
         {
-            lock (Board)
+            lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
 
@@ -319,7 +321,7 @@ namespace GameMasterCore
                     else
                     {
                         //place piece on task field
-                        Board.SetPiece(Board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, targetTaskField));
+                        board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, targetTaskField));
 
                         //return new field data
                         DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
@@ -335,7 +337,7 @@ namespace GameMasterCore
 
                 if (heldPiecePawn.Type == PieceType.Sham)
                 {
-                    Board.SetPiece(Board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                     return new DTO.Data
                     {
                         playerId = playerPawn.Id
@@ -346,8 +348,8 @@ namespace GameMasterCore
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
                     //if goal, make a non-goal and remove piece from the player
-                    Board.SetPiece(Board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
-                    Board.SetField(Board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
                     //and decrease goals to go
                     if (targetGoalField.Team == TeamColour.Red)
                         redGoalsToScore--;
@@ -365,7 +367,7 @@ namespace GameMasterCore
 
         private DTO.Data PerformSynchronizedTestPiece(DTO.TestPiece testPieceRequest)
         {
-            lock (Board)
+            lock (board)
             {
                 IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
 
@@ -420,7 +422,7 @@ namespace GameMasterCore
                 return rejectingMessage;
             }
 
-            int totalNumberOfPlayersOfSameColour = Board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
+            int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
 
             // if maximum player count reached then force change of teams
             if (config.GameDefinition.NumberOfPlayersPerTeam == totalNumberOfPlayersOfSameColour)
@@ -428,7 +430,7 @@ namespace GameMasterCore
                 joinGame.preferredTeam = joinGame.preferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
             }
 
-            bool teamAlreadyHasLeader = Board.Players.Where(player => player.Team == joinGame.preferredTeam && player.Type == PlayerType.Leader).Count() > 0;
+            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.preferredTeam && player.Type == PlayerType.Leader).Count() > 0;
 
             // if there is a leader already then modify the request accordingly
             if (teamAlreadyHasLeader && joinGame.preferredRole == PlayerType.Leader)
@@ -441,8 +443,8 @@ namespace GameMasterCore
             string guid = GenerateNewPlayerGUID();
             playerGuidToId.Add(guid, id);
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
-            var generatedPlayer = Board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
-            Board.SetPlayer(generatedPlayer);
+            var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
+            board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
             {
                 gameId = 1,
@@ -524,7 +526,7 @@ namespace GameMasterCore
         private DTO.TaskField GetTaskFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             var piecesToReturn = new List<DTO.Piece>();
-            var currentField = Board.GetField((uint)x, (uint)y) as ITaskField;
+            var currentField = board.GetField((uint)x, (uint)y) as ITaskField;
             var fieldToReturn = new DTO.TaskField
             {
                 x = (uint)x,
@@ -544,10 +546,10 @@ namespace GameMasterCore
             if (currentField?.Player != null)
             {
                 fieldToReturn.playerId = (ulong)currentField.Player.Id;
-                if (Board.GetPlayer((ulong)currentField.Player.Id).Piece != null) //check for held piece
+                if (board.GetPlayer((ulong)currentField.Player.Id).Piece != null) //check for held piece
                     piecesToReturn.Add(new DTO.Piece
                     {
-                        id = Board.GetPlayer((ulong)currentField.Player.Id).Piece.Id,
+                        id = board.GetPlayer((ulong)currentField.Player.Id).Piece.Id,
                         type = PieceType.Unknown,
                         timestamp = DateTime.Now,
                         playerId = (ulong)currentField.Player.Id
@@ -556,7 +558,7 @@ namespace GameMasterCore
             }
 
             // może ewentualnie dodać AsParallel().
-            fieldToReturn.distanceToPiece = (int)Board.Pieces.
+            fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
                 Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
@@ -567,7 +569,7 @@ namespace GameMasterCore
 
         private DTO.GoalField GetGoalFieldInfo(int x, int y)
         {
-            var relevantField = Board.GetField((uint)x, (uint)y);
+            var relevantField = board.GetField((uint)x, (uint)y);
             var goalFieldToReturn = new DTO.GoalField
             {
                 playerId = relevantField.Player?.Id ?? 0,
@@ -605,27 +607,27 @@ namespace GameMasterCore
                 case TeamColour.Red:
                     do
                     {
-                        position = GenerateRandomPlaces(1, 0, Board.Width, Board.Height - config.GameDefinition.TaskAreaLength, Board.Height).First();
-                    } while (Board.GetField(position).Player != null);
-                    return Board.GetField(position);
+                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
                 case TeamColour.Blue:
                     do
                     {
-                        position = GenerateRandomPlaces(1, 0, Board.Width, 0, config.GameDefinition.TaskAreaLength).First();
-                    } while (Board.GetField(position).Player != null);
-                    return Board.GetField(position);
+                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
+                    } while (board.GetField(position).Player != null);
+                    return board.GetField(position);
             }
             throw new ArgumentException("Invalid team colour");
         }
 
         private ulong GetPlayerIdFromGuid(string guid) => playerGuidToId.FirstOrDefault(pair => pair.Key == guid).Value;
 
-        private TeamColour GetTeamColorFromCoordinateY(int y) => y < Board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
+        private TeamColour GetTeamColorFromCoordinateY(int y) => y < board.GoalsHeight ? TeamColour.Blue : TeamColour.Red;
 
         private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message)
         {
             // TODO: verify gameID
-            return Board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
+            return board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
         }
 
         private PieceType GetRandomPieceType() =>
@@ -685,7 +687,7 @@ namespace GameMasterCore
         {
             if (redGoalsToScore == 0 || blueGoalsToScore == 0)
             {
-                IPlayer player = GetPlayer(GetPlayerIdFromGuid(guid));
+                IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
                 OnLog(win ? "victory!" : "defeat", DateTime.Now, 1, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
@@ -706,8 +708,8 @@ namespace GameMasterCore
         #region TEMP, to change in future stages
         public DTO.Game GetGame(string guid)
         {
-            IPlayer player = Board.GetPlayer(GetPlayerIdFromGuid(guid));
-            var players = Board.Players.Select(p => new DTO.Player()
+            IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
+            var players = board.Players.Select(p => new DTO.Player()
             {
                 id = p.Id,
                 team = p.Team,
@@ -718,81 +720,81 @@ namespace GameMasterCore
             {
                 playerId = player.Id,
                 Players = players.ToArray(),
-                Board = new DTO.GameBoard() { goalsHeight = Board.GoalsHeight, tasksHeight = Board.TasksHeight, width = Board.Width },
+                Board = new DTO.GameBoard() { goalsHeight = board.GoalsHeight, tasksHeight = board.TasksHeight, width = board.Width },
                 PlayerLocation = new DTO.Location() { x = player.GetX().Value, y = player.GetY().Value }
             };
         }
         #endregion
 
         #region IReadOnlyBoard
-        public uint Width => Board.Width;
+        //public uint Width => board.Width;
 
-        public uint TasksHeight => Board.TasksHeight;
+        //public uint TasksHeight => board.TasksHeight;
 
-        public uint GoalsHeight => Board.GoalsHeight;
+        //public uint GoalsHeight => board.GoalsHeight;
 
-        public uint Height => Board.Height;
+        //public uint Height => board.Height;
 
-        public IEnumerable<IField> Fields => Board.Fields;
+        //public IEnumerable<IField> Fields => board.Fields;
 
-        public IEnumerable<IPiece> Pieces => Board.Pieces;
+        //public IEnumerable<IPiece> Pieces => board.Pieces;
 
-        public IEnumerable<IPlayer> Players => Board.Players;
+        //public IEnumerable<IPlayer> Players => board.Players;
 
-        public IBoardComponentFactory Factory => Board.Factory;
+        //public IBoardComponentFactory Factory => board.Factory;
 
-        public event EventHandler<FieldChangedArgs> FieldChanged
-        {
-            add
-            {
-                Board.FieldChanged += value;
-            }
+        //public event EventHandler<FieldChangedArgs> FieldChanged
+        //{
+        //    add
+        //    {
+        //        board.FieldChanged += value;
+        //    }
 
-            remove
-            {
-                Board.FieldChanged -= value;
-            }
-        }
+        //    remove
+        //    {
+        //        board.FieldChanged -= value;
+        //    }
+        //}
 
-        public event EventHandler<PieceChangedArgs> PieceChanged
-        {
-            add
-            {
-                Board.PieceChanged += value;
-            }
+        //public event EventHandler<PieceChangedArgs> PieceChanged
+        //{
+        //    add
+        //    {
+        //        board.PieceChanged += value;
+        //    }
 
-            remove
-            {
-                Board.PieceChanged -= value;
-            }
-        }
+        //    remove
+        //    {
+        //        board.PieceChanged -= value;
+        //    }
+        //}
 
-        public event EventHandler<PlayerChangedArgs> PlayerChanged
-        {
-            add
-            {
-                Board.PlayerChanged += value;
-            }
+        //public event EventHandler<PlayerChangedArgs> PlayerChanged
+        //{
+        //    add
+        //    {
+        //        board.PlayerChanged += value;
+        //    }
 
-            remove
-            {
-                Board.PlayerChanged -= value;
-            }
-        }
-        public IField GetField(uint x, uint y)
-        {
-            return Board.GetField(x, y);
-        }
+        //    remove
+        //    {
+        //        board.PlayerChanged -= value;
+        //    }
+        //}
+        //public IField GetField(uint x, uint y)
+        //{
+        //    return board.GetField(x, y);
+        //}
 
-        public IPiece GetPiece(ulong id)
-        {
-            return Board.GetPiece(id);
-        }
+        //public IPiece GetPiece(ulong id)
+        //{
+        //    return board.GetPiece(id);
+        //}
 
-        public IPlayer GetPlayer(ulong id)
-        {
-            return Board.GetPlayer(id);
-        }
+        //public IPlayer GetPlayer(ulong id)
+        //{
+        //    return board.GetPlayer(id);
+        //}
         #endregion
     }
 }
