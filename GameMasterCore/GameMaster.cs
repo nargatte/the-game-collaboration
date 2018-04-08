@@ -277,6 +277,7 @@ namespace GameMasterCore
                     {
                         id = piece.Id,
                         playerId = playerPawn.Id,
+                        playerIdSpecified = true,
                         timestamp = DateTime.Now,
                         type = PieceType.Unknown
                     }
@@ -390,6 +391,7 @@ namespace GameMasterCore
                         id = heldPiecePawn.Id,
                         timestamp = DateTime.Now,
                         playerId = playerPawn.Id,
+                        playerIdSpecified = true,
                         type = heldPiecePawn.Type
                     }
                 }
@@ -540,6 +542,7 @@ namespace GameMasterCore
             if (currentField?.Piece != null) //piece on the board
             {
                 fieldToReturn.pieceId = currentField.Piece.Id;
+                fieldToReturn.pieceIdSpecified = true;
                 piecesToReturn.Add(new DTO.Piece
                 {
                     id = currentField.Piece.Id,

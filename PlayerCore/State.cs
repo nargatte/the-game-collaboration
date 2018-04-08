@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Threading;
 using Shared.Messages.Communication;
 using Shared.Components.Boards;
 using Shared.Components.Pieces;
@@ -21,7 +23,9 @@ namespace PlayerCore
 
         Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
 
-        public event EventHandler EndGame; 
+        public event EventHandler EndGame;
+
+        public int LastDiscoveryCount { get; private set; } = 0;
 
         public IBoard Board { get; }
 
@@ -77,11 +81,15 @@ namespace PlayerCore
             }
         }
 
+        public event EventHandler<Data> ReceiveDataLog;
+
         public void ReceiveData(Data data)
         {
-            Console.WriteLine(data);
+            ReceiveDataLog?.Invoke(this, data);
 
             HoldingPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
+
+            LastDiscoveryCount = (data.TaskFields?.Length ?? 0) > 2 ? data.TaskFields.Length : LastDiscoveryCount;
 
             if (data.gameFinished == true)
             {
@@ -96,18 +104,6 @@ namespace PlayerCore
                 Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
             }
 
-            if(data.Pieces != null)
-                foreach (Shared.Messages.Communication.Piece p in data.Pieces)
-                {
-                    var field = data.TaskFields.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
-                    ITaskField taskField = null;
-                    if(field != null)
-                        taskField = (ITaskField)Board.GetField(field.x, field.y);
-
-                    if (taskField != null)
-                        Board.SetPiece(Board.Factory.CreateFieldPiece(p.id, p.type, p.timestamp, taskField));
-                }
-
             if(data.TaskFields != null)
                 foreach (var task in data.TaskFields)
                 {
@@ -119,6 +115,18 @@ namespace PlayerCore
                     }
 
                     Board.SetField(Board.Factory.MakeTaskField(task.x, task.y, task.timestamp, player, task.distanceToPiece));
+                }
+
+            if(data.Pieces != null)
+                foreach (Shared.Messages.Communication.Piece p in data.Pieces)
+                {
+                    var field = data.TaskFields?.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
+                    ITaskField taskField = null;
+                    if(field != null)
+                        taskField = (ITaskField)Board.GetField(field.x, field.y);
+
+                    if (taskField != null)
+                        Board.SetPiece(Board.Factory.CreateFieldPiece(p.id, p.type, p.timestamp, taskField));
                 }
 
             if(data.GoalFields != null)
