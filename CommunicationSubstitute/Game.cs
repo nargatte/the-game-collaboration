@@ -6,6 +6,7 @@ using PlayerCore;
 using Shared.Enums;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
+using Shared.Messages.Configuration;
 
 namespace CommunicationSubstitute
 {

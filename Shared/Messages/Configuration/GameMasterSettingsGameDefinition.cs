@@ -36,7 +36,7 @@
             this.boardWidthField = ((uint)(5));
             this.taskAreaLengthField = ((uint)(7));
             this.goalAreaLengthField = ((uint)(3));
-            this.numberOfPlayersPerTeamField = ((uint)(1));
+            this.numberOfPlayersPerTeamField = ((uint)(4));
         }
 
         /// <remarks/>
