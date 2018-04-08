@@ -1,5 +1,5 @@
-﻿using GameMasterCore;
-using Shared.Components.Fields;
+﻿using Shared.Components.Fields;
+using Shared.Interfaces;
 using Shared.Messages.Communication;
 using System;
 using System.Collections.Generic;

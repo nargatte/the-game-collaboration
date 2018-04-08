@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using DTO = Shared.Messages.Communication;
 using Config = Shared.Messages.Configuration;
+using Shared.Interfaces;
 
 namespace GameMasterCoreUnitTests
 {

@@ -4,13 +4,14 @@ using System.Threading;
 using GameMasterCore;
 using PlayerCore;
 using Shared.Enums;
+using Shared.Interfaces;
 using Shared.Messages.Communication;
 
 namespace CommunicationSubstitute
 {
     public class Game
     {
-        public BlockingGameMaster GameMaster;
+        public IGameMaster GameMaster;
 
         public GameInfo GameInfo;
 

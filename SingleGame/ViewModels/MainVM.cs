@@ -16,7 +16,7 @@ namespace SingleGame.ViewModels
 			await base.InitializeAsync();
 			Model.Initialize();
 			MakeVMs();
-			//Model.Run();
+			Model.Run();
 		}
 		#endregion
 		#region IMainVM
@@ -31,10 +31,7 @@ namespace SingleGame.ViewModels
 		public MainVM() : base( new MainM() )
 		{
 		}
-		protected void MakeVMs()
-		{
-
-		}
+		protected void MakeVMs() => GameMaster = new GameMasterVM( Model.GameMaster );
 		#endregion
 	}
 }
