@@ -17,5 +17,7 @@
         <TextBlock Grid.Column="1" Text="{Binding PieceId}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Rectangle Grid.Column="2" Grid.ColumnSpan="2" Margin="2" Fill="{Binding PlayerBackground}" Stroke="Black" StrokeThickness="{Binding PlayerBorder}"/>
         <TextBlock Grid.Column="2" Text="{Binding PlayerId}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Ellipse Grid.Column="4" Margin="5" Fill="{Binding PlayerPieceBackground}"/>
+        <TextBlock Grid.Column="4" Text="{Binding PlayerPieceId}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>
