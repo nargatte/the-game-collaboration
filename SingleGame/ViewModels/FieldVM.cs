@@ -8,6 +8,7 @@ namespace SingleGame.ViewModels
 	interface IFieldVM : IViewModel
 	{
 		void Update( IField field );
+		Brush FieldBackground { get; }
 		Brush FieldBorder { get; }
 	}
 	class FieldVM : ViewModel, IFieldVM
@@ -21,10 +22,27 @@ namespace SingleGame.ViewModels
 			}
 			else if( field is IGoalField goalField )
 			{
-				if( goalField.Team == TeamColour.Blue )
+				switch( goalField.Team )
+				{
+				case TeamColour.Blue:
 					FieldBorder = Brushes.Blue;
-				else
+					break;
+				case TeamColour.Red:
 					FieldBorder = Brushes.Red;
+					break;
+				}
+				switch( goalField.Type )
+				{
+				case GoalFieldType.Unknown:
+					FieldBackground = Brushes.Gray;
+					break;
+				case GoalFieldType.Goal:
+					FieldBackground = Brushes.Yellow;
+					break;
+				case GoalFieldType.NonGoal:
+					FieldBackground = Brushes.White;
+					break;
+				}
 			}
 		}
 		private Brush fieldBorder;
@@ -33,9 +51,17 @@ namespace SingleGame.ViewModels
 			get => fieldBorder;
 			protected set => SetProperty( ref fieldBorder, value );
 		}
+		private Brush fieldBackground;
+		public virtual Brush FieldBackground
+		{
+			get => fieldBackground;
+			protected set => SetProperty( ref fieldBackground, value );
+		}
 		#endregion
 		#region FieldVM
-		public FieldVM() => FieldBorder = Brushes.Transparent;
+		public FieldVM()
+		{
+		}
 		#endregion
 	}
 }

@@ -27,7 +27,7 @@ namespace SingleGame.ViewModels
 			get => board;
 			protected set => SetProperty( ref board, value );
 		}
-		public ObservableCollection<LogArgs> Log { get; private set; } = new ObservableCollection<LogArgs>();
+		public virtual ObservableCollection<LogArgs> Log { get; private set; } = new ObservableCollection<LogArgs>();
 		#endregion
 		#region GameMasterVM
 		private IGameMaster gameMaster;

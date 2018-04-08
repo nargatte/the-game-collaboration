@@ -9,11 +9,13 @@ namespace SingleGame.Models
 	{
 		void Initialize();
 		void Run();
-		ulong BluePlayerCount { get; }
-		ulong RedPlayerCount { get; }
+		int BluePlayerCount { get; }
+		int RedPlayerCount { get; }
 		IGameMaster GameMaster { get; }
-		IReadOnlyBoard GetBlueBoard( uint i );
-		IReadOnlyBoard GetRedBoard( uint i );
+		int GetRedId( int i );
+		IReadOnlyBoard GetRedBoard( int i );
+		int GetBlueId( int i );
+		IReadOnlyBoard GetBlueBoard( int i );
 	}
 	class MainM : IMainM
 	{
@@ -24,19 +26,21 @@ namespace SingleGame.Models
 			game.Initialize();
 			game.RegisterPlayers();
 			game.CreatePlayers();
-			BluePlayerCount = game.GameInfo.blueTeamPlayers;
-			RedPlayerCount = game.GameInfo.redTeamPlayers;
+			BluePlayerCount = ( int )game.GameInfo.blueTeamPlayers;
+			RedPlayerCount = ( int )game.GameInfo.redTeamPlayers;
 		}
 		public virtual void Run() => new Thread( () =>
 		{
 			game.StartPlayers();
 			game.JoinPlayers();
 		} ).Start();
-		public virtual ulong BluePlayerCount { get; protected set; }
-		public virtual ulong RedPlayerCount { get; protected set; }
+		public virtual int BluePlayerCount { get; protected set; }
+		public virtual int RedPlayerCount { get; protected set; }
 		public virtual IGameMaster GameMaster => game.GameMaster;
-		public virtual IReadOnlyBoard GetBlueBoard( uint i ) => game.BluePlayers[ i ].State.Board;
-		public virtual IReadOnlyBoard GetRedBoard( uint i ) => game.RedPlayers[ i ].State.Board;
+		public virtual int GetRedId( int i ) => ( int )game.RedPlayers[ i ].State.Id;
+		public virtual IReadOnlyBoard GetRedBoard( int i ) => game.RedPlayers[ i ].State.Board;
+		public virtual int GetBlueId( int i ) => ( int )game.BluePlayers[ i ].State.Id;
+		public virtual IReadOnlyBoard GetBlueBoard( int i ) => game.BluePlayers[ i ].State.Board;
 		#endregion
 		#region MainM
 		private Game game;
