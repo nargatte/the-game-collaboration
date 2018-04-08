@@ -49,5 +49,12 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
         <TextBlock Grid.Column="1"  Grid.Row="2" Text="Blue Team:"/>
+        <ItemsControl Grid.Column="1" Grid.Row="3" ItemsSource="{Binding BluePlayers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding BluePlayerCount}"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </Window>
