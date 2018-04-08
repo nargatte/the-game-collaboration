@@ -11,7 +11,6 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
-using Shared.Components.Extensions;
 using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
@@ -519,7 +518,7 @@ namespace GameMasterCore
         private DTO.Field GetFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
             if (y < config.GameDefinition.GoalAreaLength
-                || y > config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
+                || y >= config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
                 return GetGoalFieldInfo(x, y);
