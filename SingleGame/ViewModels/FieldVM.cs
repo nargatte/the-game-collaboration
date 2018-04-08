@@ -13,6 +13,9 @@ namespace SingleGame.ViewModels
 		int? FieldDistance { get; }
 		Brush PieceBackground { get; }
 		int? PieceId { get; }
+		Brush PlayerBackground { get; }
+		int PlayerBorder { get; }
+		int? PlayerId { get; }
 	}
 	class FieldVM : ViewModel, IFieldVM
 	{
@@ -73,6 +76,34 @@ namespace SingleGame.ViewModels
 					break;
 				}
 			}
+			if( field.Player != null )
+			{
+				PlayerId = ( int )field.Player.Id;
+				switch( field.Player.Team )
+				{
+				case TeamColour.Blue:
+					PlayerBackground = Brushes.Blue;
+					break;
+				case TeamColour.Red:
+					PlayerBackground = Brushes.Red;
+					break;
+				}
+				switch( field.Player.Type )
+				{
+				case PlayerType.Leader:
+					PlayerBorder = 3;
+					break;
+				case PlayerType.Member:
+					PlayerBorder = 1;
+					break;
+				}
+			}
+			else
+			{
+				PlayerBackground = Brushes.Transparent;
+				PlayerBorder = 0;
+				PlayerId = null;
+			}
 		}
 		private Brush fieldBorder;
 		public virtual Brush FieldBorder
@@ -103,6 +134,24 @@ namespace SingleGame.ViewModels
 		{
 			get => pieceId;
 			protected set => SetProperty( ref pieceId, value );
+		}
+		private Brush playerBackground;
+		public virtual Brush PlayerBackground
+		{
+			get => playerBackground;
+			protected set => SetProperty( ref playerBackground, value );
+		}
+		private int playerBorder;
+		public virtual int PlayerBorder
+		{
+			get => playerBorder;
+			protected set => SetProperty( ref playerBorder, value );
+		}
+		private int? playerId;
+		public virtual int? PlayerId
+		{
+			get => playerId;
+			protected set => SetProperty( ref playerId, value );
 		}
 		#endregion
 		#region FieldVM
