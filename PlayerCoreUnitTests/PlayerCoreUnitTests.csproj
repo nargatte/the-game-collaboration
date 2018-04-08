@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mocks\MockBoardFactory.cs" />
-    <Compile Include="PlayerInstanceTests.cs" />
+    <Compile Include="PlayerInGameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateTests.cs" />
     <Compile Include="StrategyTests.cs" />
