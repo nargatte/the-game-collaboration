@@ -5,4 +5,10 @@
     <DataTemplate DataType="{x:Type VM:GameMasterVM}">
         <V:GameMasterV/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type VM:BoardVM}">
+        <V:BoardV/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type VM:FieldVM}">
+        <V:FieldV/>
+    </DataTemplate>
 </ResourceDictionary>

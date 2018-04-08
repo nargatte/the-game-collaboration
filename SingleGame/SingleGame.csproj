@@ -60,11 +60,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\BoardV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Dictionaries\StyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dictionaries\VVMDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FieldV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -88,6 +96,12 @@
     <Compile Include="ViewModels\FieldVM.cs" />
     <Compile Include="ViewModels\GameMasterVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
+    <Compile Include="Views\BoardV.xaml.cs">
+      <DependentUpon>BoardV.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FieldV.xaml.cs">
+      <DependentUpon>FieldV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GameMasterV.xaml.cs">
       <DependentUpon>GameMasterV.xaml</DependentUpon>
     </Compile>
