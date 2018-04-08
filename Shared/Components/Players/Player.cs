@@ -23,7 +23,7 @@ namespace Shared.Components.Players
 				{
 					var aField = field;
 					field = value;
-					if( aField != null )
+					if( aField != null && aField.Player == this )
 						aField.Player = null;
 					if( field != null )
 						field.Player = this;
@@ -38,9 +38,10 @@ namespace Shared.Components.Players
 			{
 				if( piece != value )
 				{
-					if( piece != null )
-						piece.Player = null;
+					var aPiece = piece;
 					piece = value;
+					if( aPiece != null && aPiece.Player == this )
+						aPiece.Player = null;
 					if( piece != null )
 						piece.Player = this;
 				}
