@@ -32,11 +32,11 @@
         {
             this.shamProbabilityField = 0.1D;
             this.placingNewPiecesFrequencyField = ((uint)(1000));
-            this.initialNumberOfPiecesField = ((uint)(4));
-            this.boardWidthField = ((uint)(5));
-            this.taskAreaLengthField = ((uint)(7));
-            this.goalAreaLengthField = ((uint)(3));
-            this.numberOfPlayersPerTeamField = ((uint)(4));
+            this.initialNumberOfPiecesField = ((uint)(10));
+            this.boardWidthField = ((uint)(6));
+            this.taskAreaLengthField = ((uint)(6));
+            this.goalAreaLengthField = ((uint)(2));
+            this.numberOfPlayersPerTeamField = ((uint)(5));
         }
 
         /// <remarks/>

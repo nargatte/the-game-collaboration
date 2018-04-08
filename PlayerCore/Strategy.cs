@@ -31,6 +31,7 @@ namespace PlayerCore
 
         const int DiscoveryCountMax = 1;
         private int DiscoveryCount = 0;
+        bool LatMoveUp = false;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
@@ -170,28 +171,67 @@ namespace PlayerCore
                 }
                 else // Piece is ok
                 {
-                    if(goalField != null && goalField.Type == Shared.Enums.GoalFieldType.Unknown) // Player is standing in goal field
+                    if(goalField != null && goalField.Type != Shared.Enums.GoalFieldType.NonGoal) // Player is standing in goal field
                     {
                         State.HoldingPiece = null;
-                        return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
+                        if (goalField.Type != Shared.Enums.GoalFieldType.NonGoal)
+                        {
+                            return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
+                        }
+                        else return GameMaster.PerformMove(SetCommunicationData(new Move
+                        {
+                            direction = DirectionToPiece(),
+                            directionSpecified = true
+                        }));
+                    }
+                    else if(goalField!=null && (goalField.Type == Shared.Enums.GoalFieldType.NonGoal))
+                    {
+                        return GameMaster.PerformMove(SetCommunicationData(new Move
+                        {
+                            direction = Shared.Enums.MoveType.Right,
+                            directionSpecified = true
+                        }));
                     }
                     else if (taskField != null) // Player is standing in task field
                     {
                         if (State.TeamColour == Shared.Enums.TeamColour.Red) // Must go up
                         {
-                            return GameMaster.PerformMove(SetCommunicationData(new Move
+                            if (State.LastLocalization != State.Location)
                             {
-                                direction = Shared.Enums.MoveType.Up,
-                                directionSpecified = true
-                            }));
+                                return GameMaster.PerformMove(SetCommunicationData(new Move
+                                {
+                                    direction = Shared.Enums.MoveType.Up,
+                                    directionSpecified = true
+                                }));
+                                
+                            }
+                            else
+                            {
+                                return GameMaster.PerformMove(SetCommunicationData(new Move
+                                {
+                                    direction = DirectionToPiece(),
+                                    directionSpecified = true
+                                }));
+                            }
                         }
                         else // Must go down
                         {
-                            return GameMaster.PerformMove(SetCommunicationData(new Move
+                            if (State.LastLocalization != State.Location)
                             {
-                                direction = Shared.Enums.MoveType.Down,
-                                directionSpecified = true
-                            }));
+                                return GameMaster.PerformMove(SetCommunicationData(new Move
+                                {
+                                    direction = Shared.Enums.MoveType.Down,
+                                    directionSpecified = true
+                                }));
+                            }
+                            else
+                            {
+                                return GameMaster.PerformMove(SetCommunicationData(new Move
+                                {
+                                    direction = DirectionToPiece(),
+                                    directionSpecified = true
+                                }));
+                            }
                         }
                     }
                     else // Must looking for unnknown goal field
