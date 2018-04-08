@@ -46,9 +46,9 @@ namespace PlayerCore
 
             IField field = lastChcekFields.OrderBy(f => f.DistanceToPiece).FirstOrDefault();
 
-            if (max_x == field.X)
+            if (max_x == field.X && State.Location.x != State.Board.Width-1)
                 return Shared.Enums.MoveType.Right;
-            if (max_y == field.Y)
+            if (max_y == field.Y && State.Location.y != State.Board.Height-1)
                 return Shared.Enums.MoveType.Up;
             if (min_x == field.X)
                 return Shared.Enums.MoveType.Left;

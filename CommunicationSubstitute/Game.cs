@@ -15,7 +15,7 @@ namespace CommunicationSubstitute
     public class Game
     {
         private const bool ShowData = true;
-        private const bool BigCosts = false;
+        private const bool BigCosts = true;
 
 
         public IGameMaster GameMaster;
@@ -135,7 +135,7 @@ namespace CommunicationSubstitute
                     TestDelay = 1000
                 };
 
-            GameMaster = new BlockingGameMaster(/*config, new BoardComponentFactory()*/);
+            GameMaster = new BlockingGameMaster(config, new BoardComponentFactory());
 
             GameMaster.Log += (s, e) =>
             {
