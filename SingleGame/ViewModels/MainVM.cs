@@ -16,7 +16,7 @@ namespace SingleGame.ViewModels
 			await base.InitializeAsync();
 			Model.Initialize();
 			MakeVMs();
-			Model.Run();
+			//Model.Run();
 		}
 		#endregion
 		#region IMainVM

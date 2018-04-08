@@ -18,7 +18,6 @@ namespace SingleGame.ViewModels
 		{
 			await base.InitializeAsync();
 			Board = new BoardVM( gameMaster.Board );
-
 		}
 		#endregion
 		#region IGameMasterVM
@@ -35,10 +34,7 @@ namespace SingleGame.ViewModels
 		public GameMasterVM( IGameMaster aGameMaster )
 		{
 			gameMaster = aGameMaster;
-			gameMaster.Log += ( s, e ) =>
-			{
-				Log.Add( e );
-			};
+			gameMaster.Log += ( s, e ) => Log.Add( e );
 		}
 		#endregion
 	}
