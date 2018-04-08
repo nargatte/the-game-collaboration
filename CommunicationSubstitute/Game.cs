@@ -27,7 +27,7 @@ namespace CommunicationSubstitute
 
         public void Initialize()
         {
-            GameMaster = new BlockingGameMaster();
+			GameMaster = new BlockingGameMaster();
 
             GameMaster.Log += (s, e) =>
             {
