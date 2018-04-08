@@ -29,19 +29,13 @@ namespace PlayerCore
             return gameMessage;
         }
 
-        const int DiscoveryCountMax = 3;
+        const int DiscoveryCountMax = 1;
         private int DiscoveryCount = 0;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
             var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp).OfType<ITaskField>();
-            //foreach (var taskField in fieldsSortedByTime)
-            //{
-            //    if (taskField.Timestamp == DateTime.MinValue)
-            //        break;
-            //    Console.WriteLine(taskField.Timestamp.Ticks + "  " + taskField.Timestamp.ToString());
-            //}
-            var lastChcekFields = fieldsSortedByTime.Where(f => f.Timestamp.Ticks >= fieldsSortedByTime.FirstOrDefault().Timestamp.Ticks - 100000000);
+            var lastChcekFields = fieldsSortedByTime.Take(State.LastDiscoveryCount);
             if (lastChcekFields.Count() < 4)
                 throw new Exception("To little descoverd fields");
 
