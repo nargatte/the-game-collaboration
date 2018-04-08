@@ -12,6 +12,10 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = true)]
     public abstract partial class Field : Location
     {
+        public override string ToString()
+        {
+            return $"{base.ToString()}, {nameof(timestamp)}: {timestamp}, {nameof(playerId)}: {playerId}, {nameof(playerIdSpecified)}: {playerIdSpecified}";
+        }
 
         private System.DateTime timestampField;
 

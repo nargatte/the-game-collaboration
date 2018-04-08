@@ -9,6 +9,13 @@
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = false)]
     public partial class Data : PlayerMessage
     {
+        public override string ToString()
+        {
+            return $"{nameof(TaskFields)}: [\n{string.Join("\n", (object[]) (TaskFields ?? new TaskField[0]))}\n],\n" +
+                   $" {nameof(GoalFields)}: [\n{string.Join("\n", (object[])(GoalFields ?? new GoalField[0]))}\n],\n" +
+                   $" {nameof(Pieces)}: [\n{string.Join("\n", (object[])(Pieces ?? new Piece[0]))}\n],\n" +
+                   $" {nameof(PlayerLocation)}: {PlayerLocation}, {nameof(gameFinished)}: {gameFinished}";
+        }
 
         private TaskField[] taskFieldsField;
 

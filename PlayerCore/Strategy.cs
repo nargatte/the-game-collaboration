@@ -30,7 +30,7 @@ namespace PlayerCore
         }
 
         const int DiscoveryCountMax = 3;
-        private int DiscoveryCount = DiscoveryCountMax;
+        private int DiscoveryCount = 0;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
