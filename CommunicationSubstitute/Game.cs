@@ -135,7 +135,7 @@ namespace CommunicationSubstitute
                     TestDelay = 1000
                 };
 
-            GameMaster = new BlockingGameMaster(/*config, new BoardComponentFactory()*/);
+            GameMaster = new BlockingGameMaster( /*config, new BoardComponentFactory()*/ );
 
             GameMaster.Log += (s, e) =>
             {
