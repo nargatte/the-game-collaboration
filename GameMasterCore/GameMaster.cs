@@ -197,10 +197,7 @@ namespace GameMasterCore
                         break;
                 }
 
-                targetY = (int) Math.Max(Math.Min(targetY, board.Height-1), 0);
-                targetX = (int) Math.Max(Math.Min(targetX, board.Width-1), 0);
-
-                IField targetField = board.GetField((uint)targetX, (uint)targetY);
+                IField targetField = targetX < 0 || targetX >= board.Width || targetY < 0 || targetY >= board.Height ? null : board.GetField((uint)targetX, (uint)targetY);
                 //check for invalid moves
                 if (targetField == null
                     || (targetField is IGoalField gf && gf.Team != playerPawn.Team))
