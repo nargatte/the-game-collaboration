@@ -22,7 +22,7 @@ namespace Shared.Components.Fields
 				{
 					var aPiece = piece;
 					piece = value;
-					if( aPiece != null )
+					if( aPiece != null && aPiece.Field == this )
 						aPiece.Field = null;
 					if( piece != null )
 						piece.Field = this;

@@ -1,8 +1,9 @@
-﻿using Shared.Components.Events;
+﻿using Shared.Components.Boards;
+using Shared.Components.Events;
 using Shared.Messages.Communication;
 using System;
 
-namespace GameMasterCore
+namespace Shared.Interfaces
 {
     public interface IGameMaster
     {
@@ -15,8 +16,8 @@ namespace GameMasterCore
         RegisteredGames PerformConfirmGameRegistration();
         PlayerMessage PerformJoinGame(JoinGame joinGame);
         event EventHandler<LogArgs> Log;
-
+		IReadOnlyBoard Board { get; }
 #warning TEMP, to change in future stages
         Game GetGame(string guid);
-    }
+	}
 }

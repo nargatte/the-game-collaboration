@@ -16,13 +16,15 @@ using Config = Shared.Messages.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
+using Shared.Interfaces;
 
 namespace GameMasterCore
 {
-    public class BlockingGameMaster : IGameMaster, IReadOnlyBoard
+    public class BlockingGameMaster : IGameMaster//, IReadOnlyBoard
     {
         Random random = new Random(123456);
-        IBoard board;
+		public virtual IReadOnlyBoard Board => board;
+        public IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         int pieceIDcounter = 0;
@@ -194,6 +196,10 @@ namespace GameMasterCore
                     default:
                         break;
                 }
+
+                targetY = (int) Math.Max(Math.Min(targetY, board.Height), 0);
+                targetX = (int) Math.Max(Math.Min(targetX, board.Width), 0);
+
                 IField targetField = board.GetField((uint)targetX, (uint)targetY);
                 //check for invalid moves
                 if (targetField == null
@@ -535,7 +541,7 @@ namespace GameMasterCore
                 timestamp = DateTime.Now,
 
             };
-            if (currentField.Piece != null) //piece on the board
+            if (currentField?.Piece != null) //piece on the board
             {
                 fieldToReturn.pieceId = currentField.Piece.Id;
                 piecesToReturn.Add(new DTO.Piece
@@ -545,7 +551,7 @@ namespace GameMasterCore
                     timestamp = DateTime.Now
                 });
             }
-            if (currentField.Player != null)
+            if (currentField?.Player != null)
             {
                 fieldToReturn.playerId = (ulong)currentField.Player.Id;
                 fieldToReturn.pieceIdSpecified = true;
@@ -693,7 +699,7 @@ namespace GameMasterCore
         {
             if (redGoalsToScore == 0 || blueGoalsToScore == 0)
             {
-                IPlayer player = GetPlayer(GetPlayerIdFromGuid(guid));
+                IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
                 OnLog(win ? "victory!" : "defeat", DateTime.Now, 1, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
@@ -733,74 +739,74 @@ namespace GameMasterCore
         #endregion
 
         #region IReadOnlyBoard
-        public uint Width => board.Width;
+        //public uint Width => board.Width;
 
-        public uint TasksHeight => board.TasksHeight;
+        //public uint TasksHeight => board.TasksHeight;
 
-        public uint GoalsHeight => board.GoalsHeight;
+        //public uint GoalsHeight => board.GoalsHeight;
 
-        public uint Height => board.Height;
+        //public uint Height => board.Height;
 
-        public IEnumerable<IField> Fields => board.Fields;
+        //public IEnumerable<IField> Fields => board.Fields;
 
-        public IEnumerable<IPiece> Pieces => board.Pieces;
+        //public IEnumerable<IPiece> Pieces => board.Pieces;
 
-        public IEnumerable<IPlayer> Players => board.Players;
+        //public IEnumerable<IPlayer> Players => board.Players;
 
-        public IBoardComponentFactory Factory => board.Factory;
+        //public IBoardComponentFactory Factory => board.Factory;
 
-        public event EventHandler<FieldChangedArgs> FieldChanged
-        {
-            add
-            {
-                board.FieldChanged += value;
-            }
+        //public event EventHandler<FieldChangedArgs> FieldChanged
+        //{
+        //    add
+        //    {
+        //        board.FieldChanged += value;
+        //    }
 
-            remove
-            {
-                board.FieldChanged -= value;
-            }
-        }
+        //    remove
+        //    {
+        //        board.FieldChanged -= value;
+        //    }
+        //}
 
-        public event EventHandler<PieceChangedArgs> PieceChanged
-        {
-            add
-            {
-                board.PieceChanged += value;
-            }
+        //public event EventHandler<PieceChangedArgs> PieceChanged
+        //{
+        //    add
+        //    {
+        //        board.PieceChanged += value;
+        //    }
 
-            remove
-            {
-                board.PieceChanged -= value;
-            }
-        }
+        //    remove
+        //    {
+        //        board.PieceChanged -= value;
+        //    }
+        //}
 
-        public event EventHandler<PlayerChangedArgs> PlayerChanged
-        {
-            add
-            {
-                board.PlayerChanged += value;
-            }
+        //public event EventHandler<PlayerChangedArgs> PlayerChanged
+        //{
+        //    add
+        //    {
+        //        board.PlayerChanged += value;
+        //    }
 
-            remove
-            {
-                board.PlayerChanged -= value;
-            }
-        }
-        public IField GetField(uint x, uint y)
-        {
-            return board.GetField(x, y);
-        }
+        //    remove
+        //    {
+        //        board.PlayerChanged -= value;
+        //    }
+        //}
+        //public IField GetField(uint x, uint y)
+        //{
+        //    return board.GetField(x, y);
+        //}
 
-        public IPiece GetPiece(ulong id)
-        {
-            return board.GetPiece(id);
-        }
+        //public IPiece GetPiece(ulong id)
+        //{
+        //    return board.GetPiece(id);
+        //}
 
-        public IPlayer GetPlayer(ulong id)
-        {
-            return board.GetPlayer(id);
-        }
+        //public IPlayer GetPlayer(ulong id)
+        //{
+        //    return board.GetPlayer(id);
+        //}
         #endregion
     }
 }

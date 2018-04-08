@@ -59,7 +59,9 @@
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
     <Compile Include="Components\Factories\BoardComponentFactory.cs" />
+    <Compile Include="Components\Factories\BoardFactory.cs" />
     <Compile Include="Components\Factories\IBoardComponentFactory.cs" />
+    <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Fields\Field.cs" />
     <Compile Include="Components\Fields\GoalField.cs" />
     <Compile Include="Components\Fields\TaskField.cs" />

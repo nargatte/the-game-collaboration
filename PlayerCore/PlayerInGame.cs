@@ -1,5 +1,6 @@
 ﻿using System;
-using GameMasterCore;
+using Shared.Components.Factories;
+using Shared.Interfaces;
 using Shared.Messages.Communication;
 
 namespace PlayerCore
@@ -10,19 +11,19 @@ namespace PlayerCore
 
         private Strategy Strategy { get; }
 
-        private State State { get; }
+        public State State { get; }
 
         public PlayerInGame(IGameMaster gameMaster, Game game, ulong playerId, string playerGuid, ulong gameId, EventHandler endGame)
         {
             this.GameMaster = gameMaster;
-            State = new State(game, playerId, gameId, playerGuid);
+            State = new State(game, playerId, gameId, playerGuid, new BoardFactory());
             Strategy = new Strategy(gameMaster, State);
             State.EndGame += endGame;
         }
 
-        public void PerformAction()
+        public Data PerformAction()
         {
-            Strategy.PerformAction();
+            return Strategy.PerformAction();
         }
 
 
