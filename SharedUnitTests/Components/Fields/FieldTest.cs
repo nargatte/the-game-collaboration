@@ -26,7 +26,7 @@ namespace SharedUnitTests.Components.Fields
 		private static readonly IPlayer playerExample2;
 		private static readonly object[] constructorParameters;
 		private static readonly object[] parametersWithSetParameters;
-		private static readonly object[] parametersWithSetPlayerParameters;
+		private static readonly object[] parametersWithSetPlayerParameter;
 		static FieldTest()
 		{
 			dateTimeExample = DateTime.Now;
@@ -36,20 +36,20 @@ namespace SharedUnitTests.Components.Fields
 			playerExample2 = mockPlayer.Object;
 			constructorParameters = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null },
-				new object[] { 1u, 3u, dateTimeExample, playerExample }
+				new object[] { 0u, 1u, default( DateTime ), null },
+				new object[] { 2u, 3u, dateTimeExample, playerExample }
 			};
 			parametersWithSetParameters = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null, 4u, 6u, dateTimeExample },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, 5u, 7u, default( DateTime ) }
+				new object[] { 0u, 1u, default( DateTime ), null, 4u, 6u, dateTimeExample },
+				new object[] { 2u, 3u, dateTimeExample, playerExample, 5u, 7u, default( DateTime ) }
 			};
-			parametersWithSetPlayerParameters = new object[]
+			parametersWithSetPlayerParameter = new object[]
 			{
-				new object[] { 0u, 2u, default( DateTime ), null, null },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, null },
-				new object[] { 0u, 2u, default( DateTime ), null, playerExample2 },
-				new object[] { 1u, 3u, dateTimeExample, playerExample, playerExample2 }
+				new object[] { 0u, 1u, default( DateTime ), null, null },
+				new object[] { 2u, 3u, dateTimeExample, playerExample, null },
+				new object[] { 4u, 5u, default( DateTime ), null, playerExample2 },
+				new object[] { 6u, 7u, dateTimeExample, playerExample, playerExample2 }
 			};
 		}
 		#endregion
@@ -82,7 +82,7 @@ namespace SharedUnitTests.Components.Fields
 				Assert.AreEqual( aTimestamp, sut.Timestamp );
 			} );
 		}
-		[TestCaseSource( nameof( parametersWithSetPlayerParameters ) )]
+		[TestCaseSource( nameof( parametersWithSetPlayerParameter ) )]
 		public void SetPlayerTracksValueAndLinksObjects( uint x, uint y, DateTime timestamp, IPlayer player, IPlayer value )
 		{
 			var sut = new FieldTestType( x, y, timestamp, player )
