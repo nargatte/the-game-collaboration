@@ -1,0 +1,23 @@
+﻿<Window x:Class="SingleGame.MainW"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:VM="clr-namespace:SingleGame.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Title="Single Game"
+        Height="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenHeightKey}}"
+        Width="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenWidthKey}}"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <VM:MainVM/>
+    </Window.DataContext>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding InitializeAsyncCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid/>
+</Window>
