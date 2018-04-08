@@ -79,7 +79,6 @@ namespace PlayerCore
 
         public void ReceiveData(Data data)
         {
-            Console.WriteLine($"Data players id {Id}");
             Console.WriteLine(data);
 
             HoldingPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);

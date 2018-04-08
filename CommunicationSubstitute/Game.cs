@@ -36,6 +36,8 @@ namespace CommunicationSubstitute
             };
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
+            registerGame.GameInfo[0].blueTeamPlayers = 1;
+            registerGame.GameInfo[0].redTeamPlayers = 1;
             GameInfo = registerGame.GameInfo[0];
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];

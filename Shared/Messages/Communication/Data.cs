@@ -11,7 +11,7 @@
     {
         public override string ToString()
         {
-            return $"{nameof(TaskFields)}: [\n{string.Join("\n", (object[]) (TaskFields ?? new TaskField[0]))}\n],\n" +
+            return $"{base.ToString()}, {nameof(TaskFields)}: [\n{string.Join("\n", (object[]) (TaskFields ?? new TaskField[0]))}\n],\n" +
                    $" {nameof(GoalFields)}: [\n{string.Join("\n", (object[])(GoalFields ?? new GoalField[0]))}\n],\n" +
                    $" {nameof(Pieces)}: [\n{string.Join("\n", (object[])(Pieces ?? new Piece[0]))}\n],\n" +
                    $" {nameof(PlayerLocation)}: {PlayerLocation}, {nameof(gameFinished)}: {gameFinished}";
