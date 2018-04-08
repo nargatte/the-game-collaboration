@@ -6,7 +6,7 @@
              mc:Ignorable="d" >
     <DockPanel>
         <Rectangle Fill="{Binding FieldBackground}" Stroke="{Binding FieldBorder}" StrokeThickness="2">
-
+            
         </Rectangle>
     </DockPanel>
 </UserControl>

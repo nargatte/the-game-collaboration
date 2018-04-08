@@ -224,7 +224,14 @@ namespace GameMasterCore
                 }
 
                 //move
-                board.SetPlayer(board.Factory.CreatePlayer(playerPawn.Id, playerPawn.Team, playerPawn.Type, DateTime.Now, targetField, playerPawn.Piece));
+                board.SetPlayer(board.Factory.CreatePlayer(
+                    playerPawn.Id,
+                    playerPawn.Team,
+                    playerPawn.Type,
+                    DateTime.Now,
+                    targetField,
+                    playerPawn.Piece
+                    ));
 
                 //return information about current field and new player location
                 var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
@@ -529,6 +536,7 @@ namespace GameMasterCore
                 x = (uint)x,
                 y = (uint)y,
                 timestamp = DateTime.Now,
+
             };
             if (currentField?.Piece != null) //piece on the board
             {
@@ -560,6 +568,7 @@ namespace GameMasterCore
             fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
+                Where(fieldPiece => fieldPiece.Field != null).
                 Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
 
             pieces = piecesToReturn.ToArray();
@@ -568,18 +577,20 @@ namespace GameMasterCore
 
         private DTO.GoalField GetGoalFieldInfo(int x, int y)
         {
-            var relevantField = board.GetField((uint)x, (uint)y);
+            var relevantField = board.GetField((uint)x, (uint)y) as IGoalField;
             var goalFieldToReturn = new DTO.GoalField
             {
-                playerId = relevantField.Player?.Id ?? 0,
-                playerIdSpecified = relevantField.Player != null,
-                timestamp = relevantField.Timestamp,
+                timestamp = DateTime.Now,
                 type = GoalFieldType.Unknown,
-                team = GetTeamColorFromCoordinateY(y),
+                team = relevantField.Team,
                 x = (uint)x,
                 y = (uint)y
             };
-
+            if(relevantField.Player != null)
+            {
+                goalFieldToReturn.playerId = relevantField.Player.Id;
+                goalFieldToReturn.playerIdSpecified = true;
+            }
             return goalFieldToReturn;
         }
         #endregion
