@@ -47,7 +47,7 @@ namespace SingleGame.ViewModels
 			RedPlayerCount = Model.RedPlayerCount;
 			for( int i = 0; i < RedPlayerCount; ++i )
 			{
-				//RedPlayers.Add( new PlayerVM( Model.GetRedBoard( i ), Model.GetRedId( i ) ) );
+				RedPlayers.Add( new PlayerVM( Model.GetRedBoard( i ), Model.GetRedId( i ) ) );
 			}
 		}
 		#endregion

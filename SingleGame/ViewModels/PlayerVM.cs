@@ -6,7 +6,7 @@ namespace SingleGame.ViewModels
 {
 	interface IPlayerVM : IViewModel
 	{
-		int Id { get; }
+		string Id { get; }
 		IBoardVM Board { get; }
 	}
 	class PlayerVM : ViewModel, IPlayerVM
@@ -19,7 +19,7 @@ namespace SingleGame.ViewModels
 		}
 		#endregion
 		#region IPlayerVM
-		public virtual int Id { get; }
+		public virtual string Id { get; }
 		private IBoardVM board;
 		public virtual IBoardVM Board
 		{
@@ -32,7 +32,7 @@ namespace SingleGame.ViewModels
 		public PlayerVM( IReadOnlyBoard aBoardSource, int id )
 		{
 			boardSource = aBoardSource;
-			Id = id;
+			Id = id.ToString();
 		}
 		protected void MakeBoardVM() => Board = new BoardVM( boardSource );
 		#endregion

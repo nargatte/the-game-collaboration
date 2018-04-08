@@ -25,9 +25,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock>
-                <Run Text="Player "/>
-                <Run Text="{Binding Id}"/>
+            <TextBlock Text="Player ">
+                <Run Text="{Binding Id, Mode=OneWay}"/>
             </TextBlock>
             <ContentControl Grid.Row="1" Content="{Binding Board}"/>
         </Grid>
