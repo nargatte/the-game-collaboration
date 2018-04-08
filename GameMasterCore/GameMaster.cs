@@ -197,8 +197,8 @@ namespace GameMasterCore
                         break;
                 }
 
-                targetY = (int) Math.Max(Math.Min(targetY, board.Height), 0);
-                targetX = (int) Math.Max(Math.Min(targetX, board.Width), 0);
+                targetY = (int) Math.Max(Math.Min(targetY, board.Height-1), 0);
+                targetX = (int) Math.Max(Math.Min(targetX, board.Width-1), 0);
 
                 IField targetField = board.GetField((uint)targetX, (uint)targetY);
                 //check for invalid moves
@@ -546,13 +546,15 @@ namespace GameMasterCore
             if (currentField?.Player != null)
             {
                 fieldToReturn.playerId = (ulong)currentField.Player.Id;
+                fieldToReturn.playerIdSpecified = true;
                 if (board.GetPlayer((ulong)currentField.Player.Id).Piece != null) //check for held piece
                     piecesToReturn.Add(new DTO.Piece
                     {
                         id = board.GetPlayer((ulong)currentField.Player.Id).Piece.Id,
                         type = PieceType.Unknown,
                         timestamp = DateTime.Now,
-                        playerId = (ulong)currentField.Player.Id
+                        playerId = (ulong)currentField.Player.Id,
+                        playerIdSpecified = true
                     });
 
             }

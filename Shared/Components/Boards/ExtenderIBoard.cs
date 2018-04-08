@@ -22,7 +22,7 @@ namespace Shared.Components.Boards
             if(player.Field == null && field != null)
                 throw new Exception("Field in player is null after assinging not-null");
             board.SetPlayer(player);
-            Console.WriteLine($"SetPlayerLocation id={id}, new location {location.x} {location.y}");
+            //Console.WriteLine($"SetPlayerLocation id={id}, new location {location.x} {location.y}");
         }
     }
 }
