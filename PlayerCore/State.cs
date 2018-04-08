@@ -40,6 +40,7 @@ namespace PlayerCore
                 return location;
             }
         }
+        public Location LastLocalization;
 
         public IField Field
         {
@@ -93,6 +94,7 @@ namespace PlayerCore
             HoldingPiece = dataPiece;
 
             LastDiscoveryCount = (data.TaskFields?.Length ?? 0) > 2 ? data.TaskFields.Length : LastDiscoveryCount;
+            LastLocalization = Location;
 
             if (data.gameFinished == true)
             {

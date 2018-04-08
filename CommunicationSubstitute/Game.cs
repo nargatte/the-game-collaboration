@@ -144,8 +144,8 @@ namespace CommunicationSubstitute
             };
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
-            registerGame.GameInfo[0].blueTeamPlayers = 1;
-            registerGame.GameInfo[0].redTeamPlayers = 0;
+            registerGame.GameInfo[0].blueTeamPlayers = 2;
+            registerGame.GameInfo[0].redTeamPlayers = 2;
             GameInfo = registerGame.GameInfo[0];
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
