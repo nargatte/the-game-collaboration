@@ -11,7 +11,7 @@ namespace PlayerCore
 
         private Strategy Strategy { get; }
 
-        private State State { get; }
+        public State State { get; }
 
         public PlayerInGame(IGameMaster gameMaster, Game game, ulong playerId, string playerGuid, ulong gameId, EventHandler endGame)
         {
@@ -21,9 +21,9 @@ namespace PlayerCore
             State.EndGame += endGame;
         }
 
-        public void PerformAction()
+        public Data PerformAction()
         {
-            Strategy.PerformAction();
+            return Strategy.PerformAction();
         }
 
 

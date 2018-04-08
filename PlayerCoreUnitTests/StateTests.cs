@@ -36,23 +36,23 @@ namespace PlayerCoreUnitTests
         }
 
 
-        //[TestCase(5u, 15u)]
-        //[TestCase(3u, 11u)]
-        //[TestCase(0u, 17u)]
-        //public void ReceiveData_NewLocation_LocationChange(uint x, uint y)
-        //{
-        //    State state = GetStateWithLocation(1,x,y);
-        //    Data data = GetDataWithLocation(x, y);
-            
-        //    state.ReceiveData(data);
+        [TestCase(5u, 15u)]
+        [TestCase(3u, 11u)]
+        [TestCase(0u, 17u)]
+        public void ReceiveData_NewLocation_LocationChange(uint x, uint y)
+        {
+            State state = GetStateWithLocation(1, x, y);
+            Data data = GetDataWithLocation(x, y);
 
-        //    Assert.Multiple(() =>
-        //    {
-        //        Assert.AreEqual(x, state.Board.GetPlayer(1).Field.X);
-        //        Assert.AreEqual(y, state.Board.GetPlayer(1).Field.Y);
-        //    });
+            state.ReceiveData(data);
 
-        //}
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(x, state.Board.GetPlayer(1).Field.X);
+                Assert.AreEqual(y, state.Board.GetPlayer(1).Field.Y);
+            });
+
+        }
 
         [TestCase(1u)]
         [TestCase(2u)]

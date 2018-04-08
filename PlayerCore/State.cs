@@ -82,7 +82,7 @@ namespace PlayerCore
 
         public void ReceiveData(Data data)
         {
-            HoldingPiece = data.Pieces.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
+            HoldingPiece = data.Pieces?.FirstOrDefault(p => p.playerIdSpecified == true && p.playerId == Id);
 
             if (data.gameFinished == true)
             {
@@ -95,44 +95,45 @@ namespace PlayerCore
             if (data.PlayerLocation != null)
             {
                 Board.SetPlayerLocation(Id, data.PlayerLocation, DateTime.Now);
-
             }
 
-
-            foreach (Shared.Messages.Communication.Piece p in data.Pieces)
-            {
-                var field = data.TaskFields.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
-                ITaskField taskField = null;
-                if(field != null)
-                    taskField = (ITaskField)Board.GetField(field.x, field.y);
-
-                if (taskField != null)
-                    Board.SetPiece(Board.Factory.CreateFieldPiece(p.id, p.type, p.timestamp, taskField));
-            }
-
-            foreach (var task in data.TaskFields)
-            {
-                IPlayer player = null;
-                if(task.playerIdSpecified == true)
+            if(data.Pieces != null)
+                foreach (Shared.Messages.Communication.Piece p in data.Pieces)
                 {
-                    Board.SetPlayerLocation(task.playerId, new Location() { x = task.x, y = task.y }, task.timestamp);
-                    player = Board.GetPlayer(task.playerId);
+                    var field = data.TaskFields.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
+                    ITaskField taskField = null;
+                    if(field != null)
+                        taskField = (ITaskField)Board.GetField(field.x, field.y);
+
+                    if (taskField != null)
+                        Board.SetPiece(Board.Factory.CreateFieldPiece(p.id, p.type, p.timestamp, taskField));
                 }
 
-                Board.SetField(Board.Factory.MakeTaskField(task.x, task.y, task.timestamp, player, task.distanceToPiece));
-            }
-
-            foreach (var goal in data.GoalFields)
-            {
-                IPlayer player = null;
-                if (goal.playerIdSpecified == true)
+            if(data.TaskFields != null)
+                foreach (var task in data.TaskFields)
                 {
-                    Board.SetPlayerLocation(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
-                    player = Board.GetPlayer(goal.playerId);
+                    IPlayer player = null;
+                    if(task.playerIdSpecified == true)
+                    {
+                        Board.SetPlayerLocation(task.playerId, new Location() { x = task.x, y = task.y }, task.timestamp);
+                        player = Board.GetPlayer(task.playerId);
+                    }
+
+                    Board.SetField(Board.Factory.MakeTaskField(task.x, task.y, task.timestamp, player, task.distanceToPiece));
                 }
 
-                Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
-            }
+            if(data.GoalFields != null)
+                foreach (var goal in data.GoalFields)
+                {
+                    IPlayer player = null;
+                    if (goal.playerIdSpecified == true)
+                    {
+                        Board.SetPlayerLocation(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
+                        player = Board.GetPlayer(goal.playerId);
+                    }
+
+                    Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
+                }
         }
     }
 }
