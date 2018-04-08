@@ -17,7 +17,7 @@ namespace SingleGame.ViewModels
 		protected override async Task InitializeAsync()
 		{
 			await base.InitializeAsync();
-			Board = new BoardVM( gameMaster.Board );
+			MakeBoardVM();
 		}
 		#endregion
 		#region IGameMasterVM
@@ -34,8 +34,10 @@ namespace SingleGame.ViewModels
 		public GameMasterVM( IGameMaster aGameMaster )
 		{
 			gameMaster = aGameMaster;
-			gameMaster.Log += ( s, e ) => Log.Add( e );
+			Initialize();
 		}
+		protected void Initialize() => gameMaster.Log += ( s, e ) => Log.Add( e );
+		protected void MakeBoardVM() => Board = new BoardVM( gameMaster.Board );
 		#endregion
 	}
 }
