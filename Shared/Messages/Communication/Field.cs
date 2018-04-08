@@ -14,7 +14,7 @@
     {
         public override string ToString()
         {
-            return $"{base.ToString()}, {nameof(timestamp)}: {timestamp}, {nameof(playerId)}: {playerId}, {nameof(playerIdSpecified)}: {playerIdSpecified}";
+            return $"{base.ToString()}, {nameof(playerId)}: {playerId}, {nameof(playerIdSpecified)}: {playerIdSpecified}";
         }
 
         private System.DateTime timestampField;

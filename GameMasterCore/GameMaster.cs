@@ -234,6 +234,7 @@ namespace GameMasterCore
 
                 //return information about current field and new player location
                 var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
+
                 DTO.Data result = new DTO.Data
                 {
                     playerId = playerPawn.Id,
@@ -277,6 +278,7 @@ namespace GameMasterCore
                     {
                         id = piece.Id,
                         playerId = playerPawn.Id,
+                        playerIdSpecified = true,
                         timestamp = DateTime.Now,
                         type = PieceType.Unknown
                     }
@@ -392,6 +394,7 @@ namespace GameMasterCore
                         id = heldPiecePawn.Id,
                         timestamp = DateTime.Now,
                         playerId = playerPawn.Id,
+                        playerIdSpecified = true,
                         type = heldPiecePawn.Type
                     }
                 }
@@ -542,6 +545,7 @@ namespace GameMasterCore
             if (currentField?.Piece != null) //piece on the board
             {
                 fieldToReturn.pieceId = currentField.Piece.Id;
+                fieldToReturn.pieceIdSpecified = true;
                 piecesToReturn.Add(new DTO.Piece
                 {
                     id = currentField.Piece.Id,

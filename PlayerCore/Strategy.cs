@@ -29,19 +29,13 @@ namespace PlayerCore
             return gameMessage;
         }
 
-        const int DiscoveryCountMax = 3;
+        const int DiscoveryCountMax = 1;
         private int DiscoveryCount = 0;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
             var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp).OfType<ITaskField>();
-            //foreach (var taskField in fieldsSortedByTime)
-            //{
-            //    if (taskField.Timestamp == DateTime.MinValue)
-            //        break;
-            //    Console.WriteLine(taskField.Timestamp.Ticks + "  " + taskField.Timestamp.ToString());
-            //}
-            var lastChcekFields = fieldsSortedByTime.Where(f => f.Timestamp.Ticks >= fieldsSortedByTime.FirstOrDefault().Timestamp.Ticks - 100000000);
+            var lastChcekFields = fieldsSortedByTime.Take(State.LastDiscoveryCount);
             if (lastChcekFields.Count() < 4)
                 throw new Exception("To little descoverd fields");
 
@@ -52,9 +46,9 @@ namespace PlayerCore
 
             IField field = lastChcekFields.OrderBy(f => f.DistanceToPiece).FirstOrDefault();
 
-            if (max_x == field.X)
+            if (max_x == field.X && State.Location.x != State.Board.Width-1)
                 return Shared.Enums.MoveType.Right;
-            if (max_y == field.Y)
+            if (max_y == field.Y && State.Location.y != State.Board.Height-1)
                 return Shared.Enums.MoveType.Up;
             if (min_x == field.X)
                 return Shared.Enums.MoveType.Left;
@@ -171,12 +165,14 @@ namespace PlayerCore
                 }
                 else if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham) // Bad piece, put it back
                 {
+                    State.HoldingPiece = null;
                     return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                 }
                 else // Piece is ok
                 {
                     if(goalField != null && goalField.Type == Shared.Enums.GoalFieldType.Unknown) // Player is standing in goal field
                     {
+                        State.HoldingPiece = null;
                         return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
                     }
                     else if (taskField != null) // Player is standing in task field
