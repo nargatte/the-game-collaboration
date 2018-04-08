@@ -15,6 +15,8 @@ namespace CommunicationSubstitute
     public class Game
     {
         private const bool ShowData = true;
+        private const bool BigCosts = false;
+
 
         public IGameMaster GameMaster;
 
@@ -122,17 +124,18 @@ namespace CommunicationSubstitute
         public void Initialize()
         {
             var config = GenerateDefaultConfig();
-            config.ActionCosts = new GameMasterSettingsActionCosts
-            {
-                DiscoverDelay = 1000,
-                KnowledgeExchangeDelay = 1000,
-                MoveDelay = 1000,
-                PickUpDelay = 1000,
-                PlacingDelay = 1000,
-                TestDelay = 1000
-            };
+            if(BigCosts)
+                config.ActionCosts = new GameMasterSettingsActionCosts
+                {
+                    DiscoverDelay = 1000,
+                    KnowledgeExchangeDelay = 1000,
+                    MoveDelay = 1000,
+                    PickUpDelay = 1000,
+                    PlacingDelay = 1000,
+                    TestDelay = 1000
+                };
 
-            GameMaster = new BlockingGameMaster(config, new BoardComponentFactory());
+            GameMaster = new BlockingGameMaster(/*config, new BoardComponentFactory()*/);
 
             GameMaster.Log += (s, e) =>
             {
