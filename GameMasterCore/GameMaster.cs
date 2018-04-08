@@ -22,7 +22,7 @@ namespace GameMasterCore
     public class BlockingGameMaster : IGameMaster//, IReadOnlyBoard
     {
         Random random = new Random(123456);
-		public virtual IReadOnlyBoard Board => board;
+        public virtual IReadOnlyBoard Board => board;
         public IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
@@ -347,11 +347,13 @@ namespace GameMasterCore
                     };
                 }
 
-                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y);
+                //remove the piece from the player
+                board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                //get piece-less goal field to return
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
-                    //if goal, make a non-goal and remove piece from the player
-                    board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                    //if goal, make a non-goal
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
                     //and decrease goals to go
                     if (targetGoalField.Team == TeamColour.Red)
@@ -521,7 +523,7 @@ namespace GameMasterCore
                 || y >= config.GameDefinition.GoalAreaLength + config.GameDefinition.TaskAreaLength)
             {
                 pieces = null;
-                return GetGoalFieldInfo(x, y);
+                return GetGoalFieldInfo(x, y, out pieces);
             }
             return GetTaskFieldInfo(x, y, out pieces);
         }
@@ -574,8 +576,9 @@ namespace GameMasterCore
             return fieldToReturn;
         }
 
-        private DTO.GoalField GetGoalFieldInfo(int x, int y)
+        private DTO.GoalField GetGoalFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
+            pieces = null;
             var relevantField = board.GetField((uint)x, (uint)y) as IGoalField;
             var goalFieldToReturn = new DTO.GoalField
             {
@@ -585,10 +588,22 @@ namespace GameMasterCore
                 x = (uint)x,
                 y = (uint)y
             };
-            if(relevantField.Player != null)
+            if (relevantField.Player != null)
             {
                 goalFieldToReturn.playerId = relevantField.Player.Id;
                 goalFieldToReturn.playerIdSpecified = true;
+                if (relevantField.Player.Piece != null)
+                {
+                    var heldPiece = relevantField.Player.Piece;
+                    pieces = new DTO.Piece[]{ new DTO.Piece()
+                    {
+                        id = heldPiece.Id,
+                        playerId = heldPiece.Player.Id,
+                        playerIdSpecified = true,
+                        timestamp = DateTime.Now,
+                        type = PieceType.Unknown
+                    }};
+                }
             }
             return goalFieldToReturn;
         }
