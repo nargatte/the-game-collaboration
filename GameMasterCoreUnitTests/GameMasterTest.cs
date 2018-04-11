@@ -221,7 +221,7 @@ namespace GameMasterCoreUnitTests
         [TestMethod]
         public void MoveTest_Right()
         {
-            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 1234);
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 gameName = "easy",
@@ -247,9 +247,58 @@ namespace GameMasterCoreUnitTests
         }
 
         [TestMethod]
+        public void MoveTest_PlayerCollision()
+        {
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 1234);
+            DTO.JoinGame joinGameMessage = new DTO.JoinGame()
+            {
+                gameName = "easy",
+                preferredRole = Shared.Enums.PlayerType.Leader,
+                preferredTeam = Shared.Enums.TeamColour.Blue
+            };
+            DTO.JoinGame joinGameMessage2 = new DTO.JoinGame()
+            {
+                gameName = "easy",
+                preferredRole = Shared.Enums.PlayerType.Leader,
+                preferredTeam = Shared.Enums.TeamColour.Red
+            };
+            DTO.Move moveMessage = new DTO.Move()
+            {
+                gameId = 1,
+                direction = Shared.Enums.MoveType.Up,
+                directionSpecified = true,
+            };
+            DTO.Move moveMessage2 = new DTO.Move()
+            {
+                gameId = 1,
+                direction = Shared.Enums.MoveType.Down,
+                directionSpecified = true,
+            };
+
+            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
+            var playerMessage2 = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage2);
+            var game = gameMaster.GetGame(playerMessage.privateGuid);
+            var game2 = gameMaster.GetGame(playerMessage2.privateGuid);
+            moveMessage.playerGuid = playerMessage.privateGuid;
+            moveMessage2.playerGuid = playerMessage2.privateGuid;
+
+            // for this specific seed player 1 starts at y=1, player 2 starts at y=3
+            var data = gameMaster.PerformMove(moveMessage);
+            gameMaster.PerformMove(moveMessage2);
+            gameMaster.PerformMove(moveMessage2);
+            var data2 = gameMaster.PerformMove(moveMessage2);
+
+            Assert.AreEqual(data.playerId, playerMessage.playerId);
+            Assert.AreEqual(data2.playerId, playerMessage2.playerId);
+            Assert.IsFalse(data.gameFinished);
+            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y + 1);
+            Assert.AreEqual(data2.PlayerLocation.y, game2.PlayerLocation.y);
+        }
+
+        [TestMethod]
         public void MoveTest_Outside1()
         {
-            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 1234);
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 gameName = "easy",
@@ -279,7 +328,7 @@ namespace GameMasterCoreUnitTests
         [TestMethod]
         public void MoveTest_Outside2()
         {
-            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 123455);
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 gameName = "easy",
@@ -309,7 +358,7 @@ namespace GameMasterCoreUnitTests
         [TestMethod]
         public void MoveTest_EnemyBase()
         {
-            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 123);
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 gameName = "easy",
@@ -341,7 +390,7 @@ namespace GameMasterCoreUnitTests
         [TestMethod]
         public void DiscoverTest()
         {
-            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
+            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory(), 1234578);
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 gameName = "easy",
