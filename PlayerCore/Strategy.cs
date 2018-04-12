@@ -38,7 +38,7 @@ namespace PlayerCore
             var fieldsSortedByTime = State.Board.Fields.OrderByDescending(f => f.Timestamp).OfType<ITaskField>();
             var lastChcekFields = fieldsSortedByTime.Take(State.LastDiscoveryCount);
             if (lastChcekFields.Count() < 4)
-                throw new Exception("To little descoverd fields");
+                throw new Exception("Not enough fields discovered ");
 
             uint max_x = lastChcekFields.Max(f => f.X);
             uint max_y = lastChcekFields.Max(f => f.Y);
@@ -56,7 +56,7 @@ namespace PlayerCore
             if (min_y == field.Y)
                 return Shared.Enums.MoveType.Down;
 
-            throw new Exception("Cannot make movement dccidion");
+            throw new Exception("Cannot decide where to move");
         }
 
         private Shared.Enums.MoveType DirectionToUnknownGoal()
