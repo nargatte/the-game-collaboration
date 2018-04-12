@@ -56,7 +56,7 @@ namespace PlayerCore
             if (min_y == field.Y)
                 return Shared.Enums.MoveType.Down;
 
-            throw new Exception("Cannot decide where to move");
+            throw new Exception("Cannot decide on where to move");
         }
 
         private Shared.Enums.MoveType DirectionToUnknownGoal()
@@ -99,7 +99,7 @@ namespace PlayerCore
             if (bestGoal.Y > State.Location.y)
                 return Shared.Enums.MoveType.Up;
 
-            throw new Exception("Cannot localizate unknown goal");
+            throw new Exception("Cannot localize the unknown goal");
         }
 
         public Data PerformAction()
@@ -108,7 +108,7 @@ namespace PlayerCore
             var goalField = field as IGoalField;
             var taskField = field as ITaskField;
 
-            if (State.HoldingPiece == null) // Player does not hold pece
+            if (State.HoldingPiece == null) // Player does not hold a pece
             {
                 if (goalField != null) // Player is standing in goal field
                 {
@@ -158,7 +158,7 @@ namespace PlayerCore
                 }
 
             }
-            else // Player hold piece
+            else // Player indeed holds a piece
             {
                 if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown) // Piece state is unknown
                 {
