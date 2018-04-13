@@ -355,6 +355,7 @@ namespace GameMasterCore
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                 //get piece-less goal field to return
                 var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
+                GoalToReturn.type = targetGoalField.Type;
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
                     //if goal, make a non-goal
