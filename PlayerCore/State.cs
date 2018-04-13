@@ -138,13 +138,19 @@ namespace PlayerCore
                 foreach (var goal in data.GoalFields)
                 {
                     IPlayer player = null;
+                    
                     if (goal.playerIdSpecified == true)
                     {
                         Board.SetPlayerLocation(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
                         player = Board.GetPlayer(goal.playerId);
                     }
 
-                    Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
+                    Location location = new Location();
+                    location.x = goal.x;
+                    location.y = goal.y;
+                    GoalFieldType type = (Board.GetField(goal.x, goal.y) as Shared.Components.Fields.GoalField).Type;
+
+                    Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type == GoalFieldType.Unknown? type: goal.type));
                 }
         }
     }
