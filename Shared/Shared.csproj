@@ -128,6 +128,11 @@
     <Compile Include="Enums\TeamColour.cs" />
     <Compile Include="Messages\Serialization\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sockets\IDataAccess.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sockets\Client\" />
+    <Folder Include="Sockets\Server\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

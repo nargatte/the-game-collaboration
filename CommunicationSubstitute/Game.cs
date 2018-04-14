@@ -31,6 +31,8 @@ namespace CommunicationSubstitute
 
         readonly Dictionary<ulong, bool> EndGame = new Dictionary<ulong, bool>();
 
+        #region From GameMaster
+
         Random random = new Random(123456);
 
         private List<Shared.Messages.Communication.Location> GenerateRandomPlaces(
@@ -120,6 +122,7 @@ namespace CommunicationSubstitute
 
             return result;
         }
+        #endregion
 
         public void Initialize()
         {
@@ -144,8 +147,8 @@ namespace CommunicationSubstitute
             };
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
-            registerGame.GameInfo[0].blueTeamPlayers = 2;
-            registerGame.GameInfo[0].redTeamPlayers = 2;
+            registerGame.GameInfo[0].blueTeamPlayers = 1;
+            registerGame.GameInfo[0].redTeamPlayers = 1;
             GameInfo = registerGame.GameInfo[0];
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
