@@ -21,7 +21,7 @@ namespace GameMasterCore
 {
     public class BlockingGameMaster : IGameMaster//, IReadOnlyBoard
     {
-        Random random = new Random(123456);
+        Random random;
         public virtual IReadOnlyBoard Board => board;
         public IBoard board;
         Dictionary<string, ulong> playerGuidToId;
@@ -31,9 +31,10 @@ namespace GameMasterCore
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
 
-        public BlockingGameMaster()
+        public BlockingGameMaster(int seed = 123456)
         {
             playerGuidToId = new Dictionary<string, ulong>();
+            random = new Random(seed);
 
             // prepare default config
             config = GenerateDefaultConfig();
@@ -42,9 +43,10 @@ namespace GameMasterCore
             board = PrepareBoard(new BoardComponentFactory());
         }
 
-        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardComponentFactory _boardComponentFactory)
+        public BlockingGameMaster(Config.GameMasterSettings _config, IBoardComponentFactory _boardComponentFactory, int seed = 123456)
         {
             playerGuidToId = new Dictionary<string, ulong>();
+            random = new Random(seed);
 
             config = _config;
             board = PrepareBoard(_boardComponentFactory);
@@ -353,8 +355,7 @@ namespace GameMasterCore
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                 //get piece-less goal field to return
                 var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
-                //GoalToReturn.type = GoalFieldType.NonGoal;
-                
+                GoalToReturn.type = targetGoalField.Type;
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
                     //if goal, make a non-goal
@@ -668,10 +669,14 @@ namespace GameMasterCore
 
         /// <summary>
         /// Returns mathematically correct uniformly generated coordinates
+        /// It runs in linear amortised time and uses space proportional to the number of elements
+        /// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         /// </summary>
         private List<DTO.Location> GenerateRandomPlaces(
             uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
         {
+
+
             if (maxXExclusive <= minXInclusive || maxYExclusive <= minYInclusive)
             {
                 throw new ArgumentOutOfRangeException("Incorrectly defined rectangle");
@@ -685,22 +690,35 @@ namespace GameMasterCore
                 placeToPieceId.Add(i, i);
             }
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < totalFieldCount - 1; i++)
             {
-                var randomPlace = random.Next(0, totalFieldCount);
-                if (placeToPieceId.Keys.Contains(randomPlace))
-                {
+                var randomTargetPlace = random.Next(i, totalFieldCount);
 
-                    var tmpId = placeToPieceId[randomPlace];
-                    placeToPieceId[randomPlace] = placeToPieceId[i];
-                    placeToPieceId[i] = tmpId;
+                if (placeToPieceId.Keys.Contains(i))
+                {
+                    if (placeToPieceId.Keys.Contains(randomTargetPlace))
+                    {
+
+                        var tmpId = placeToPieceId[randomTargetPlace];
+                        placeToPieceId[randomTargetPlace] = placeToPieceId[i];
+                        placeToPieceId[i] = tmpId;
+                    }
+                    else
+                    {
+                        placeToPieceId[randomTargetPlace] = placeToPieceId[i];
+                        placeToPieceId.Remove(i);
+                    }
                 }
                 else
                 {
-                    placeToPieceId[randomPlace] = placeToPieceId[i];
-                    placeToPieceId.Remove(i);
+                    if (placeToPieceId.Keys.Contains(randomTargetPlace))
+                    {
+                        placeToPieceId[i] = placeToPieceId[randomTargetPlace];
+                        placeToPieceId.Remove(randomTargetPlace);
+                    }
                 }
             }
+
             var coordinateListToReturn = new DTO.Location[n];
             foreach (var keyValue in placeToPieceId)
             {

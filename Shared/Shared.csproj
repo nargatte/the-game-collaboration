@@ -126,6 +126,7 @@
     <Compile Include="Enums\GoalFieldType.cs" />
     <Compile Include="Enums\PieceType.cs" />
     <Compile Include="Enums\TeamColour.cs" />
+    <Compile Include="Messages\Serialization\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
