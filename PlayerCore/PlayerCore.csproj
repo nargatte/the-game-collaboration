@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ICommunicationServerProxy.cs" />
+    <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="PlayerInGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

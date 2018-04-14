@@ -63,7 +63,7 @@ namespace PlayerCore
         {
             uint startY = 0;
             uint stopY = State.Board.GoalsHeight;
-            if (State.TeamColour == Shared.Enums.TeamColour.Blue)
+            if (State.TeamColour == Shared.Enums.TeamColour.Red)
             {
                 startY = State.Board.Height - State.Board.GoalsHeight;
                 stopY = State.Board.Height;
@@ -188,7 +188,7 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Right,
+                            direction = DirectionToUnknownGoal(),
                             directionSpecified = true
                         }));
                     }
