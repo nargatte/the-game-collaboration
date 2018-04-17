@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PlayerCore
 {
-    class Strategy
+    class Strategy: Shared.Interfaces.IStrategy
     {
         public IGameMaster GameMaster { get; set; }
 
