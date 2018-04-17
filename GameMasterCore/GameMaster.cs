@@ -359,6 +359,7 @@ namespace GameMasterCore
                 {
                     // detach player from piece
                     GetPlayerFromGameMessage(placeRequest).Piece = null;
+                    playerPawn.Piece = null;
                     //if goal, make a non-goal
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
                     
