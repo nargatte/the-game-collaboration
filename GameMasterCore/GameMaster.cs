@@ -350,7 +350,6 @@ namespace GameMasterCore
                         playerId = playerPawn.Id
                     };
                 }
-
                 //remove the piece from the player
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                 //get piece-less goal field to return
@@ -358,6 +357,8 @@ namespace GameMasterCore
                 GoalToReturn.type = targetGoalField.Type;
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
+                    // detach player from piece
+                    GetPlayerFromGameMessage(placeRequest).Piece = null;
                     //if goal, make a non-goal
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
                     //and decrease goals to go
