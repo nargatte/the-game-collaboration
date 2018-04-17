@@ -9,7 +9,7 @@ namespace PlayerCore
     {
         private IGameMaster GameMaster { get; }
 
-        private Strategy Strategy { get; }
+        private Strategy2 Strategy { get; }
 
         public State State { get; }
 
@@ -17,7 +17,7 @@ namespace PlayerCore
         {
             this.GameMaster = gameMaster;
             State = new State(game, playerId, gameId, playerGuid, new BoardFactory());
-            Strategy = new Strategy(gameMaster, State);
+            Strategy = new Strategy2(gameMaster, State);
             State.EndGame += endGame;
         }
 

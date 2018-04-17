@@ -19,7 +19,7 @@ namespace PlayerCore
 
         public Game Game { get; }
 
-        Shared.Messages.Communication.Player[] PlayersMyTeam { get; }
+        public Shared.Messages.Communication.Player[] PlayersMyTeam { get; }
 
         Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
 
@@ -65,7 +65,7 @@ namespace PlayerCore
             Board = boardFactory.CreateBoard(Game.Board.width, Game.Board.tasksHeight, Game.Board.goalsHeight);
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
-            PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
+            PlayersMyTeam = game.Players.OrderBy(q => game.playerId).Where(p => p.team == player.team).ToArray();
             PlayersCompetitors = game.Players.Where(p => p.team != player.team).ToArray();
 
             TeamColour = player.team;
@@ -125,6 +125,7 @@ namespace PlayerCore
             if(data.Pieces != null)
                 foreach (Shared.Messages.Communication.Piece p in data.Pieces)
                 {
+                    
                     var field = data.TaskFields?.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
                     ITaskField taskField = null;
                     if(field != null)
@@ -149,8 +150,9 @@ namespace PlayerCore
                     location.x = goal.x;
                     location.y = goal.y;
                     GoalFieldType type = (Board.GetField(goal.x, goal.y) as Shared.Components.Fields.GoalField).Type;
-
+                    
                     Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type == GoalFieldType.Unknown? type: goal.type));
+                   // if (goal.type != GoalFieldType.Unknown) HoldingPiece = null;
                 }
         }
     }

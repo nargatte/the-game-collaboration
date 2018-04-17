@@ -30,7 +30,7 @@
 
         public GameMasterSettingsGameDefinition()
         {
-            this.shamProbabilityField = 0.1D;
+            this.shamProbabilityField = 0.0D;
             this.placingNewPiecesFrequencyField = ((uint)(1000));
             this.initialNumberOfPiecesField = ((uint)(10));
             this.boardWidthField = ((uint)(6));
