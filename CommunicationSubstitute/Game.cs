@@ -138,7 +138,7 @@ namespace CommunicationSubstitute
                     TestDelay = 1000
                 };
 
-            GameMaster = new BlockingGameMaster( /*config, new BoardComponentFactory()*/ );
+            GameMaster = new BlockingGameMaster( config, new BoardComponentFactory() );
 
             GameMaster.Log += (s, e) =>
             {
@@ -148,7 +148,7 @@ namespace CommunicationSubstitute
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
             registerGame.GameInfo[0].blueTeamPlayers = 1;
-            registerGame.GameInfo[0].redTeamPlayers = 1;
+            registerGame.GameInfo[0].redTeamPlayers = 0;
             GameInfo = registerGame.GameInfo[0];
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
