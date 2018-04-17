@@ -361,6 +361,7 @@ namespace GameMasterCore
                     GetPlayerFromGameMessage(placeRequest).Piece = null;
                     //if goal, make a non-goal
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                    
                     //and decrease goals to go
                     if (targetGoalField.Team == TeamColour.Red)
                         redGoalsToScore--;
@@ -574,6 +575,7 @@ namespace GameMasterCore
             }
 
             // może ewentualnie dodać AsParallel().
+            
             fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
