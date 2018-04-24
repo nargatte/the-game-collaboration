@@ -21,7 +21,7 @@ namespace PlayerCore
 
         public Shared.Messages.Communication.Player[] PlayersMyTeam { get; }
 
-        Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
+        public Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
 
         public event EventHandler EndGame;
 
