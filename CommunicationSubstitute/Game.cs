@@ -124,6 +124,15 @@ namespace CommunicationSubstitute
         }
         #endregion
 
+		public void Start()
+		{
+			Initialize();
+			RegisterPlayers();
+			CreatePlayers();
+			StartPlayers();
+			JoinPlayers();
+		}
+
         public void Initialize()
         {
             var config = GenerateDefaultConfig();
