@@ -3,6 +3,5 @@
     public interface IPlayer
     {
         ICommunicationServerProxy Proxy { get; set; }
-
     }
 }

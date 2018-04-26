@@ -2,6 +2,6 @@
 {
     public interface ICommunicationServerProxy
     {
-        
+        IGameMaster GameMaster { get; set; }
     }
 }
