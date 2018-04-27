@@ -69,10 +69,12 @@ namespace GameMasterCore
                 result.GameDefinition.BoardWidth, 0,
                 result.GameDefinition.GoalAreaLength
                 );
-            var goalLocationsRed = GenerateRandomPlaces(6, 0, result.GameDefinition.BoardWidth,
-                result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength,
-                result.GameDefinition.TaskAreaLength + 2 * result.GameDefinition.GoalAreaLength
-                );
+            var goalLocationsRed = goalLocationsBlue.Select(location => new DTO.Location()
+            {
+                x = location.x,
+                y = 2 * result.GameDefinition.GoalAreaLength + result.GameDefinition.TaskAreaLength - 1 - location.y
+            }
+            ).ToList();
 
             result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
                 new Config.GoalField
