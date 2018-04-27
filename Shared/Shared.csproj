@@ -72,8 +72,13 @@
     <Compile Include="Components\Pieces\PlayerPiece.cs" />
     <Compile Include="Components\Players\IPlayer.cs" />
     <Compile Include="Components\Players\Player.cs" />
+    <Compile Include="Components\Serialization\Serializer.cs" />
+    <Compile Include="Components\Serialization\StringWriterWithEncoding.cs" />
+    <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
+    <Compile Include="DTOs\Configuration\Configuration.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Interfaces\ICore.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />

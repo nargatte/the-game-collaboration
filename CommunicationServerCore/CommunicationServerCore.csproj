@@ -45,7 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Cores\CommunicationServerCore.cs" />
+    <Compile Include="Components\Servers\CommunicationServer.cs" />
     <Compile Include="Interfaces\ICommunicationServer.cs" />
+    <Compile Include="Interfaces\ICommunicationServerCore.cs" />
     <Compile Include="Interfaces\IGameMasterProxy.cs" />
     <Compile Include="Interfaces\IPlayerProxy.cs" />
     <Compile Include="Program.cs" />
@@ -53,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{20d54140-ccfe-4767-90a4-f5f093a296f3}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
