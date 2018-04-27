@@ -10,6 +10,8 @@ namespace PlayerCore
     {
         static void Main(string[] args)
         {
+            var ser = new CommunicationServerProxy();
+
         }
     }
 }
