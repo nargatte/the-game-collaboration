@@ -78,7 +78,7 @@
     <Compile Include="DTOs\Configuration\Configuration.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
-    <Compile Include="Interfaces\ICore.cs" />
+    <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />

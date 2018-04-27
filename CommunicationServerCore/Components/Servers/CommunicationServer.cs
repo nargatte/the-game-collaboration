@@ -3,7 +3,7 @@ using CommunicationServerCore.Interfaces;
 
 namespace CommunicationServerCore.Components.Servers
 {
-	class CommunicationServer : ICommunicationServer
+	public class CommunicationServer : ICommunicationServer
 	{
 		#region ICommunicationServer
 		public virtual IEnumerable<IGameMasterProxy> GameMasterProxies => throw new System.NotImplementedException();

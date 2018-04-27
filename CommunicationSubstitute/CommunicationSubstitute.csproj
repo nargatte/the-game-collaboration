@@ -53,6 +53,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommunicationServerCore\CommunicationServerCore.csproj">
+      <Project>{a9d54fae-158a-4cbe-b3d0-a3dce4f2a898}</Project>
+      <Name>CommunicationServerCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameMasterCore\GameMasterCore.csproj">
       <Project>{A08EA6DC-78B6-4EEB-BAA8-2ECED870C4B7}</Project>
       <Name>GameMasterCore</Name>

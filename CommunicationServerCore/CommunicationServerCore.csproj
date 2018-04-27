@@ -45,10 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Cores\CommunicationServerCore.cs" />
+    <Compile Include="Components\Modules\CommunicationServerModule.cs" />
     <Compile Include="Components\Servers\CommunicationServer.cs" />
     <Compile Include="Interfaces\ICommunicationServer.cs" />
-    <Compile Include="Interfaces\ICommunicationServerCore.cs" />
+    <Compile Include="Interfaces\ICommunicationServerModule.cs" />
     <Compile Include="Interfaces\IGameMasterProxy.cs" />
     <Compile Include="Interfaces\IPlayerProxy.cs" />
     <Compile Include="Program.cs" />
