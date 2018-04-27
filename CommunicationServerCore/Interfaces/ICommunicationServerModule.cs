@@ -6,5 +6,6 @@ namespace CommunicationServerCore.Interfaces
 	public interface ICommunicationServerModule : IModule
 	{
 		CommunicationServerSettings Configuration { get; }
+		ICommunicationServer CommunicationServer { get; }
 	}
 }

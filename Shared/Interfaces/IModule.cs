@@ -1,8 +1,7 @@
 ﻿namespace Shared.Interfaces
 {
-	public interface IModule
+	public interface IModule : IStartable
 	{
 		int Port { get; }
-		void Start();
 	}
 }
