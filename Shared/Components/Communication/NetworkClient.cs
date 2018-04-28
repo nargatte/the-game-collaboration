@@ -1,52 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.Components.Serialization;
 
 namespace Shared.Components.Communication
 {
     public class NetworkClient : IDisposable
     {
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private string _receivedMessage = null; 
+
         public void Connect(string address, Int32 port)
         {
-            TcpClient client = new TcpClient("localhost", port);
+            _client = new TcpClient(address, port);
 
-            // Translate the passed message into ASCII and store it as a Byte array.
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-            data = data.Concat(new Byte[] { 23 }).ToArray();
-
-            // Get a client stream for reading and writing.
-            //  Stream stream = client.GetStream();
-
-            NetworkStream stream = client.GetStream();
-
-            // Send the message to the connected TcpServer. 
-            stream.Write(data, 0, data.Length);
-
-            Console.WriteLine("Sent: {0}", message);
-
-            // Receive the TcpServer.response.
-
-            // Buffer to store the response bytes.
-            data = new Byte[256];
-
-            // String to store the response ASCII representation.
-            String responseData = String.Empty;
-
-            // Read the first batch of the TcpServer response bytes.
-            Int32 bytes = stream.Read(data, 0, data.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-            Console.WriteLine("Received: {0}", responseData);
-
-            // Close everything.
-            stream.Close();
-            client.Close();
+            _stream = _client.GetStream();
         }
 
         public void Send<T>(T message)
         {
-            throw new NotImplementedException();
+            string desMessage = Serializer.Serialize(message);
+
+            Byte[] data = Encoding.ASCII.GetBytes(desMessage);
+            data = data.Concat(new Byte[] { 23 }).ToArray();
+
+            _stream.Write(data, 0, data.Length);
         }
 
         /// <summary>
@@ -61,8 +43,20 @@ namespace Shared.Components.Communication
         /// <returns></returns>
         public bool TryReceive<T>(out T message)
         {
+            if (_receivedMessage == null)
+            {
+                var data = new Byte[256];
+                Int32 bytes;
+                StringBuilder stringBuilder = new StringBuilder();
+                do
+                {
+                    bytes = _stream.Read(data, 0, data.Length);
+                    stringBuilder.Append(Encoding.ASCII.GetString(data, 0, bytes));
+                } while (data[bytes] != 23);
 
-            throw new NotImplementedException();
+                _receivedMessage = stringBuilder.ToString();
+            }
+
         }
 
         /// <summary>
@@ -70,11 +64,13 @@ namespace Shared.Components.Communication
         /// </summary>
         public void Discard()
         {
-
+            _receivedMessage = null;
         }
+
         public void Dispose()
         {
-            
+            _stream.Close();
+            _client.Close();
         }
     }
 }
