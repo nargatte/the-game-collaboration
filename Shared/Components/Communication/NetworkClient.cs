@@ -42,6 +42,7 @@ namespace Shared.Components.Communication
         /// <param name="message"></param>
         /// <returns></returns>
         public bool TryReceive<T>(out T message)
+            where T: class
         {
             if (_receivedMessage == null)
             {
@@ -51,12 +52,32 @@ namespace Shared.Components.Communication
                 do
                 {
                     bytes = _stream.Read(data, 0, data.Length);
-                    stringBuilder.Append(Encoding.ASCII.GetString(data, 0, bytes));
-                } while (data[bytes] != 23);
 
+                    if (bytes == 1 && data[0] == 23)
+                    {
+                        _stream.Write(new byte[] {23}, 0, 1);
+                        continue;
+                    }
+
+                    stringBuilder.Append(Encoding.ASCII.GetString(data, 0, bytes));
+                } while (data[bytes - 3] != 23 && data[bytes - 1] != 23); //first case is for debugging with socet test v3, the last bytes is end of line
+                    
                 _receivedMessage = stringBuilder.ToString();
+
+                if(data[bytes - 3] == 23)
+                    _receivedMessage = _receivedMessage.Substring(0, _receivedMessage.Length - 3);
+
+                if (data[bytes - 1] == 23)
+                    _receivedMessage = _receivedMessage.Substring(0, _receivedMessage.Length - 2);
             }
 
+            message = Deserializer.Deserialize<T>(_receivedMessage);
+
+            if (message == null)
+                return false;
+
+            Discard();
+            return true;
         }
 
         /// <summary>
