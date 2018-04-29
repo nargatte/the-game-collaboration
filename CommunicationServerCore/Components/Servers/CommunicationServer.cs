@@ -9,8 +9,7 @@ namespace CommunicationServerCore.Components.Servers
 		#region ICommunicationServer
 		public virtual void Start()
 		{
-			System.Console.WriteLine( "Communication server started!" );
-			;
+
 		}
 		public virtual int Port { get; }
 		public virtual CommunicationServerSettings Configuration { get; }

@@ -203,14 +203,14 @@ namespace CommunicationSubstitute
                 var myConfirm = BlueConfirms[i];
                 var game = GameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
-                BluePlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
+                /*BluePlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
                         lock (EndGame)
                         {
                             EndGame[myConfirm.playerId] = true;
                         }
-                    });
+                    });*/
                 BlueThreads[i] = new Thread(PlayerThread);
                 if(ShowData) BluePlayers[i].State.ReceiveDataLog += (s, e) => Console.WriteLine(e);
             }
@@ -221,14 +221,14 @@ namespace CommunicationSubstitute
                 var myConfirm = RedConfirms[i];
                 var game = GameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
-                RedPlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
+                /*RedPlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
                         lock (EndGame)
                         {
                             EndGame[myConfirm.playerId] = true;
                         }
-                    });
+                    });*/
                 RedThreads[i] = new Thread(PlayerThread);
                 if (ShowData) RedPlayers[i].State.ReceiveDataLog += (s, e) => Console.WriteLine(e);
             }
