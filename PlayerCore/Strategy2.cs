@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PlayerCore.Interfaces;
 using Shared.Components.Fields;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
@@ -11,12 +12,12 @@ namespace PlayerCore
 {
     class Strategy2 : Shared.Interfaces.IStrategy
     {
-        public IGameMaster GameMaster { get; set; }
+        private readonly ICommunicationServerProxy _communicationServerProxy;
 
         public State State { get; }
-        public Strategy2(IGameMaster gameMaster, State state)
+        public Strategy2(ICommunicationServerProxy communicationServerProxy, State state)
         {
-            GameMaster = gameMaster;
+            _communicationServerProxy = communicationServerProxy;
             State = state;
         }
 
@@ -520,5 +521,7 @@ namespace PlayerCore
             }
             return null;
         }
+
+        public IGameMaster GameMaster { get; set; }
     }
 }

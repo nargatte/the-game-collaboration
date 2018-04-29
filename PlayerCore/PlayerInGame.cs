@@ -1,4 +1,5 @@
 ﻿using System;
+using PlayerCore.Interfaces;
 using Shared.Components.Factories;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
@@ -7,18 +8,17 @@ namespace PlayerCore
 {
     public class PlayerInGame
     {
-        private IGameMaster GameMaster { get; }
+        private readonly ICommunicationServerProxy _communicationServerProxy;
 
         private Strategy2 Strategy { get; }
 
         public State State { get; }
 
-        public PlayerInGame(IGameMaster gameMaster, Game game, ulong playerId, string playerGuid, ulong gameId, EventHandler endGame)
+        public PlayerInGame(ICommunicationServerProxy communicationServerProxy, Game game, ulong playerId, string playerGuid, ulong gameId)
         {
-            this.GameMaster = gameMaster;
+            _communicationServerProxy = communicationServerProxy;
             State = new State(game, playerId, gameId, playerGuid, new BoardFactory());
-            Strategy = new Strategy2(gameMaster, State);
-            State.EndGame += endGame;
+            Strategy = new Strategy2(_communicationServerProxy, State);
         }
 
         public Data PerformAction()

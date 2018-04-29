@@ -45,6 +45,7 @@
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
+    <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
     <Compile Include="Components\Events\LogArgs.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Components\Pieces\PlayerPiece.cs" />
     <Compile Include="Components\Players\IPlayer.cs" />
     <Compile Include="Components\Players\Player.cs" />
+    <Compile Include="Components\Serialization\Deserializer.cs" />
     <Compile Include="Components\Serialization\Serializer.cs" />
     <Compile Include="Components\Serialization\StringWriterWithEncoding.cs" />
     <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Enums\PlayerType.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
+    <Compile Include="Interfaces\INetworkClient.cs" />
     <Compile Include="Interfaces\IStartable.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
