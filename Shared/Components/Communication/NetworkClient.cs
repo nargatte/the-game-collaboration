@@ -10,7 +10,17 @@ namespace Shared.Components.Communication
 {
     public class NetworkClient : IDisposable
     {
-        private TcpClient _client;
+		#region INetworkClient
+		#endregion
+		#region NetworkClient
+		private TcpClient client;
+		public NetworkClient( TcpClient aClient ) => client = aClient;
+		#endregion
+
+
+		//
+
+		private TcpClient _client;
         private NetworkStream _stream;
         private string _receivedMessage = null; 
 

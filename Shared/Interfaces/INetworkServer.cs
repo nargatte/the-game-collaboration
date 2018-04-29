@@ -2,5 +2,6 @@
 {
 	interface INetworkServer
 	{
+		int Port { get; }
 	}
 }
