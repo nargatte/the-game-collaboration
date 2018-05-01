@@ -5,10 +5,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Shared.Components.Serialization;
+using Shared.Interfaces.Communication;
 
 namespace Shared.Components.Communication
 {
-    public class NetworkClient : IDisposable
+    public class NetworkClient : INetworkClient, IDisposable
     {
 		#region INetworkClient
 		#endregion

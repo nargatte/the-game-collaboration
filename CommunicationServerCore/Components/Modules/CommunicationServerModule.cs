@@ -1,6 +1,7 @@
 ﻿using CommunicationServerCore.Components.Servers;
 using CommunicationServerCore.Interfaces;
 using Shared.Base;
+using Shared.Components.Factories;
 using Shared.DTOs.Configuration;
 using System;
 
@@ -15,7 +16,7 @@ namespace CommunicationServerCore.Components.Modules
 		{
 			try
 			{
-				CommunicationServer = new CommunicationServer( Port, Configuration );
+				CommunicationServer = new CommunicationServer( Port, Configuration.KeepAliveInterval, new NetworkFactory() );
 				CommunicationServer.Start();
 				OnExit();
 			}

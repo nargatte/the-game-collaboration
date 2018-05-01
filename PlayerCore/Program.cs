@@ -8,9 +8,9 @@ namespace PlayerCore
     {
         static void Main(string[] args)
         {
-            using (var communicationServerProxy = new CommunicationServerProxy())
+            //using (var communicationServerProxy = new CommunicationServerProxy())
             {
-                communicationServerProxy.Connect("localhost", 21);
+                //communicationServerProxy.Connect("localhost", 21);
                 //Game g = new Game()
                 //{
                 //    Board = new GameBoard()
@@ -40,9 +40,9 @@ namespace PlayerCore
                 //    var q = g2.ToString();
                 //}
 
-                var reg = new RegistrationProcess(communicationServerProxy, "Easy game", TeamColour.Blue,
-                    PlayerType.Leader);
-                var pig = reg.Registration();
+                //var reg = new RegistrationProcess(communicationServerProxy, "Easy game", TeamColour.Blue,
+                    //PlayerType.Leader);
+                //var pig = reg.Registration();
             }
         }
     }

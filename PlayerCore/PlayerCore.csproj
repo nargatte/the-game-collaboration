@@ -46,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunicationServerProxy.cs" />
+    <Compile Include="Components\Modules\PlayerModule.cs" />
+    <Compile Include="Components\Players\Player.cs" />
+    <Compile Include="Interfaces\IPlayerModule.cs" />
     <Compile Include="Interfaces\ICommunicationServerProxy.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="PlayerInGame.cs" />
@@ -65,5 +68,6 @@
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

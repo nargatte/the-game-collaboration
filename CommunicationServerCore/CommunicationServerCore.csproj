@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Servers\CommunicationServerBase.cs" />
     <Compile Include="Components\Modules\CommunicationServerModule.cs" />
     <Compile Include="Components\Servers\CommunicationServer.cs" />
     <Compile Include="Interfaces\ICommunicationServer.cs" />

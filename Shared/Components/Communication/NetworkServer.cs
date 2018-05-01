@@ -1,4 +1,4 @@
-﻿using Shared.Interfaces;
+﻿using Shared.Interfaces.Communication;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -10,7 +10,7 @@ namespace Shared.Components.Communication
 	{
 		#region INetworkServer
 		public virtual int Port { get; }
-		public virtual void Accept( Action<NetworkClient> callback )
+		public virtual void Accept( Action<INetworkClient> callback )
 		{
 			accept.Reset();
 			listener.BeginAcceptTcpClient( new AsyncCallback( OnAccept ), callback );
@@ -20,23 +20,23 @@ namespace Shared.Components.Communication
 		#region NetworkServer
 		private TcpListener listener;
 		private ManualResetEvent accept = new ManualResetEvent( false );
-		public NetworkServer( int port )
+		public NetworkServer( TcpListener aListener )
 		{
-			Port = port;
-			Initialize();
+			listener = aListener;
+			listener.Start();
 		}
-		protected void Initialize()
+		/*protected void Initialize()
 		{
 			listener = new TcpListener( IPAddress.Parse( "127.0.0.1" ), Port );
 			listener.Start();
-		}
+		}*/
 		protected void OnAccept( IAsyncResult ar )
 		{
-			Console.WriteLine( $"NetworkServer.OnAccept on { System.Threading.Thread.CurrentThread.ManagedThreadId }" );
+			Console.WriteLine( $"NetworkServer.OnAccept on { Thread.CurrentThread.ManagedThreadId }" );
 			var client = listener.EndAcceptTcpClient( ar );
 			accept.Set();
 			Console.WriteLine( "ACCEPT" );
-			var callback = ar.AsyncState as Action<NetworkClient>;
+			var callback = ar.AsyncState as Action<INetworkClient>;
 			callback( new NetworkClient( client ) );
 		}
 		#endregion

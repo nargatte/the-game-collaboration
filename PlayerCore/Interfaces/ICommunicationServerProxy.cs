@@ -1,4 +1,5 @@
 ﻿using Shared.Interfaces;
+using Shared.Interfaces.Communication;
 
 namespace PlayerCore.Interfaces
 {

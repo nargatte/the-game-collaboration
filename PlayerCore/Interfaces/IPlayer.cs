@@ -2,6 +2,7 @@
 {
     public interface IPlayer
     {
-        ICommunicationServerProxy Proxy { get; set; }
+		uint KeepAliveInterval { get; }
+		ICommunicationServerProxy Proxy { get; set; }
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Shared.Interfaces
+﻿using System;
+
+namespace Shared.Interfaces
 {
-	interface INetworkServer
+	/*public interface INetworkServer
 	{
 		int Port { get; }
-	}
+		void Accept( Action<INetworkClient> callback );
+	}*/
 }

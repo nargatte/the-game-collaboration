@@ -6,7 +6,7 @@ using Shared.Components.Communication;
 
 namespace PlayerCore
 {
-    class CommunicationServerProxy : NetworkClient, ICommunicationServerProxy
+    class CommunicationServerProxy
     {
         public IPlayer Player { get; set; }
 

@@ -4,7 +4,7 @@ using Shared.Components.Serialization;
 
 namespace Shared.Interfaces
 {
-    public interface INetworkClient
+    /*public interface INetworkClient
     {
 
         void Connect(string address, Int32 port);
@@ -32,5 +32,5 @@ namespace Shared.Interfaces
         /// </summary>
         void Discard();
 
-    }
+    }*/
 }
