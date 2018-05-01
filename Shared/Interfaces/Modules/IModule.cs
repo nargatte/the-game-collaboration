@@ -1,8 +1,7 @@
 ﻿using Shared.Components.Events;
-using Shared.Interfaces.Modules;
 using System;
 
-namespace Shared.Interfaces
+namespace Shared.Interfaces.Modules
 {
 	public interface IModule : IStartable
 	{

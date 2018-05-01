@@ -1,5 +1,5 @@
 ﻿using Shared.DTOs.Configuration;
-using Shared.Interfaces;
+using Shared.Interfaces.Modules;
 
 namespace PlayerCore.Interfaces
 {

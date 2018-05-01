@@ -1,6 +1,6 @@
 ﻿using PlayerCore.Components.Players;
 using PlayerCore.Interfaces;
-using Shared.Base;
+using Shared.Base.Modules;
 using Shared.DTOs.Configuration;
 using System;
 

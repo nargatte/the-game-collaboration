@@ -1,23 +1,17 @@
-﻿using CommunicationServerCore.Components.Servers;
-using CommunicationServerCore.Interfaces;
-using CommunicationServerCore.Interfaces.Servers;
-using Shared.Base;
-using Shared.Components.Factories;
+﻿using CommunicationServerCore.Base.Modules;
+using CommunicationServerCore.Interfaces.Factories;
 using Shared.DTOs.Configuration;
 using System;
 
 namespace CommunicationServerCore.Components.Modules
 {
-	public class CommunicationServerModule : Module, ICommunicationServerModule
+	public class CommunicationServerModule : CommunicationServerModuleBase
 	{
-		#region ICommunicationServerModule
-		public virtual CommunicationServerSettings Configuration { get; }
-		public virtual ICommunicationServer CommunicationServer { get; protected set; }
+		#region CommunicationServerModuleBase
 		public override void Start()
 		{
 			try
 			{
-				CommunicationServer = new CommunicationServer( Port, Configuration.KeepAliveInterval, new NetworkFactory() );
 				CommunicationServer.Start();
 				OnExit();
 			}
@@ -28,7 +22,9 @@ namespace CommunicationServerCore.Components.Modules
 		}
 		#endregion
 		#region CommunicationServerModule
-		public CommunicationServerModule( int port, CommunicationServerSettings configuration ) : base( port ) => Configuration = configuration;
+		public CommunicationServerModule( int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( port, configuration, factory )
+		{
+		}
 		#endregion
 	}
 }

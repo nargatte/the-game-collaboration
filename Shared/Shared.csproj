@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
-    <Compile Include="Base\Module.cs" />
+    <Compile Include="Base\Modules\Module.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
@@ -90,7 +90,7 @@
     <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
-    <Compile Include="Interfaces\IModule.cs" />
+    <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
     <Compile Include="Interfaces\Modules\IStartable.cs" />

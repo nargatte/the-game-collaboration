@@ -1,11 +1,7 @@
-﻿using CommunicationServerCore.Components.Modules;
-using Shared.Components.Communication;
-using Shared.Components.Serialization;
+﻿using CommunicationServerCore.Components.Factories;
+using CommunicationServerCore.Components.Modules;
 using Shared.DTOs.Configuration;
 using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 
 namespace CommunicationSubstitute
@@ -14,8 +10,7 @@ namespace CommunicationSubstitute
 	{
 		static void Main( string[] args )
 		{
-			var o = new CommunicationServerSettings();
-			var moduleCS = new CommunicationServerModule( 29170, o );
+			var moduleCS = new CommunicationServerModule( 29170, new CommunicationServerSettings(), new CommunicationServerFactory() );
 			moduleCS.Exit += ( s, e ) =>
 			{
 				if( e.IsSuccess )

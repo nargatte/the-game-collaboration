@@ -1,15 +1,15 @@
-﻿using System;
-using Shared.Components.Events;
-using Shared.Interfaces;
+﻿using Shared.Components.Events;
+using Shared.Interfaces.Modules;
+using System;
 
-namespace Shared.Base
+namespace Shared.Base.Modules
 {
 	public abstract class Module : IModule
 	{
 		#region IModule
 		public abstract void Start();
 		public virtual int Port { get; }
-		public virtual event EventHandler<ExitArgs> Exit;
+		public virtual event EventHandler<ExitArgs> Exit = delegate { };
 		#endregion
 		#region Module
 		public Module( int port ) => Port = port;

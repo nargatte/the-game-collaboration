@@ -15,7 +15,7 @@ namespace CommunicationServerCore.Base.Servers
 		public abstract IEnumerable<IGameMasterProxy> GameMasterProxies { get; }
 		public abstract IEnumerable<IPlayerProxy> PlayerProxies { get; }
 		#endregion
-		#region CommunicationServerBase
+		#region BaseCommunicationServerBase
 		protected CommunicationServerBase( int port, uint keepAliveInterval, INetworkFactory factory )
 		{
 			Port = port;
