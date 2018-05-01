@@ -1,39 +1,29 @@
-﻿using Shared.Interfaces.Communication;
+﻿using Shared.Base.Communication;
+using Shared.Interfaces.Communication;
+using Shared.Interfaces.Factories;
 using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
 namespace Shared.Components.Communication
 {
-	public class NetworkServer : INetworkServer
+	public class NetworkServer : NetworkServerBase
 	{
-		#region INetworkServer
-		public virtual int Port { get; }
-		public virtual void Accept( Action<INetworkClient> callback )
+		#region NetworkServerBase
+		public override void Accept( Action<INetworkClient> callback )
 		{
 			accept.Reset();
-			listener.BeginAcceptTcpClient( new AsyncCallback( OnAccept ), callback );
+			Listener.BeginAcceptTcpClient( new AsyncCallback( OnAccept ), callback );
 			accept.WaitOne();
 		}
 		#endregion
 		#region NetworkServer
-		private TcpListener listener;
 		private ManualResetEvent accept = new ManualResetEvent( false );
-		public NetworkServer( TcpListener aListener )
-		{
-			listener = aListener;
-			listener.Start();
-		}
-		/*protected void Initialize()
-		{
-			listener = new TcpListener( IPAddress.Parse( "127.0.0.1" ), Port );
-			listener.Start();
-		}*/
+		public NetworkServer( TcpListener listener, INetworkFactory factory ) : base( listener, factory ) => listener.Start();
 		protected void OnAccept( IAsyncResult ar )
 		{
 			Console.WriteLine( $"NetworkServer.OnAccept on { Thread.CurrentThread.ManagedThreadId }" );
-			var client = listener.EndAcceptTcpClient( ar );
+			var client = Listener.EndAcceptTcpClient( ar );
 			accept.Set();
 			Console.WriteLine( "ACCEPT" );
 			var callback = ar.AsyncState as Action<INetworkClient>;

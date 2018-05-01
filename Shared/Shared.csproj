@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Module.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
@@ -92,8 +93,7 @@
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
-    <Compile Include="Interfaces\INetworkServer.cs" />
-    <Compile Include="Interfaces\IStartable.cs" />
+    <Compile Include="Interfaces\Modules\IStartable.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />

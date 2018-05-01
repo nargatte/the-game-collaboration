@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using CommunicationServerCore.Interfaces;
+﻿using CommunicationServerCore.Interfaces.Proxies;
+using CommunicationServerCore.Interfaces.Servers;
 using Shared.Interfaces.Factories;
+using System.Collections.Generic;
 
 namespace CommunicationServerCore.Base.Servers
 {

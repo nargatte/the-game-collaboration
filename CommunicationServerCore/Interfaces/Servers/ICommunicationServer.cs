@@ -1,9 +1,9 @@
-﻿using Shared.DTOs.Configuration;
-using Shared.Interfaces;
+﻿using CommunicationServerCore.Interfaces.Proxies;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Modules;
 using System.Collections.Generic;
 
-namespace CommunicationServerCore.Interfaces
+namespace CommunicationServerCore.Interfaces.Servers
 {
     public interface ICommunicationServer : IStartable
     {

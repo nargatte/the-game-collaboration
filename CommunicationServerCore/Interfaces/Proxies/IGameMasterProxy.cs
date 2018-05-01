@@ -1,4 +1,6 @@
-﻿namespace CommunicationServerCore.Interfaces
+﻿using CommunicationServerCore.Interfaces.Servers;
+
+namespace CommunicationServerCore.Interfaces.Proxies
 {
     public interface IGameMasterProxy
     {

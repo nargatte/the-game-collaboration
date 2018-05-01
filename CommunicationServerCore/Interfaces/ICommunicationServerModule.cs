@@ -1,4 +1,5 @@
-﻿using Shared.DTOs.Configuration;
+﻿using CommunicationServerCore.Interfaces.Servers;
+using Shared.DTOs.Configuration;
 using Shared.Interfaces;
 
 namespace CommunicationServerCore.Interfaces

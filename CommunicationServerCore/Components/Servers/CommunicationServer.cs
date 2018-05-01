@@ -1,5 +1,5 @@
 ﻿using CommunicationServerCore.Base.Servers;
-using CommunicationServerCore.Interfaces;
+using CommunicationServerCore.Interfaces.Proxies;
 using Shared.Components.Extensions;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;

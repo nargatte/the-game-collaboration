@@ -1,5 +1,6 @@
 ﻿using CommunicationServerCore.Components.Servers;
 using CommunicationServerCore.Interfaces;
+using CommunicationServerCore.Interfaces.Servers;
 using Shared.Base;
 using Shared.Components.Factories;
 using Shared.DTOs.Configuration;

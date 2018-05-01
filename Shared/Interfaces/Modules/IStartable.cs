@@ -1,4 +1,4 @@
-﻿namespace Shared.Interfaces
+﻿namespace Shared.Interfaces.Modules
 {
 	public interface IStartable
 	{

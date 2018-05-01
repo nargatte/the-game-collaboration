@@ -1,4 +1,5 @@
 ﻿using Shared.Components.Events;
+using Shared.Interfaces.Modules;
 using System;
 
 namespace Shared.Interfaces
