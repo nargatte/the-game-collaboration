@@ -1,6 +1,6 @@
 ﻿using CommunicationServerCore.Interfaces.Proxies;
+using Shared.Interfaces;
 using Shared.Interfaces.Factories;
-using Shared.Interfaces.Modules;
 using System.Collections.Generic;
 
 namespace CommunicationServerCore.Interfaces.Servers

@@ -44,13 +44,14 @@
   <ItemGroup>
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\Module.cs" />
+    <Compile Include="Base\StartableBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
-    <Compile Include="Components\Events\ExitArgs.cs" />
+    <Compile Include="Components\Events\FinishArgs.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
     <Compile Include="Components\Events\LogArgs.cs" />
     <Compile Include="Components\Events\PieceChangedArgs.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
-    <Compile Include="Interfaces\Modules\IStartable.cs" />
+    <Compile Include="Interfaces\IStartable.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />

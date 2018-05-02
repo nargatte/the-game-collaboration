@@ -1,5 +1,4 @@
-﻿using PlayerCore.Components.Players;
-using PlayerCore.Interfaces;
+﻿using PlayerCore.Interfaces;
 using Shared.Base.Modules;
 using Shared.DTOs.Configuration;
 using System;
@@ -17,11 +16,11 @@ namespace PlayerCore.Components.Modules
 			{
 				//CommunicationServer = new CommunicationServer( Port, Configuration );
 				//CommunicationServer.Start();
-				OnExit();
+				OnFinish();
 			}
 			catch( Exception e )
 			{
-				OnExit( e );
+				OnFinish( e );
 			}
 		}
 		#endregion

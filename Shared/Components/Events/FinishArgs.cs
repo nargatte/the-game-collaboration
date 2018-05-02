@@ -2,10 +2,10 @@
 
 namespace Shared.Components.Events
 {
-	public class ExitArgs : EventArgs
+	public class FinishArgs : EventArgs
 	{
 		public Exception Exception { get; }
 		public bool IsSuccess => Exception is null;
-		public ExitArgs( Exception exception = null ) => Exception = exception;
+		public FinishArgs( Exception exception = null ) => Exception = exception;
 	}
 }

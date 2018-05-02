@@ -11,7 +11,7 @@ namespace CommunicationSubstitute
 		static void Main( string[] args )
 		{
 			var moduleCS = new CommunicationServerModule( 65535, new CommunicationServerSettings(), new CommunicationServerFactory() );
-			moduleCS.Exit += ( s, e ) =>
+			moduleCS.Finish += ( s, e ) =>
 			{
 				if( e.IsSuccess )
 					Console.WriteLine( "Communication server module ended successfully." );

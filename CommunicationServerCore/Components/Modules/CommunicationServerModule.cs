@@ -13,11 +13,11 @@ namespace CommunicationServerCore.Components.Modules
 			try
 			{
 				CommunicationServer.Start();
-				OnExit();
+				OnFinish();
 			}
 			catch( Exception e )
 			{
-				OnExit( e );
+				OnFinish( e );
 			}
 		}
 		#endregion
