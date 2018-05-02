@@ -2,7 +2,7 @@
 
 namespace CommunicationServerCore.Interfaces.Proxies
 {
-    public interface IPlayerProxy
+	public interface IPlayerProxy
     {
 		ICommunicationServer CommunicationServer { get; set; }
 	}

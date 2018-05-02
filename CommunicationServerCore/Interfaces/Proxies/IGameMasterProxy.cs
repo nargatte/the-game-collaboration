@@ -2,7 +2,7 @@
 
 namespace CommunicationServerCore.Interfaces.Proxies
 {
-    public interface IGameMasterProxy
+	public interface IGameMasterProxy
     {
         ICommunicationServer CommunicationServer { get; set; }
     }

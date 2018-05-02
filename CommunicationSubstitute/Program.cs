@@ -10,7 +10,7 @@ namespace CommunicationSubstitute
 	{
 		static void Main( string[] args )
 		{
-			var moduleCS = new CommunicationServerModule( 29170, new CommunicationServerSettings(), new CommunicationServerFactory() );
+			var moduleCS = new CommunicationServerModule( 65535, new CommunicationServerSettings(), new CommunicationServerFactory() );
 			moduleCS.Exit += ( s, e ) =>
 			{
 				if( e.IsSuccess )

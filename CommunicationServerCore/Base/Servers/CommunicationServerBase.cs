@@ -1,6 +1,7 @@
 ﻿using CommunicationServerCore.Interfaces.Proxies;
 using CommunicationServerCore.Interfaces.Servers;
 using Shared.Interfaces.Factories;
+using System;
 using System.Collections.Generic;
 
 namespace CommunicationServerCore.Base.Servers
@@ -18,9 +19,9 @@ namespace CommunicationServerCore.Base.Servers
 		#region BaseCommunicationServerBase
 		protected CommunicationServerBase( int port, uint keepAliveInterval, INetworkFactory factory )
 		{
-			Port = port;
+			Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException( nameof( port ) ) : port;
 			KeepAliveInterval = keepAliveInterval;
-			Factory = factory;
+			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
 		}
 		#endregion
 	}

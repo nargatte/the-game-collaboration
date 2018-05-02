@@ -26,7 +26,12 @@ namespace CommunicationServerCore.Components.Servers
 		public CommunicationServer( int port, uint keepAliveInterval, INetworkFactory factory ) : base( port, keepAliveInterval, factory )
 		{
 		}
-		protected void OnAccept( INetworkClient client ) => System.Console.WriteLine( $"CommunicationServer.OnAccept on { System.Threading.Thread.CurrentThread.ManagedThreadId }" );
+		protected void OnAccept( INetworkClient client )
+		{
+			;
+			System.Console.WriteLine( $"CommunicationServer.OnAccept on { System.Threading.Thread.CurrentThread.ManagedThreadId }" );
+			throw new System.Exception();
+		}
 		#endregion
 	}
 }
