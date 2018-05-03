@@ -12,6 +12,13 @@ namespace CommunicationServerCore.Components.Modules
 		{
 			try
 			{
+				CommunicationServer.Finish += ( s, e ) =>
+				{
+					if( e.IsSuccess )
+						Console.WriteLine( "Communication server finished successfully." );
+					else
+						Console.WriteLine( $"Communication server finished with exception: { e.Exception }." );
+				};
 				CommunicationServer.Start();
 				OnFinish();
 			}

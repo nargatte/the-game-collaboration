@@ -7,7 +7,7 @@ using System;
 
 namespace CommunicationServerCore.Base.Modules
 {
-	public abstract class CommunicationServerModuleBase : Module, ICommunicationServerModule
+	public abstract class CommunicationServerModuleBase : ModuleBase, ICommunicationServerModule
 	{
 		#region ICommunicationServerModule
 		public virtual CommunicationServerSettings Configuration { get; }

@@ -2,13 +2,13 @@
 
 namespace Shared.Base.Modules
 {
-	public abstract class Module : StartableBase, IModule
+	public abstract class ModuleBase : StartableBase, IModule
 	{
 		#region IModule
 		public virtual int Port { get; }
 		#endregion
-		#region Module
-		public Module( int port ) => Port = port;
+		#region ModuleBase
+		public ModuleBase( int port ) => Port = port;
 		#endregion
 	}
 }

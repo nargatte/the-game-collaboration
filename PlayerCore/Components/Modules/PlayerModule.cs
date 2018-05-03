@@ -5,7 +5,7 @@ using System;
 
 namespace PlayerCore.Components.Modules
 {
-	public class PlayerModule : Module, IPlayerModule
+	public class PlayerModule : ModuleBase, IPlayerModule
 	{
 		#region IPlayerModule
 		public virtual PlayerSettings Configuration { get; }

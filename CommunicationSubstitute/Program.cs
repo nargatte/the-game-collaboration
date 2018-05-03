@@ -14,9 +14,9 @@ namespace CommunicationSubstitute
 			moduleCS.Finish += ( s, e ) =>
 			{
 				if( e.IsSuccess )
-					Console.WriteLine( "Communication server module ended successfully." );
+					Console.WriteLine( "Communication server module finished successfully." );
 				else
-					Console.WriteLine( $"Communication server module ended with exception: { e.Exception }." );
+					Console.WriteLine( $"Communication server module finished with exception: { e.Exception }." );
 			};
 			var threadCS = new Thread( moduleCS.Start );
 			threadCS.Start();
