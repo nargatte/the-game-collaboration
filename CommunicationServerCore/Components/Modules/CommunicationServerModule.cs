@@ -10,11 +10,11 @@ namespace CommunicationServerCore.Components.Modules
 	public class CommunicationServerModule : CommunicationServerModuleBase
 	{
 		#region CommunicationServerModuleBase
-		public override Task RunAsync( CancellationToken ct )
+		public override async Task RunAsync( CancellationToken ct )
 		{
 			Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: starting communication server module" );
-			//return Task.FromException( new NotImplementedException() );
-			return Task.CompletedTask;
+			await Task.Delay( 1000 );
+			//return Task.CompletedTask;
 		}
 		/*public override void Start()
 		{

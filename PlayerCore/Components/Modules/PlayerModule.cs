@@ -26,7 +26,11 @@ namespace PlayerCore.Components.Modules
 			}
 		}*/
 
-		public override Task RunAsync( CancellationToken ct ) => throw new NotImplementedException();
+		public override Task RunAsync( CancellationToken ct )
+		{
+			Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: starting player module" );
+			return Task.CompletedTask;
+		}
 		#endregion
 		#region PlayerModule
 		public PlayerModule( int port, PlayerSettings configuration ) : base( port ) => Configuration = configuration;

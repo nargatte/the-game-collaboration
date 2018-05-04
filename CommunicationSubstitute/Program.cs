@@ -1,5 +1,6 @@
 ﻿using CommunicationServerCore.Components.Factories;
 using CommunicationServerCore.Components.Modules;
+using PlayerCore.Components.Modules;
 using Shared.DTOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,15 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
+				int port = 65535;
 				var cts = new CancellationTokenSource();
-				var cs = new CommunicationServerModule( 65535, new CommunicationServerSettings(), new CommunicationServerFactory() );
+				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
+				var p1 = new PlayerModule( port, new PlayerSettings() );
 				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: starting all tasks" );
 				var tasks = new List<Task>
 				{
-					Task.Run( () => cs.RunAsync( cts.Token ) )
+					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) )
 				};
 				try
 				{
@@ -29,7 +33,7 @@ namespace CommunicationSubstitute
 				catch( Exception )
 				{
 				}
-				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: logging all tasks:" );
+				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: logging all tasks" );
 				foreach( var task in tasks )
 				{
 					if( task.IsFaulted )
