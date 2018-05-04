@@ -7,7 +7,7 @@ namespace Shared.Base.Modules
 	public abstract class ModuleBase : IModule
 	{
 		#region IModule
-		public abstract Task RunAsync( CancellationToken ct );
+		public abstract Task RunAsync( CancellationToken cancellationToken );
 		public virtual int Port { get; }
 		#endregion
 		#region ModuleBase

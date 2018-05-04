@@ -16,10 +16,9 @@ namespace CommunicationSubstitute
 			try
 			{
 				int port = 65535;
-				var cts = new CancellationTokenSource();
+				var cts = new CancellationTokenSource( 5000 );
 				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
 				var p1 = new PlayerModule( port, new PlayerSettings() );
-				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: starting all tasks" );
 				var tasks = new List<Task>
 				{
 					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
@@ -27,28 +26,24 @@ namespace CommunicationSubstitute
 				};
 				try
 				{
-					Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: completing all tasks" );
 					await Task.WhenAll( tasks );
 				}
 				catch( Exception )
 				{
-				}
-				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: logging all tasks" );
-				foreach( var task in tasks )
-				{
-					if( task.IsFaulted )
-						Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: task failed with { task.Exception }" );
-					else if( task.IsCanceled )
-						Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: task canceled" );
-					else if( task.IsCompleted )
-						Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: task completed" );
-					else
-						Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: ?" );
+					foreach( var task in tasks )
+					{
+						if( task.IsCanceled )
+							Console.WriteLine( $"task canceled" );
+						else if( task.IsFaulted )
+							Console.WriteLine( $"task faulted with { task.Exception }" );
+						else
+							Console.WriteLine( "task completed" );
+					}
 				}
 			}
 			catch( Exception e )
 			{
-				Console.WriteLine( $"{ Thread.CurrentThread.ManagedThreadId }: { e }" );
+				Console.WriteLine( e );
 			}
 		}
 	}

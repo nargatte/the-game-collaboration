@@ -1,11 +1,13 @@
 ﻿using Shared.Interfaces.Factories;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shared.Interfaces.Communication
 {
-	public interface INetworkServer
+	public interface INetworkServer : IDisposable
 	{
 		INetworkFactory Factory { get; }
-		void Accept( Action<INetworkClient> callback );
+		Task<INetworkClient> AcceptAsync( CancellationToken cancellationToken );
 	}
 }

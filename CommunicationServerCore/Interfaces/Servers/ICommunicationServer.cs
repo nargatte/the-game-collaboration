@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CommunicationServerCore.Interfaces.Servers
 {
-	public interface ICommunicationServer : IStartable
+	public interface ICommunicationServer : IRunnable
     {
 		int Port { get; }
 		uint KeepAliveInterval { get; }

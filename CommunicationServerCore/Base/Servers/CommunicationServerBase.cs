@@ -1,15 +1,17 @@
 ﻿using CommunicationServerCore.Interfaces.Proxies;
 using CommunicationServerCore.Interfaces.Servers;
-using Shared.Base;
 using Shared.Interfaces.Factories;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CommunicationServerCore.Base.Servers
 {
-	public abstract class CommunicationServerBase : StartableBase, ICommunicationServer
+	public abstract class CommunicationServerBase : ICommunicationServer
 	{
 		#region ICommunicationServer
+		public abstract Task RunAsync( CancellationToken cancellationToken );
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
 		public virtual INetworkFactory Factory { get; }

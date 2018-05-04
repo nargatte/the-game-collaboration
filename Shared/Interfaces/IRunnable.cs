@@ -5,6 +5,6 @@ namespace Shared.Interfaces
 {
 	public interface IRunnable
 	{
-		Task RunAsync( CancellationToken ct );
+		Task RunAsync( CancellationToken cancellationToken );
 	}
 }

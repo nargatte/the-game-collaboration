@@ -65,6 +65,7 @@
     <Compile Include="Components\Extensions\ExtensionIPlayer.cs" />
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
+    <Compile Include="Components\Extensions\ExtensionTask.cs" />
     <Compile Include="Components\Factories\BoardComponentFactory.cs" />
     <Compile Include="Components\Factories\BoardFactory.cs" />
     <Compile Include="Components\Factories\IBoardComponentFactory.cs" />
