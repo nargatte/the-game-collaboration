@@ -2,6 +2,8 @@
 using Shared.Base.Modules;
 using Shared.DTOs.Configuration;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayerCore.Components.Modules
 {
@@ -10,7 +12,7 @@ namespace PlayerCore.Components.Modules
 		#region IPlayerModule
 		public virtual PlayerSettings Configuration { get; }
 		public virtual IPlayer Player { get; protected set; }
-		public override void Start()
+		/*public override void Start()
 		{
 			try
 			{
@@ -22,7 +24,9 @@ namespace PlayerCore.Components.Modules
 			{
 				OnFinish( e );
 			}
-		}
+		}*/
+
+		public override Task RunAsync( CancellationToken ct ) => throw new NotImplementedException();
 		#endregion
 		#region PlayerModule
 		public PlayerModule( int port, PlayerSettings configuration ) : base( port ) => Configuration = configuration;

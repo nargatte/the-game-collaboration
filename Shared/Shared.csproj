@@ -91,6 +91,7 @@
     <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Interfaces\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
