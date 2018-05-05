@@ -1,7 +1,9 @@
 ﻿using CommunicationServerCore.Base.Servers;
 using CommunicationServerCore.Interfaces.Proxies;
 using Shared.Components.Extensions;
+using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,12 +16,35 @@ namespace CommunicationServerCore.Components.Servers
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			using( var server = Factory.MakeNetworkServer( Port ) )
+			var tasks = new List<Task>();
+			try
 			{
-				while( true )
+				using( var server = Factory.MakeNetworkServer( Port ) )
 				{
-					var client = await server.AcceptAsync( cancellationToken ).ConfigureAwait( false );
-					System.Console.WriteLine( "ACCEPTED" );
+					while( true )
+					{
+						var client = await server.AcceptAsync( cancellationToken ).ConfigureAwait( false );
+						tasks.Add( Task.Run( async () => await OnAcceptAsync( client, cancellationToken ).ConfigureAwait( false ) ) );
+					}
+				}
+			}
+			finally
+			{
+				try
+				{
+					await Task.WhenAll( tasks );
+				}
+				catch( Exception )
+				{
+				}
+				foreach( var task in tasks )
+				{
+					if( task.IsCanceled )
+						Console.WriteLine( $"server task canceled" );
+					else if( task.IsFaulted )
+						Console.WriteLine( $"server task faulted with { task.Exception }" );
+					else
+						Console.WriteLine( "server task completed" );
 				}
 			}
 		}
@@ -29,6 +54,15 @@ namespace CommunicationServerCore.Components.Servers
 		#region CommunicationServer
 		public CommunicationServer( int port, uint keepAliveInterval, INetworkFactory factory ) : base( port, keepAliveInterval, factory )
 		{
+		}
+		protected Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			using( client )
+			{
+
+			}
+			return Task.CompletedTask;
 		}
 		#endregion
 	}

@@ -15,7 +15,7 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
-				int timeout = 1000;
+				int timeout = 10000;
 				int port = 65535;
 				var cts = new CancellationTokenSource( timeout );
 				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
@@ -31,15 +31,15 @@ namespace CommunicationSubstitute
 				}
 				catch( Exception )
 				{
-					foreach( var task in tasks )
-					{
-						if( task.IsCanceled )
-							Console.WriteLine( $"task canceled" );
-						else if( task.IsFaulted )
-							Console.WriteLine( $"task faulted with { task.Exception }" );
-						else
-							Console.WriteLine( "task completed" );
-					}
+				}
+				foreach( var task in tasks )
+				{
+					if( task.IsCanceled )
+						Console.WriteLine( $"module task canceled" );
+					else if( task.IsFaulted )
+						Console.WriteLine( $"module task faulted with { task.Exception }" );
+					else
+						Console.WriteLine( "module task completed" );
 				}
 			}
 			catch( Exception e )
