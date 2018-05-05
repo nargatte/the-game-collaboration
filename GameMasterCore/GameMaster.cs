@@ -376,29 +376,32 @@ namespace GameMasterCore
                     playerId = playerPawn.Id
                 };
             }
-            //remove the piece from the player
-            board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
-            //get piece-less goal field to return
-            var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
-            GoalToReturn.type = targetGoalField.Type;
-            if (targetGoalField.Type == GoalFieldType.Goal)
+            else
             {
-                // detach player from piece
-                GetPlayerFromGameMessage(placeRequest).Piece = null;
-                //if goal, make a non-goal
-                board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
-                //and decrease goals to go
-                if (targetGoalField.Team == TeamColour.Red)
-                    redGoalsToScore--;
-                else
-                    blueGoalsToScore--;
+                //remove the piece from the player
+                board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                //get piece-less goal field to return
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
+                GoalToReturn.type = targetGoalField.Type;
+                if (targetGoalField.Type == GoalFieldType.Goal)
+                {
+                    // detach player from piece
+                    GetPlayerFromGameMessage(placeRequest).Piece = null;
+                    //if goal, make a non-goal
+                    board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                    //and decrease goals to go
+                    if (targetGoalField.Team == TeamColour.Red)
+                        redGoalsToScore--;
+                    else
+                        blueGoalsToScore--;
+                }
+                return new DTO.Data
+                {
+                    gameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
+                    playerId = playerPawn.Id,
+                    GoalFields = new DTO.GoalField[] { GoalToReturn }
+                };
             }
-            return new DTO.Data
-            {
-                gameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
-                playerId = playerPawn.Id,
-                GoalFields = new DTO.GoalField[] { GoalToReturn }
-            };
         }
 
         private DTO.Data PerformSynchronizedTestPiece(DTO.TestPiece testPieceRequest)

@@ -15,7 +15,7 @@ namespace GameMasterCore.Base.Modules
         public virtual IGameMaster GameMaster { get; }
         #endregion
         #region GameMasterModuleBase
-        public GameMasterModuleBase(string ip, int port, PlayerSettings configuration, IGameMasterFactory factory) : base(ip, port)
+        public GameMasterModuleBase(string ip, int port, GameMasterSettings configuration, IGameMasterFactory factory) : base(ip, port)
         {
             Configuration = configuration is null ? throw new ArgumentNullException(nameof(configuration)) : configuration;
             Factory = factory is null ? throw new ArgumentNullException(nameof(factory)) : factory;
