@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameMasterCore.Interfaces.GameMasters;
+using GameMasterCore.Interfaces.Proxies;
+using Shared.DTOs.Configuration;
+using Shared.Interfaces.Modules;
 
 namespace GameMasterCore.Interfaces.Modules
 {
-    class IGameMasterModule
+    public interface IGameMasterModule : IModule
     {
+        GameMasterSettings Configuration { get; }
+        IGameMaster GameMaster { get; }
     }
 }
