@@ -21,7 +21,7 @@ namespace Shared.Components.Communication
 			byte[] data = Encoding.ASCII.GetBytes( message );
 			await stream.WriteAsync( data, 0, data.Length, cancellationToken );
 		}
-		public virtual async Task<string> Receive( CancellationToken cancellationToken )
+		public override async Task<string> ReceiveAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			byte[] data = new byte[ 256 ];

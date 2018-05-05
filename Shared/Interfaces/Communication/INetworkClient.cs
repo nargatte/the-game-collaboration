@@ -9,5 +9,6 @@ namespace Shared.Interfaces.Communication
 	{
 		INetworkFactory Factory { get; }
 		Task SendAsync( string message, CancellationToken cancellationToken );
+		Task<string> ReceiveAsync( CancellationToken cancellationToken );
 	}
 }

@@ -13,6 +13,7 @@ namespace Shared.Base.Communication
 		public virtual void Dispose() => Client.Close();
 		public virtual INetworkFactory Factory { get; }
 		public abstract Task SendAsync( string message, CancellationToken cancellationToken );
+		public abstract Task<string> ReceiveAsync( CancellationToken cancellationToken );
 		#endregion
 		#region NetworkClientBase
 		protected TcpClient Client { get; }
