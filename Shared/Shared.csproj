@@ -71,6 +71,12 @@
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
+    <Compile Include="DTOs\Configuration\Field.cs" />
+    <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
+    <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
+    <Compile Include="DTOs\Configuration\GameMasterSettingsGameDefinition.cs" />
+    <Compile Include="DTOs\Configuration\GoalField.cs" />
+    <Compile Include="DTOs\Configuration\Location.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
     <Compile Include="Interfaces\Factories\INetworkFactory.cs" />
