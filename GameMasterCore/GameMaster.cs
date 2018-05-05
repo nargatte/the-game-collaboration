@@ -16,6 +16,7 @@ using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
+using Shared.Components;
 
 namespace GameMasterCore
 {
@@ -353,6 +354,23 @@ namespace GameMasterCore
             if (heldPiecePawn.Type == PieceType.Sham)
             {
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+                //get piece-less goal field to return
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
+                GoalToReturn.type = targetGoalField.Type;
+                if (targetGoalField.Type == GoalFieldType.Goal)
+                {
+                    // detach player from piece
+                    GetPlayerFromGameMessage(placeRequest).Piece = null;
+                    playerPawn.Piece = null;
+                    //if goal, make a non-goal
+                    board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
+                    
+                    //and decrease goals to go
+                    if (targetGoalField.Team == TeamColour.Red)
+                        redGoalsToScore--;
+                    else
+                        blueGoalsToScore--;
+                }
                 return new DTO.Data
                 {
                     playerId = playerPawn.Id
@@ -592,9 +610,8 @@ namespace GameMasterCore
             }
 
             // może ewentualnie dodać AsParallel().
-            if (computeDistanceInParallel)
-            {
-                fieldToReturn.distanceToPiece = (int)board.Pieces.AsParallel().
+            
+            fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
                 Where(fieldPiece => fieldPiece.Field != null).

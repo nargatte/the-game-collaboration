@@ -45,11 +45,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Modules\CommunicationServerModuleBase.cs" />
+    <Compile Include="Base\Servers\CommunicationServerBase.cs" />
+    <Compile Include="Components\Factories\CommunicationServerFactory.cs" />
+    <Compile Include="Components\Modules\CommunicationServerModule.cs" />
+    <Compile Include="Components\Servers\CommunicationServer.cs" />
+    <Compile Include="Interfaces\Factories\ICommunicationServerFactory.cs" />
+    <Compile Include="Interfaces\Servers\ICommunicationServer.cs" />
+    <Compile Include="Interfaces\Modules\ICommunicationServerModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{20d54140-ccfe-4767-90a4-f5f093a296f3}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

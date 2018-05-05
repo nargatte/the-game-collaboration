@@ -31,6 +31,8 @@ namespace CommunicationSubstitute
 
         readonly Dictionary<ulong, bool> EndGame = new Dictionary<ulong, bool>();
 
+        #region From GameMaster
+
         Random random = new Random(123456);
 
         private List<Shared.Messages.Communication.Location> GenerateRandomPlaces(
@@ -120,6 +122,16 @@ namespace CommunicationSubstitute
 
             return result;
         }
+        #endregion
+
+		public void Start()
+		{
+			Initialize();
+			RegisterPlayers();
+			CreatePlayers();
+			StartPlayers();
+			JoinPlayers();
+		}
 
         public void Initialize()
         {
@@ -135,7 +147,7 @@ namespace CommunicationSubstitute
                     TestDelay = 1000
                 };
 
-            GameMaster = new BlockingGameMaster( /*config, new BoardComponentFactory()*/ );
+            GameMaster = new BlockingGameMaster( config, new BoardComponentFactory() );
 
             GameMaster.Log += (s, e) =>
             {
@@ -145,7 +157,7 @@ namespace CommunicationSubstitute
 
             var registerGame = GameMaster.PerformConfirmGameRegistration();
             registerGame.GameInfo[0].blueTeamPlayers = 1;
-            registerGame.GameInfo[0].redTeamPlayers = 0;
+            registerGame.GameInfo[0].redTeamPlayers = 1;
             GameInfo = registerGame.GameInfo[0];
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
@@ -191,14 +203,14 @@ namespace CommunicationSubstitute
                 var myConfirm = BlueConfirms[i];
                 var game = GameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
-                BluePlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
+                /*BluePlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
                         lock (EndGame)
                         {
                             EndGame[myConfirm.playerId] = true;
                         }
-                    });
+                    });*/
                 BlueThreads[i] = new Thread(PlayerThread);
                 if(ShowData) BluePlayers[i].State.ReceiveDataLog += (s, e) => Console.WriteLine(e);
             }
@@ -209,14 +221,14 @@ namespace CommunicationSubstitute
                 var myConfirm = RedConfirms[i];
                 var game = GameMaster.GetGame(myConfirm.privateGuid);
                 EndGame.Add(myConfirm.playerId, false);
-                RedPlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
+                /*RedPlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
                         lock (EndGame)
                         {
                             EndGame[myConfirm.playerId] = true;
                         }
-                    });
+                    });*/
                 RedThreads[i] = new Thread(PlayerThread);
                 if (ShowData) RedPlayers[i].State.ReceiveDataLog += (s, e) => Console.WriteLine(e);
             }

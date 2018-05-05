@@ -19,9 +19,9 @@ namespace PlayerCore
 
         public Game Game { get; }
 
-        Shared.Messages.Communication.Player[] PlayersMyTeam { get; }
+        public Shared.Messages.Communication.Player[] PlayersMyTeam { get; }
 
-        Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
+        public Shared.Messages.Communication.Player[] PlayersCompetitors { get; }
 
         public event EventHandler EndGame;
 
@@ -40,6 +40,7 @@ namespace PlayerCore
                 return location;
             }
         }
+        public Location LastLocalization;
 
         public IField Field
         {
@@ -64,7 +65,7 @@ namespace PlayerCore
             Board = boardFactory.CreateBoard(Game.Board.width, Game.Board.tasksHeight, Game.Board.goalsHeight);
             var player = game.Players.FirstOrDefault(p => p.id == id) ??
                 throw new NullReferenceException("Player id did not found in game object");
-            PlayersMyTeam = game.Players.Where(p => p.team == player.team).ToArray();
+            PlayersMyTeam = game.Players.OrderBy(q => game.playerId).Where(p => p.team == player.team).ToArray();
             PlayersCompetitors = game.Players.Where(p => p.team != player.team).ToArray();
 
             TeamColour = player.team;
@@ -93,6 +94,7 @@ namespace PlayerCore
             HoldingPiece = dataPiece;
 
             LastDiscoveryCount = (data.TaskFields?.Length ?? 0) > 2 ? data.TaskFields.Length : LastDiscoveryCount;
+            LastLocalization = Location;
 
             if (data.gameFinished == true)
             {
@@ -123,6 +125,7 @@ namespace PlayerCore
             if(data.Pieces != null)
                 foreach (Shared.Messages.Communication.Piece p in data.Pieces)
                 {
+                    
                     var field = data.TaskFields?.FirstOrDefault(f => f.pieceIdSpecified && f.pieceId == p.id);
                     ITaskField taskField = null;
                     if(field != null)
@@ -136,13 +139,20 @@ namespace PlayerCore
                 foreach (var goal in data.GoalFields)
                 {
                     IPlayer player = null;
+                    
                     if (goal.playerIdSpecified == true)
                     {
                         Board.SetPlayerLocation(goal.playerId, new Location() { x = goal.x, y = goal.y }, goal.timestamp);
                         player = Board.GetPlayer(goal.playerId);
                     }
 
-                    Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type));
+                    Location location = new Location();
+                    location.x = goal.x;
+                    location.y = goal.y;
+                    GoalFieldType type = (Board.GetField(goal.x, goal.y) as Shared.Components.Fields.GoalField).Type;
+                    
+                    Board.SetField(Board.Factory.CreateGoalField(goal.x, goal.y, goal.team, goal.timestamp, player, goal.type == GoalFieldType.Unknown? type: goal.type));
+                   // if (goal.type != GoalFieldType.Unknown) HoldingPiece = null;
                 }
         }
     }
