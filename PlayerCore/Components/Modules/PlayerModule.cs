@@ -12,6 +12,7 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
+			Player.Proxy = Factory.CreateProxy( Port, Configuration.KeepAliveInterval );
 			await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
 		}
 		#endregion
