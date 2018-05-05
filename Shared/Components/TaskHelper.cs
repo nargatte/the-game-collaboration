@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shared.Components.Tasks
+namespace Shared.Components
 {
 	public static class TaskHelper
 	{

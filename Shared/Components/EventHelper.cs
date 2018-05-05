@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Shared.Components.Events
+namespace Shared.Components
 {
 	public static class EventHelper
 	{

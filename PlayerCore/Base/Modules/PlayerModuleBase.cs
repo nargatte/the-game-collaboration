@@ -22,7 +22,7 @@ namespace PlayerCore.Base.Modules
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
 			Player = Factory.CreatePlayer( Configuration.RetryJoinGameInterval );
-			Proxy = Factory.CreateProxy();
+			Proxy = Factory.CreateProxy( Port, Configuration.KeepAliveInterval );
 		}
 		#endregion
 	}

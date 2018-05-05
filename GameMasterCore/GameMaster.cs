@@ -16,6 +16,7 @@ using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
+using Shared.Components;
 
 namespace GameMasterCore
 {

@@ -17,8 +17,6 @@ namespace Shared.Components.Communication
 		{
 		}
 		#endregion
-
-
 		//
 
 		private TcpClient _client;

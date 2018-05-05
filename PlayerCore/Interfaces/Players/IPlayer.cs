@@ -1,6 +1,8 @@
-﻿namespace PlayerCore.Interfaces.Players
+﻿using Shared.Interfaces;
+
+namespace PlayerCore.Interfaces.Players
 {
-    public interface IPlayer
+    public interface IPlayer : IRunnable
     {
 		uint RetryJoinGameInterval { get; }
     }
