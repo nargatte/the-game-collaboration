@@ -1,6 +1,10 @@
-﻿namespace Shared.Interfaces.Communication
+﻿using Shared.Interfaces.Factories;
+using System;
+
+namespace Shared.Interfaces.Communication
 {
-	public interface INetworkClient
+	public interface INetworkClient : IDisposable
 	{
+		INetworkFactory Factory { get; }
 	}
 }

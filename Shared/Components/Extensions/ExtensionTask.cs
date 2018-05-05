@@ -6,7 +6,7 @@ namespace Shared.Components.Extensions
 {
 	public static class ExtensionTask
 	{
-		public static async Task<T> WithCancellation<T>( this Task<T> task, CancellationToken cancellationToken )
+		public static async Task< T > WithCancellation<T>( this Task< T > task, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			var tcs = new TaskCompletionSource<bool>();

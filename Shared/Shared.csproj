@@ -42,9 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Communication\NetworkClientBase.cs" />
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
-    <Compile Include="Base\StartableBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="Components\Factories\IBoardComponentFactory.cs" />
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
+    <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
     <Compile Include="Interfaces\Factories\INetworkFactory.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
-    <Compile Include="Interfaces\IStartable.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />

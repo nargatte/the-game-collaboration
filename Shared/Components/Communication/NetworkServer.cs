@@ -11,7 +11,6 @@ namespace Shared.Components.Communication
 	public class NetworkServer : NetworkServerBase
 	{
 		#region NetworkServerBase
-		public override void Dispose() => Listener.Stop();
 		public override async Task<INetworkClient> AcceptAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -19,7 +18,9 @@ namespace Shared.Components.Communication
 		}
 		#endregion
 		#region NetworkServer
-		public NetworkServer( TcpListener listener, INetworkFactory factory ) : base( listener, factory ) => listener.Start();
+		public NetworkServer( TcpListener listener, INetworkFactory factory ) : base( listener, factory )
+		{
+		}
 		#endregion
 	}
 }

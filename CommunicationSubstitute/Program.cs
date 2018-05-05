@@ -15,8 +15,9 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
+				int timeout = 1000;
 				int port = 65535;
-				var cts = new CancellationTokenSource( 10000 );
+				var cts = new CancellationTokenSource( timeout );
 				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
 				var p1 = new PlayerModule( port, new PlayerSettings() );
 				var tasks = new List<Task>

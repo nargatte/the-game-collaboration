@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Shared.Base.Communication;
+using Shared.Components.Serialization;
+using Shared.Interfaces.Factories;
+using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using Shared.Components.Serialization;
-using Shared.Interfaces.Communication;
 
 namespace Shared.Components.Communication
 {
-    public class NetworkClient : INetworkClient, IDisposable
+	public class NetworkClient : NetworkClientBase
     {
 		#region INetworkClient
 		#endregion
 		#region NetworkClient
-		private TcpClient client;
-		public NetworkClient( TcpClient aClient ) => client = aClient;
+		public NetworkClient( TcpClient client, INetworkFactory factory ) : base( client, factory )
+		{
+		}
 		#endregion
 
 
