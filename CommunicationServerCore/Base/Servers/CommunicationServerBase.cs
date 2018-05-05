@@ -1,8 +1,6 @@
-﻿using CommunicationServerCore.Interfaces.Proxies;
-using CommunicationServerCore.Interfaces.Servers;
+﻿using CommunicationServerCore.Interfaces.Servers;
 using Shared.Interfaces.Factories;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,8 +13,6 @@ namespace CommunicationServerCore.Base.Servers
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
 		public virtual INetworkFactory Factory { get; }
-		public abstract IEnumerable<IGameMasterProxy> GameMasterProxies { get; }
-		public abstract IEnumerable<IPlayerProxy> PlayerProxies { get; }
 		#endregion
 		#region CommunicationServerBase
 		protected CommunicationServerBase( int port, uint keepAliveInterval, INetworkFactory factory )

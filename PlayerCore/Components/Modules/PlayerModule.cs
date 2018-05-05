@@ -1,35 +1,24 @@
-﻿using PlayerCore.Interfaces;
-using Shared.Base.Modules;
+﻿using PlayerCore.Base.Modules;
+using PlayerCore.Interfaces.Factories;
 using Shared.DTOs.Configuration;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace PlayerCore.Components.Modules
 {
-	public class PlayerModule : ModuleBase, IPlayerModule
+	public class PlayerModule : PlayerModuleBase
 	{
 		#region IPlayerModule
-		public virtual PlayerSettings Configuration { get; }
-		public virtual IPlayer Player { get; protected set; }
-		/*public override void Start()
+		public override Task RunAsync( CancellationToken cancellationToken )
 		{
-			try
-			{
-				//CommunicationServer = new CommunicationServer( Port, Configuration );
-				//CommunicationServer.Start();
-				OnFinish();
-			}
-			catch( Exception e )
-			{
-				OnFinish( e );
-			}
-		}*/
-
-		public override Task RunAsync( CancellationToken ct ) => Task.CompletedTask;
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
+		}
 		#endregion
 		#region PlayerModule
-		public PlayerModule( int port, PlayerSettings configuration ) : base( port ) => Configuration = configuration;
+		public PlayerModule( int port, PlayerSettings configuration, IPlayerFactory factory ) : base( port, configuration, factory )
+		{
+		}
 		#endregion
 	}
 }

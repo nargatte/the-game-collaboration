@@ -8,18 +8,18 @@ namespace PlayerCore
 {
     public class PlayerInGame
     {
-        private readonly ICommunicationServerProxy _communicationServerProxy;
+        //private readonly ICommunicationServerProxy _communicationServerProxy;
 
         private Strategy2 Strategy { get; }
 
         public State State { get; }
 
-        public PlayerInGame(ICommunicationServerProxy communicationServerProxy, Game game, ulong playerId, string playerGuid, ulong gameId)
+        /*public PlayerInGame(ICommunicationServerProxy communicationServerProxy, Game game, ulong playerId, string playerGuid, ulong gameId)
         {
-            _communicationServerProxy = communicationServerProxy;
+            //_communicationServerProxy = communicationServerProxy;
             State = new State(game, playerId, gameId, playerGuid, new BoardFactory());
-            Strategy = new Strategy2(_communicationServerProxy, State);
-        }
+            //Strategy = new Strategy2(_communicationServerProxy, State);
+        }*/
 
         public Data PerformAction()
         {

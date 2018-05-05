@@ -19,7 +19,7 @@ namespace CommunicationServerCore.Base.Modules
 		{
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
-			CommunicationServer = Factory.CreateCommunicationServer( Port, Configuration.KeepAliveInterval, Factory );
+			CommunicationServer = Factory.CreateCommunicationServer( Port, Configuration.KeepAliveInterval );
 		}
 		#endregion
 	}

@@ -1,7 +1,8 @@
-﻿using Shared.DTOs.Configuration;
+﻿using PlayerCore.Interfaces.Players;
+using Shared.DTOs.Configuration;
 using Shared.Interfaces.Modules;
 
-namespace PlayerCore.Interfaces
+namespace PlayerCore.Interfaces.Modules
 {
 	public interface IPlayerModule : IModule
 	{

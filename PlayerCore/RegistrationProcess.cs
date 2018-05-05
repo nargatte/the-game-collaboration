@@ -8,18 +8,18 @@ namespace PlayerCore
 {
     public class RegistrationProcess
     {
-        private ICommunicationServerProxy _communicationServerProxy;
+        //private ICommunicationServerProxy _communicationServerProxy;
         private readonly string _gameName;
         private readonly TeamColour _teamColour;
         private readonly PlayerType _playerType;
 
         public RegistrationProcess(
-            ICommunicationServerProxy communicationServerProxy,
+            //ICommunicationServerProxy communicationServerProxy,
             string gameName,
             TeamColour teamColour,
             PlayerType playerType)
         {
-            _communicationServerProxy = communicationServerProxy;
+            //_communicationServerProxy = communicationServerProxy;
             _gameName = gameName;
             _teamColour = teamColour;
             _playerType = playerType;

@@ -1,12 +1,8 @@
-﻿using PlayerCore.Interfaces;
-using System;
-using System.Net.Sockets;
-using System.Linq;
-using Shared.Components.Communication;
+﻿using PlayerCore.Interfaces.Players;
 
 namespace PlayerCore
 {
-    class CommunicationServerProxy
+	class CommunicationServerProxy
     {
         public IPlayer Player { get; set; }
 

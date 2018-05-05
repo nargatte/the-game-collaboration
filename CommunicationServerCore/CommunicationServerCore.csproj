@@ -53,8 +53,6 @@
     <Compile Include="Interfaces\Factories\ICommunicationServerFactory.cs" />
     <Compile Include="Interfaces\Servers\ICommunicationServer.cs" />
     <Compile Include="Interfaces\Modules\ICommunicationServerModule.cs" />
-    <Compile Include="Interfaces\Proxies\IGameMasterProxy.cs" />
-    <Compile Include="Interfaces\Proxies\IPlayerProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using CommunicationServerCore.Base.Servers;
-using CommunicationServerCore.Interfaces.Proxies;
 using Shared.Components.Extensions;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
@@ -48,8 +47,6 @@ namespace CommunicationServerCore.Components.Servers
 				}
 			}
 		}
-		public override IEnumerable<IGameMasterProxy> GameMasterProxies => throw new System.NotImplementedException();
-		public override IEnumerable<IPlayerProxy> PlayerProxies => throw new System.NotImplementedException();
 		#endregion
 		#region CommunicationServer
 		public CommunicationServer( int port, uint keepAliveInterval, INetworkFactory factory ) : base( port, keepAliveInterval, factory )

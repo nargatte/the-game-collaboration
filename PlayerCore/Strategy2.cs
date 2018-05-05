@@ -11,14 +11,14 @@ namespace PlayerCore
 {
     class Strategy2 : Shared.Interfaces.IStrategy
     {
-        private readonly ICommunicationServerProxy _communicationServerProxy;
+        //private readonly ICommunicationServerProxy _communicationServerProxy;
 
         public State State { get; }
-        public Strategy2(ICommunicationServerProxy communicationServerProxy, State state)
+        /*public Strategy2(ICommunicationServerProxy communicationServerProxy, State state)
         {
             _communicationServerProxy = communicationServerProxy;
             State = state;
-        }
+        }*/
 
         private Rt SetCommunicationData<Rt>(Rt gameMessage)
            where Rt : GameMessage

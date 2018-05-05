@@ -1,5 +1,6 @@
 ﻿using CommunicationServerCore.Components.Factories;
 using CommunicationServerCore.Components.Modules;
+using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
 using Shared.DTOs.Configuration;
 using System;
@@ -19,7 +20,7 @@ namespace CommunicationSubstitute
 				int port = 65535;
 				var cts = new CancellationTokenSource( timeout );
 				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
-				var p1 = new PlayerModule( port, new PlayerSettings() );
+				var p1 = new PlayerModule( port, new PlayerSettings(), new PlayerFactory() );
 				var tasks = new List<Task>
 				{
 					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),

@@ -1,21 +1,13 @@
-﻿using PlayerCore.Interfaces;
-using Shared.Components.Communication;
-using Shared.DTOs.Configuration;
-using System.Collections.Generic;
+﻿using PlayerCore.Base.Players;
 
 namespace PlayerCore.Components.Players
 {
-	public class Player : IPlayer
+	public class Player : PlayerBase
 	{
-		#region IPlayer
-		public virtual void Start()
+		#region Player
+		public Player( uint retryJoinGameInterval ) : base( retryJoinGameInterval )
 		{
 		}
-		public virtual uint KeepAliveInterval { get; }
-		public virtual ICommunicationServerProxy Proxy { get; set; }
-		#endregion
-		#region Player
-		public Player( uint keepAliveInterval ) => KeepAliveInterval = keepAliveInterval;
 		#endregion
 	}
 }
