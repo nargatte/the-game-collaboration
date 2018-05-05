@@ -9,6 +9,5 @@ namespace PlayerCore.Interfaces.Modules
 	{
 		PlayerSettings Configuration { get; }
 		IPlayer Player { get; }
-		ICommunicationServerProxy Proxy { get; }
 	}
 }
