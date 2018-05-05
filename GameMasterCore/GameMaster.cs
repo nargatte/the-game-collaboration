@@ -20,7 +20,7 @@ using Shared.Components;
 
 namespace GameMasterCore
 {
-    public class BlockingGameMaster : IGameMaster//, IReadOnlyBoard
+    public class BlockingGameMaster : IGameMaster
     {
         Random random;
         public virtual IReadOnlyBoard Board => board;
@@ -364,7 +364,7 @@ namespace GameMasterCore
                     playerPawn.Piece = null;
                     //if goal, make a non-goal
                     board.SetField(board.Factory.CreateGoalField(targetGoalField.X, targetGoalField.Y, targetGoalField.Team, DateTime.Now, playerPawn, GoalFieldType.NonGoal));
-                    
+
                     //and decrease goals to go
                     if (targetGoalField.Team == TeamColour.Red)
                         redGoalsToScore--;
@@ -609,27 +609,18 @@ namespace GameMasterCore
                     });
             }
 
-            // może ewentualnie dodać AsParallel().
-            
+
             fieldToReturn.distanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
                 Where(fieldPiece => fieldPiece.Field != null).
                 Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
-            }
-            else
-            {
-                fieldToReturn.distanceToPiece = (int)board.Pieces.
-                    Where(piece => piece is IFieldPiece).
-                    Select(piece => piece as IFieldPiece).
-                    Where(fieldPiece => fieldPiece.Field != null).
-                    Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
-            }
+        
 
             #region returning
             // pieces has an "out" parameter modifier
             pieces = piecesToReturn.ToArray();
-            return fieldToReturn;
+                return fieldToReturn;
             #endregion
         }
 
@@ -857,75 +848,5 @@ namespace GameMasterCore
         }
         #endregion
 
-        #region IReadOnlyBoard
-        //public uint Width => board.Width;
-
-        //public uint TasksHeight => board.TasksHeight;
-
-        //public uint GoalsHeight => board.GoalsHeight;
-
-        //public uint Height => board.Height;
-
-        //public IEnumerable<IField> Fields => board.Fields;
-
-        //public IEnumerable<IPiece> Pieces => board.Pieces;
-
-        //public IEnumerable<IPlayer> Players => board.Players;
-
-        //public IBoardComponentFactory Factory => board.Factory;
-
-        //public event EventHandler<FieldChangedArgs> FieldChanged
-        //{
-        //    add
-        //    {
-        //        board.FieldChanged += value;
-        //    }
-
-        //    remove
-        //    {
-        //        board.FieldChanged -= value;
-        //    }
-        //}
-
-        //public event EventHandler<PieceChangedArgs> PieceChanged
-        //{
-        //    add
-        //    {
-        //        board.PieceChanged += value;
-        //    }
-
-        //    remove
-        //    {
-        //        board.PieceChanged -= value;
-        //    }
-        //}
-
-        //public event EventHandler<PlayerChangedArgs> PlayerChanged
-        //{
-        //    add
-        //    {
-        //        board.PlayerChanged += value;
-        //    }
-
-        //    remove
-        //    {
-        //        board.PlayerChanged -= value;
-        //    }
-        //}
-        //public IField GetField(uint x, uint y)
-        //{
-        //    return board.GetField(x, y);
-        //}
-
-        //public IPiece GetPiece(ulong id)
-        //{
-        //    return board.GetPiece(id);
-        //}
-
-        //public IPlayer GetPlayer(ulong id)
-        //{
-        //    return board.GetPlayer(id);
-        //}
-        #endregion
     }
 }
