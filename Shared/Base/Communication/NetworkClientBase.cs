@@ -2,6 +2,8 @@
 using Shared.Interfaces.Factories;
 using System;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shared.Base.Communication
 {
@@ -10,6 +12,7 @@ namespace Shared.Base.Communication
 		#region INetworkClient
 		public virtual void Dispose() => Client.Close();
 		public virtual INetworkFactory Factory { get; }
+		public abstract Task SendAsync( string message, CancellationToken cancellationToken );
 		#endregion
 		#region NetworkClientBase
 		protected TcpClient Client { get; }

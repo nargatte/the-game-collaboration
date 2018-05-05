@@ -2,6 +2,7 @@
 using CommunicationServerCore.Components.Modules;
 using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
+using Shared.Components;
 using Shared.DTOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace CommunicationSubstitute
 			try
 			{
 				string ip = "127.0.0.1";
-				int timeout = 10000;
+				int timeout = 5000;
 				int port = 65535;
 				var cts = new CancellationTokenSource( timeout );
 				var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );

@@ -1,106 +1,45 @@
 ﻿using Shared.Base.Communication;
-using Shared.Components.Serialization;
 using Shared.Interfaces.Factories;
-using System;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shared.Components.Communication
 {
 	public class NetworkClient : NetworkClientBase
     {
-		#region INetworkClient
-		#endregion
-		#region NetworkClient
-		public NetworkClient( TcpClient client, INetworkFactory factory ) : base( client, factory )
+		#region NetworkClientBase
+		public override void Dispose()
 		{
+			stream.Close();
+			base.Dispose();
+		}
+		public override async Task SendAsync( string message, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			byte[] data = Encoding.ASCII.GetBytes( message );
+			await stream.WriteAsync( data, 0, data.Length, cancellationToken );
+		}
+		public virtual async Task<string> Receive( CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			byte[] data = new byte[ 256 ];
+			while( !builder.ToString().Contains( ConstHelper.EndOfMessage ) )
+			{
+				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken );
+				builder.Append( Encoding.ASCII.GetString( data, 0, bytes ) );
+			}
+			string buffer = builder.ToString();
+			int pos = buffer.IndexOf( ConstHelper.EndOfMessage );
+			builder.Remove( 0, pos + ConstHelper.EndOfMessage.Length );
+			return buffer.Substring( 0, pos + ConstHelper.EndOfMessage.Length );
 		}
 		#endregion
-		//
-
-		private TcpClient _client;
-        private NetworkStream _stream;
-        private string _receivedMessage = null; 
-
-        public void Connect(string address, Int32 port)
-        {
-            _client = new TcpClient(address, port);
-
-            _stream = _client.GetStream();
-        }
-
-        public void Send<T>(T message)
-        {
-            string desMessage = Serializer.Serialize(message);
-
-            Byte[] data = Encoding.ASCII.GetBytes(desMessage);
-            data = data.Concat(new Byte[] { 23 }).ToArray();
-
-            _stream.Write(data, 0, data.Length);
-        }
-
-        /// <summary>
-        /// If buffor empty -> block and try deserialize
-        /// otherwise -> only try deserialize
-        /// 
-        /// If deserialise end success -> remove bufor
-        /// otherwise -> don't remove
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public bool TryReceive<T>(out T message)
-            where T: class
-        {
-            if (_receivedMessage == null)
-            {
-                var data = new Byte[256];
-                Int32 bytes;
-                StringBuilder stringBuilder = new StringBuilder();
-                do
-                {
-                    bytes = _stream.Read(data, 0, data.Length);
-
-                    if (bytes == 1 && data[0] == 23)
-                    {
-                        _stream.Write(new byte[] {23}, 0, 1);
-                        continue;
-                    }
-
-                    stringBuilder.Append(Encoding.ASCII.GetString(data, 0, bytes));
-                } while (data[bytes - 3] != 23 && data[bytes - 1] != 23); //first case is for debugging with socet test v3, the last bytes is end of line
-                    
-                _receivedMessage = stringBuilder.ToString();
-
-                if(data[bytes - 3] == 23)
-                    _receivedMessage = _receivedMessage.Substring(0, _receivedMessage.Length - 3);
-
-                if (data[bytes - 1] == 23)
-                    _receivedMessage = _receivedMessage.Substring(0, _receivedMessage.Length - 2);
-            }
-
-            message = Deserializer.Deserialize<T>(_receivedMessage);
-
-            if (message == null)
-                return false;
-
-            Discard();
-            return true;
-        }
-
-        /// <summary>
-        /// Make buffor empty
-        /// </summary>
-        public void Discard()
-        {
-            _receivedMessage = null;
-        }
-
-        public void Dispose()
-        {
-            _stream.Close();
-            _client.Close();
-        }
+		#region NetworkClient
+		private NetworkStream stream;
+		private StringBuilder builder = new StringBuilder();
+		public NetworkClient( TcpClient client, INetworkFactory factory ) : base( client, factory ) => stream = Client.GetStream();
+		#endregion
     }
 }

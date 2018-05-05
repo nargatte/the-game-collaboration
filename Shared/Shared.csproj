@@ -50,6 +50,7 @@
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
+    <Compile Include="Components\ConstHelper.cs" />
     <Compile Include="Components\EventHelper.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
     <Compile Include="Components\Events\LogArgs.cs" />
