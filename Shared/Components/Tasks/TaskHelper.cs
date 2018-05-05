@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shared.Components.Extensions
+namespace Shared.Components.Tasks
 {
-	public static class ExtensionTask
+	public static class TaskHelper
 	{
 		public static async Task< T > WithCancellation<T>( this Task< T > task, CancellationToken cancellationToken )
 		{

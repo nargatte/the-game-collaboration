@@ -51,7 +51,6 @@
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
-    <Compile Include="Components\Events\FinishArgs.cs" />
     <Compile Include="Components\Events\FieldChangedArgs.cs" />
     <Compile Include="Components\Events\LogArgs.cs" />
     <Compile Include="Components\Events\PieceChangedArgs.cs" />
@@ -65,7 +64,7 @@
     <Compile Include="Components\Extensions\ExtensionIPlayer.cs" />
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
-    <Compile Include="Components\Extensions\ExtensionTask.cs" />
+    <Compile Include="Components\Tasks\TaskHelper.cs" />
     <Compile Include="Components\Factories\BoardComponentFactory.cs" />
     <Compile Include="Components\Factories\BoardFactory.cs" />
     <Compile Include="Components\Factories\IBoardComponentFactory.cs" />
