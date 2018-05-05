@@ -86,7 +86,7 @@ namespace PlayerCoreUnitTests
             }
         }
 
-        [Test]
+        /*[Test]
         public void MoveAndPervorm()
         {
             var p = new PlayerInGame(new MockGameMaster(), new Game
@@ -120,6 +120,6 @@ namespace PlayerCoreUnitTests
             var d = p.PerformAction();
             p.State.ReceiveData(d);
             var d2 = p.PerformAction();
-        }
+        }*/
     }
 }
