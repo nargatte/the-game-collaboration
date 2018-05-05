@@ -15,7 +15,7 @@ namespace PlayerCore.Base.Modules
 		public virtual IPlayer Player { get; }
 		#endregion
 		#region PlayerModuleBase
-		public PlayerModuleBase( int port, PlayerSettings configuration, IPlayerFactory factory ) : base( port )
+		public PlayerModuleBase( string ip, int port, PlayerSettings configuration, IPlayerFactory factory ) : base( ip, port )
 		{
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;

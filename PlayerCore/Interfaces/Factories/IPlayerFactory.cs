@@ -7,6 +7,6 @@ namespace PlayerCore.Interfaces.Factories
 	public interface IPlayerFactory : INetworkFactory
 	{
 		IPlayer CreatePlayer( uint retryJoinGameInterval );
-		ICommunicationServerProxy CreateProxy( int port, uint keepAliveInterval );
+		ICommunicationServerProxy CreateProxy( string ip, int port, uint keepAliveInterval );
 	}
 }

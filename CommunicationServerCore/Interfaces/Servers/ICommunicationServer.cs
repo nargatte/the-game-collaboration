@@ -5,6 +5,7 @@ namespace CommunicationServerCore.Interfaces.Servers
 {
 	public interface ICommunicationServer : IRunnable
     {
+		string Ip { get; }
 		int Port { get; }
 		uint KeepAliveInterval { get; }
 		INetworkFactory Factory { get; }

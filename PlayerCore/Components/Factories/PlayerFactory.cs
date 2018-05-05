@@ -11,7 +11,7 @@ namespace PlayerCore.Components.Factories
 	{
 		#region IPlayerFactory
 		public virtual IPlayer CreatePlayer( uint retryJoinGameInterval ) => new Player( retryJoinGameInterval );
-		public virtual ICommunicationServerProxy CreateProxy( int port, uint keepAliveInterval ) => new CommunicationServerProxy( port, keepAliveInterval, this );
+		public virtual ICommunicationServerProxy CreateProxy( string ip, int port, uint keepAliveInterval ) => new CommunicationServerProxy( ip, port, keepAliveInterval, this );
 		#endregion
 	}
 }

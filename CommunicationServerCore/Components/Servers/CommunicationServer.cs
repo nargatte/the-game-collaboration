@@ -18,7 +18,7 @@ namespace CommunicationServerCore.Components.Servers
 			var tasks = new List<Task>();
 			try
 			{
-				using( var server = Factory.MakeNetworkServer( Port ) )
+				using( var server = Factory.MakeNetworkServer( Ip, Port ) )
 				{
 					while( true )
 					{
@@ -49,7 +49,7 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
-		public CommunicationServer( int port, uint keepAliveInterval, INetworkFactory factory ) : base( port, keepAliveInterval, factory )
+		public CommunicationServer( string ip, int port, uint keepAliveInterval, INetworkFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
 		protected Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )

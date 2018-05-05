@@ -16,7 +16,7 @@ namespace CommunicationServerCore.Components.Modules
 		}
 		#endregion
 		#region CommunicationServerModule
-		public CommunicationServerModule( int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( port, configuration, factory )
+		public CommunicationServerModule( string ip, int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( ip, port, configuration, factory )
 		{
 		}
 		#endregion

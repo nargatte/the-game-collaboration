@@ -16,11 +16,12 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
+				string ip = "127.0.0.1";
 				int timeout = 10000;
 				int port = 65535;
 				var cts = new CancellationTokenSource( timeout );
-				var cs = new CommunicationServerModule( port, new CommunicationServerSettings(), new CommunicationServerFactory() );
-				var p1 = new PlayerModule( port, new PlayerSettings(), new PlayerFactory() );
+				var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
+				var p1 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
 				var tasks = new List<Task>
 				{
 					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),

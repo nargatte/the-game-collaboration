@@ -12,12 +12,12 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Player.Proxy = Factory.CreateProxy( Port, Configuration.KeepAliveInterval );
+			Player.Proxy = Factory.CreateProxy( Ip, Port, Configuration.KeepAliveInterval );
 			await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
 		}
 		#endregion
 		#region PlayerModule
-		public PlayerModule( int port, PlayerSettings configuration, IPlayerFactory factory ) : base( port, configuration, factory )
+		public PlayerModule( string ip, int port, PlayerSettings configuration, IPlayerFactory factory ) : base( ip, port, configuration, factory )
 		{
 		}
 		#endregion
