@@ -11,7 +11,6 @@ namespace Shared.DTOs.Configuration
     {
 		[XmlAttribute]
 		[DefaultValue( typeof( uint ), "5000" )]
-		public uint RetryJoinGameInterval { get; set; }
-		public PlayerSettings() => RetryJoinGameInterval = 5000u;
+		public uint RetryJoinGameInterval { get; set; } = 5000u;
 	}
 }
