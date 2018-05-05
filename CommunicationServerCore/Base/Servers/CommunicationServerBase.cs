@@ -10,13 +10,15 @@ namespace CommunicationServerCore.Base.Servers
 	{
 		#region ICommunicationServer
 		public abstract Task RunAsync( CancellationToken cancellationToken );
+		public virtual string Ip { get; }
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
 		public virtual INetworkFactory Factory { get; }
 		#endregion
 		#region CommunicationServerBase
-		protected CommunicationServerBase( int port, uint keepAliveInterval, INetworkFactory factory )
+		protected CommunicationServerBase( string ip, int port, uint keepAliveInterval, INetworkFactory factory )
 		{
+			Ip = ip;
 			Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException( nameof( port ) ) : port;
 			KeepAliveInterval = keepAliveInterval;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;

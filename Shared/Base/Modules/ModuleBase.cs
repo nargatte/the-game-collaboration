@@ -9,10 +9,15 @@ namespace Shared.Base.Modules
 	{
 		#region IModule
 		public abstract Task RunAsync( CancellationToken cancellationToken );
+		public virtual string Ip { get; }
 		public virtual int Port { get; }
 		#endregion
 		#region ModuleBase
-		public ModuleBase( int port ) => Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException( nameof( port ) ) : port;
+		public ModuleBase( string ip, int port )
+		{
+			Ip = ip;
+			Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException( nameof( port ) ) : port;
+		}
 		#endregion
 	}
 }

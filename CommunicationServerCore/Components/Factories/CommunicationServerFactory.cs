@@ -8,7 +8,7 @@ namespace CommunicationServerCore.Components.Factories
 	public class CommunicationServerFactory : NetworkFactory, ICommunicationServerFactory
 	{
 		#region ICommunicationServerFactory
-		public ICommunicationServer CreateCommunicationServer( int port, uint keepAliveInterval ) => new CommunicationServer( port, keepAliveInterval, this );
+		public ICommunicationServer CreateCommunicationServer( string ip, int port, uint keepAliveInterval ) => new CommunicationServer( ip, port, keepAliveInterval, this );
 		#endregion
 	}
 }

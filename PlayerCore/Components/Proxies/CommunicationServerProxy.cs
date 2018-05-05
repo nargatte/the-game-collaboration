@@ -6,7 +6,7 @@ namespace PlayerCore.Components.Proxies
 	public class CommunicationServerProxy : CommunicationServerProxyBase
 	{
 		#region CommunicationServerProxy
-		public CommunicationServerProxy( int port, uint keepAliveInterval, INetworkFactory factory ) : base( port, keepAliveInterval, factory )
+		public CommunicationServerProxy( string ip, int port, uint keepAliveInterval, INetworkFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
 		#endregion

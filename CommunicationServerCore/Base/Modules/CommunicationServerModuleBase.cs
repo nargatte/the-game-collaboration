@@ -15,11 +15,11 @@ namespace CommunicationServerCore.Base.Modules
 		public virtual ICommunicationServer CommunicationServer { get; }
 		#endregion
 		#region CommunicationServerModuleBase
-		public CommunicationServerModuleBase( int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( port )
+		public CommunicationServerModuleBase( string ip, int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( ip, port )
 		{
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
-			CommunicationServer = Factory.CreateCommunicationServer( Port, Configuration.KeepAliveInterval );
+			CommunicationServer = Factory.CreateCommunicationServer( Ip, Port, Configuration.KeepAliveInterval );
 		}
 		#endregion
 	}
