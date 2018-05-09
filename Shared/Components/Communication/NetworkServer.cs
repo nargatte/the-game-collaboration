@@ -1,6 +1,7 @@
 ﻿using Shared.Base.Communication;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ namespace Shared.Components.Communication
 		public override async Task<INetworkClient> AcceptAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			return Factory.CreateNetworkClient( await Listener.AcceptTcpClientAsync().WithCancellation( cancellationToken ).ConfigureAwait( false ) );
+			var client = Factory.CreateNetworkClient( await Listener.AcceptTcpClientAsync().WithCancellation( cancellationToken ).ConfigureAwait( false ) );
+			return client is null ? throw new NotImplementedException( nameof( Factory ) ) : client;
 		}
 		#endregion
 		#region NetworkServer
