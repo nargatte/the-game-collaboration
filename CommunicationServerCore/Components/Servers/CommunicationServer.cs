@@ -58,12 +58,12 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
-		public CommunicationServer( string ip, int port, uint keepAliveInterval, INetworkFactory factory ) : base( ip, port, keepAliveInterval, factory )
+		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
 		protected Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
-			using( client )
+			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				return Task.CompletedTask;

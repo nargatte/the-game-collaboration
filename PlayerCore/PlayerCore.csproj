@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Base\Modules\PlayerModuleBase.cs" />
     <Compile Include="Base\Players\PlayerBase.cs" />
-    <Compile Include="Base\Proxies\CommunicationServerProxyBase.cs" />
     <Compile Include="Components\Factories\PlayerFactory.cs" />
     <Compile Include="Components\Modules\PlayerModule.cs" />
     <Compile Include="Components\Players\Player.cs" />

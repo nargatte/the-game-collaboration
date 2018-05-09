@@ -45,6 +45,7 @@
     <Compile Include="Base\Communication\NetworkClientBase.cs" />
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
+    <Compile Include="Base\Proxies\ClientProxyBase.cs" />
     <Compile Include="Base\Proxies\ProxyBase.cs" />
     <Compile Include="Base\Proxies\ServerProxyBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="Components\Extensions\ExtensionIPlayer.cs" />
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
+    <Compile Include="Components\Factories\ProxyFactory.cs" />
+    <Compile Include="Components\Proxies\ClientProxy.cs" />
     <Compile Include="Components\Proxies\ServerProxy.cs" />
     <Compile Include="Components\TaskHelper.cs" />
     <Compile Include="Components\Factories\BoardComponentFactory.cs" />
@@ -102,6 +105,7 @@
     <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Interfaces\Factories\IProxyFactory.cs" />
     <Compile Include="Interfaces\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />

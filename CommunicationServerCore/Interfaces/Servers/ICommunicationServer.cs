@@ -8,6 +8,6 @@ namespace CommunicationServerCore.Interfaces.Servers
 		string Ip { get; }
 		int Port { get; }
 		uint KeepAliveInterval { get; }
-		INetworkFactory Factory { get; }
+		IProxyFactory Factory { get; }
 	}
 }

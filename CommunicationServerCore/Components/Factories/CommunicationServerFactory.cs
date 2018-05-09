@@ -5,10 +5,10 @@ using Shared.Components.Factories;
 
 namespace CommunicationServerCore.Components.Factories
 {
-	public class CommunicationServerFactory : NetworkFactory, ICommunicationServerFactory
+	public class CommunicationServerFactory : ProxyFactory, ICommunicationServerFactory
 	{
 		#region ICommunicationServerFactory
-		public ICommunicationServer CreateCommunicationServer( string ip, int port, uint keepAliveInterval ) => new CommunicationServer( ip, port, keepAliveInterval, this );
+		public virtual ICommunicationServer CreateCommunicationServer( string ip, int port, uint keepAliveInterval ) => new CommunicationServer( ip, port, keepAliveInterval, this );
 		#endregion
 	}
 }

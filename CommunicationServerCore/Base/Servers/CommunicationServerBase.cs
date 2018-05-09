@@ -13,10 +13,10 @@ namespace CommunicationServerCore.Base.Servers
 		public virtual string Ip { get; }
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
-		public virtual INetworkFactory Factory { get; }
+		public virtual IProxyFactory Factory { get; }
 		#endregion
 		#region CommunicationServerBase
-		protected CommunicationServerBase( string ip, int port, uint keepAliveInterval, INetworkFactory factory )
+		protected CommunicationServerBase( string ip, int port, uint keepAliveInterval, IProxyFactory factory )
 		{
 			Ip = ip;
 			Port = port;
