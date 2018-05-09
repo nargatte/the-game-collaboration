@@ -9,6 +9,7 @@ namespace PlayerCore.Base.Proxies
 	public class CommunicationServerProxyBase : ICommunicationServerProxy
 	{
 		#region ICommunicationServerProxy
+		public virtual void Dispose() => Client.Dispose();
 		public virtual string Ip { get; }
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
@@ -23,6 +24,8 @@ namespace PlayerCore.Base.Proxies
 			KeepAliveInterval = keepAliveInterval;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
 			Client = Factory.MakeNetworkClient( Ip, Port );
+			if( Client is null )
+				throw new NotImplementedException( nameof( Factory ) );
 		}
 		#endregion
 	}

@@ -1,6 +1,7 @@
 ﻿using PlayerCore.Base.Modules;
 using PlayerCore.Interfaces.Factories;
 using Shared.DTOs.Configuration;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,8 +13,13 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Player.Proxy = Factory.CreateProxy( Ip, Port, Configuration.KeepAliveInterval );
-			await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
+			using( Player.Proxy = Factory.CreateProxy( Ip, Port, Configuration.KeepAliveInterval ) )
+			{
+				if( Player.Proxy is null )
+					throw new NotImplementedException( nameof( Factory ) );
+				await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
+			}
+			Player.Proxy = null;
 		}
 		#endregion
 		#region PlayerModule

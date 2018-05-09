@@ -31,17 +31,24 @@ namespace CommunicationSubstitute
 				{
 					await Task.WhenAll( tasks );
 				}
-				catch( Exception )
+				catch( OperationCanceledException )
 				{
 				}
-				foreach( var task in tasks )
+				catch( Exception )
 				{
-					if( task.IsFaulted )
-						Console.WriteLine( $"module task faulted with { task.Exception }" );
-					else if( task.IsCanceled )
-						Console.WriteLine( $"module task canceled" );
-					else
-						Console.WriteLine( "module task completed" );
+					throw;
+				}
+				finally
+				{
+					foreach( var task in tasks )
+					{
+						if( task.IsFaulted )
+							Console.WriteLine( $"Module task faulted with { task.Exception }." );
+						else if( task.IsCanceled )
+							Console.WriteLine( $"Module task canceled." );
+						else
+							Console.WriteLine( "Module task completed." );
+					}
 				}
 			}
 			catch( Exception e )

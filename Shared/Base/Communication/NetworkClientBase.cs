@@ -10,7 +10,11 @@ namespace Shared.Base.Communication
 	public abstract class NetworkClientBase : INetworkClient
 	{
 		#region INetworkClient
-		public virtual void Dispose() => Client.Close();
+		public virtual void Dispose()
+		{
+			Client.Close();
+			Client.Dispose();
+		}
 		public virtual INetworkFactory Factory { get; }
 		public abstract Task SendAsync( string message, CancellationToken cancellationToken );
 		public abstract Task<string> ReceiveAsync( CancellationToken cancellationToken );

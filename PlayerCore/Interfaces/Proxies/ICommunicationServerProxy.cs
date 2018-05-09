@@ -1,8 +1,9 @@
 ﻿using Shared.Interfaces.Factories;
+using System;
 
 namespace PlayerCore.Interfaces.Proxies
 {
-	public interface ICommunicationServerProxy
+	public interface ICommunicationServerProxy : IDisposable
 	{
 		string Ip { get; }
 		int Port { get; }

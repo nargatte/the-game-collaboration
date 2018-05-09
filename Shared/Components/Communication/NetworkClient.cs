@@ -12,7 +12,7 @@ namespace Shared.Components.Communication
 		#region NetworkClientBase
 		public override void Dispose()
 		{
-			stream.Close();
+			stream.Dispose();
 			base.Dispose();
 		}
 		public override async Task SendAsync( string message, CancellationToken cancellationToken )

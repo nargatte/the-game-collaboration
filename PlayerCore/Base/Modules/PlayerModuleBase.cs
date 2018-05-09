@@ -20,6 +20,8 @@ namespace PlayerCore.Base.Modules
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
 			Player = Factory.CreatePlayer( Configuration.RetryJoinGameInterval );
+			if( Player is null )
+				throw new NotImplementedException( nameof( Factory ) );
 		}
 		#endregion
 	}

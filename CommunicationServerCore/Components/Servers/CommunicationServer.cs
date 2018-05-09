@@ -20,6 +20,8 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				using( var server = Factory.MakeNetworkServer( Ip, Port ) )
 				{
+					if( server is null )
+						throw new NotImplementedException( nameof( Factory ) );
 					while( true )
 					{
 						var client = await server.AcceptAsync( cancellationToken ).ConfigureAwait( false );
@@ -33,17 +35,24 @@ namespace CommunicationServerCore.Components.Servers
 				{
 					await Task.WhenAll( tasks );
 				}
-				catch( Exception )
+				catch( OperationCanceledException )
 				{
 				}
-				foreach( var task in tasks )
+				catch( Exception )
 				{
-					if( task.IsCanceled )
-						Console.WriteLine( $"server task canceled" );
-					else if( task.IsFaulted )
-						Console.WriteLine( $"server task faulted with { task.Exception }" );
-					else
-						Console.WriteLine( "server task completed" );
+					throw;
+				}
+				finally
+				{
+					foreach( var task in tasks )
+					{
+						if( task.IsFaulted )
+							Console.WriteLine( $"Server task faulted with { task.Exception }." );
+						else if( task.IsCanceled )
+							Console.WriteLine( $"Server task canceled." );
+						else
+							Console.WriteLine( "Server task completed." );
+					}
 				}
 			}
 		}
@@ -54,12 +63,11 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		protected Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
-			cancellationToken.ThrowIfCancellationRequested();
 			using( client )
 			{
-
+				cancellationToken.ThrowIfCancellationRequested();
+				return Task.CompletedTask;
 			}
-			return Task.CompletedTask;
 		}
 		#endregion
 	}
