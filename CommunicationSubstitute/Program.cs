@@ -2,7 +2,6 @@
 using CommunicationServerCore.Components.Modules;
 using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
-using Shared.Components;
 using Shared.DTOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -37,10 +36,10 @@ namespace CommunicationSubstitute
 				}
 				foreach( var task in tasks )
 				{
-					if( task.IsCanceled )
-						Console.WriteLine( $"module task canceled" );
-					else if( task.IsFaulted )
+					if( task.IsFaulted )
 						Console.WriteLine( $"module task faulted with { task.Exception }" );
+					else if( task.IsCanceled )
+						Console.WriteLine( $"module task canceled" );
 					else
 						Console.WriteLine( "module task completed" );
 				}
