@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Communication\NetworkClientBase.cs" />
+    <Compile Include="Base\Communication\NetworkComponentBase.cs" />
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="DTOs\Configuration\GoalField.cs" />
     <Compile Include="DTOs\Configuration\Location.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
+    <Compile Include="Interfaces\Communication\INetworkComponent.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
     <Compile Include="Interfaces\Factories\INetworkFactory.cs" />
     <Compile Include="Components\Fields\Field.cs" />
