@@ -19,7 +19,7 @@ namespace GameMasterCore.Base.Proxies
         protected CommunicationServerProxyBase(string ip, int port, uint keepAliveInterval, INetworkFactory factory)
         {
             Ip = ip;
-            Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException(nameof(port)) : port;
+			Port = port;
             KeepAliveInterval = keepAliveInterval;
             Factory = factory is null ? throw new ArgumentNullException(nameof(factory)) : factory;
             Client = Factory.MakeNetworkClient(Ip, Port);

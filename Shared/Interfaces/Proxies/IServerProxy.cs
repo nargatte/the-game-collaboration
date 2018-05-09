@@ -1,6 +1,6 @@
 ﻿namespace Shared.Interfaces.Proxies
 {
-	interface IServerProxy : IProxy
+	public interface IServerProxy : IProxy
 	{
 	}
 }

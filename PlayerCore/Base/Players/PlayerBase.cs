@@ -1,5 +1,5 @@
 ﻿using PlayerCore.Interfaces.Players;
-using PlayerCore.Interfaces.Proxies;
+using Shared.Interfaces.Proxies;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +10,7 @@ namespace PlayerCore.Base.Players
 		#region IPlayer
 		public abstract Task RunAsync( CancellationToken cancellationToken );
 		public virtual uint RetryJoinGameInterval { get; }
-		public virtual ICommunicationServerProxy Proxy { get; set; }
+		public virtual IServerProxy Proxy { get; set; }
 		#endregion
 		#region PlayerBase
 		protected PlayerBase( uint retryJoinGameInterval ) => RetryJoinGameInterval = retryJoinGameInterval;

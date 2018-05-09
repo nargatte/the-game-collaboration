@@ -11,6 +11,7 @@ namespace PlayerCore.Components.Players
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
+			System.Console.WriteLine( $"Player sends: { Shared.Components.Serialization.Serializer.Serialize( new GetGames() ) }." );
 			await Proxy.SendAsync( new GetGames(), cancellationToken );
 		}
 		#endregion

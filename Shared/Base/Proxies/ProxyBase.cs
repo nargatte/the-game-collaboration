@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Shared.Components.Serialization;
+﻿using Shared.Components.Serialization;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Proxies;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shared.Base.Proxies
 {
@@ -11,13 +11,29 @@ namespace Shared.Base.Proxies
 	{
 		#region IProxy
 		public virtual void Dispose() => Client.Dispose();
-		public virtual async Task SendAsync< T >( T message, CancellationToken cancellationToken ) where T : class => await Client.SendAsync( Serializer.Serialize( message ), cancellationToken );
-		public virtual Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class => throw new System.NotImplementedException();
-		public virtual void Discard() => throw new System.NotImplementedException();
+		public virtual uint KeepAliveInterval { get; }
+		public virtual async Task SendAsync<T>( T message, CancellationToken cancellationToken ) where T : class
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			await Client.SendAsync( Serializer.Serialize( message ), cancellationToken );
+		}
+		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( buffer is null )
+				buffer = await Client.ReceiveAsync( cancellationToken );
+			throw new NotImplementedException();
+		}
+		public virtual void Discard() => buffer = null;
 		#endregion
 		#region ProxyBase
 		protected INetworkClient Client { get; }
-		protected ProxyBase( INetworkClient client ) => Client = client is null ? throw new ArgumentNullException( nameof( client ) ) : client;
+		private string buffer;
+		protected ProxyBase( INetworkClient client, uint keepAliveInterval )
+		{
+			Client = client is null ? throw new ArgumentNullException( nameof( client ) ) : client;
+			KeepAliveInterval = keepAliveInterval;
+		}
 		#endregion
 	}
 }

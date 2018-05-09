@@ -1,12 +1,13 @@
 ﻿using PlayerCore.Interfaces.Players;
-using PlayerCore.Interfaces.Proxies;
+using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Proxies;
 
 namespace PlayerCore.Interfaces.Factories
 {
 	public interface IPlayerFactory : INetworkFactory
 	{
 		IPlayer CreatePlayer( uint retryJoinGameInterval );
-		ICommunicationServerProxy CreateProxy( string ip, int port, uint keepAliveInterval );
+		IServerProxy CreateProxy( INetworkClient client, uint keepAliveInterval );
 	}
 }

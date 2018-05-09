@@ -16,7 +16,7 @@ namespace Shared.Base.Modules
 		public ModuleBase( string ip, int port )
 		{
 			Ip = ip;
-			Port = port < 0 || port > 65535 ? throw new ArgumentOutOfRangeException( nameof( port ) ) : port;
+			Port = port;
 		}
 		#endregion
 	}

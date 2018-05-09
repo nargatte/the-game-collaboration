@@ -1,11 +1,11 @@
-﻿using PlayerCore.Interfaces.Proxies;
-using Shared.Interfaces;
+﻿using Shared.Interfaces;
+using Shared.Interfaces.Proxies;
 
 namespace PlayerCore.Interfaces.Players
 {
     public interface IPlayer : IRunnable
     {
 		uint RetryJoinGameInterval { get; }
-		ICommunicationServerProxy Proxy { get; set; }
+		IServerProxy Proxy { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PlayerCore.Base.Modules;
 using PlayerCore.Interfaces.Factories;
+using Shared.Components.Extensions;
 using Shared.DTOs.Configuration;
 using System;
 using System.Threading;
@@ -13,7 +14,7 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			using( Player.Proxy = Factory.CreateProxy( Ip, Port, Configuration.KeepAliveInterval ) )
+			using( Player.Proxy = Factory.CreateProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval ) )
 			{
 				if( Player.Proxy is null )
 					throw new NotImplementedException( nameof( Factory ) );

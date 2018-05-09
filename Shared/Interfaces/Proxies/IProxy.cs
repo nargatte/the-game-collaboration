@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Interfaces.Proxies
 {
-	interface IProxy : IDisposable
+	public interface IProxy : IDisposable
 	{
+		uint KeepAliveInterval { get; }
 		Task SendAsync< T >( T message, CancellationToken cancellationToken ) where T : class;
 		Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class;
 		void Discard();

@@ -46,6 +46,7 @@
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
     <Compile Include="Base\Proxies\ProxyBase.cs" />
+    <Compile Include="Base\Proxies\ServerProxyBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Components\Extensions\ExtensionIPlayer.cs" />
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
+    <Compile Include="Components\Proxies\ServerProxy.cs" />
     <Compile Include="Components\TaskHelper.cs" />
     <Compile Include="Components\Factories\BoardComponentFactory.cs" />
     <Compile Include="Components\Factories\BoardFactory.cs" />
