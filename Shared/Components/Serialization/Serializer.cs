@@ -7,9 +7,9 @@ namespace Shared.Components.Serialization
 {
 	public static class Serializer
 	{
-		public static string Serialize< T >( T o ) => Serialize( o, typeof( T ) );
-		public static string Serialize( object o, Type type )
+		public static string Serialize< T >( T o ) where T : class
 		{
+			var type = typeof( T );
 			var xmlWriterSettings = new XmlWriterSettings
 			{
 				Indent = true

@@ -19,7 +19,7 @@ namespace PlayerCore.Base.Proxies
 		public virtual INetworkFactory Factory { get; }
 		public virtual async Task SendAsync<T>( T message, CancellationToken cancellationToken )
 		{
-			string tmp = Serializer.Serialize( message );
+			string tmp = null;//Serializer.Serialize( message );
 			Console.WriteLine( $"Send to server: { tmp }" );
 			await Client.SendAsync( tmp, cancellationToken );
 		}

@@ -1,5 +1,4 @@
 ﻿using Shared.Base.Communication;
-using Shared.Interfaces.Factories;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -39,7 +38,7 @@ namespace Shared.Components.Communication
 		#region NetworkClient
 		private NetworkStream stream;
 		private StringBuilder builder = new StringBuilder();
-		public NetworkClient( TcpClient client, INetworkFactory factory ) : base( client, factory ) => stream = Client.GetStream();
+		public NetworkClient( TcpClient client ) : base( client ) => stream = Client.GetStream();
 		#endregion
     }
 }

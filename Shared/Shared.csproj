@@ -43,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Communication\NetworkClientBase.cs" />
-    <Compile Include="Base\Communication\NetworkComponentBase.cs" />
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
+    <Compile Include="Base\Proxies\ProxyBase.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
@@ -80,7 +80,6 @@
     <Compile Include="DTOs\Configuration\GoalField.cs" />
     <Compile Include="DTOs\Configuration\Location.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
-    <Compile Include="Interfaces\Communication\INetworkComponent.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
     <Compile Include="Interfaces\Factories\INetworkFactory.cs" />
     <Compile Include="Components\Fields\Field.cs" />
@@ -106,6 +105,9 @@
     <Compile Include="Interfaces\IGameMaster.cs" />
     <Compile Include="Interfaces\INetworkClient.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
+    <Compile Include="Interfaces\Proxies\IClientProxy.cs" />
+    <Compile Include="Interfaces\Proxies\IProxy.cs" />
+    <Compile Include="Interfaces\Proxies\IServerProxy.cs" />
     <Compile Include="Messages\Communication\AcceptExchangeRequest.cs" />
     <Compile Include="Messages\Communication\AuthorizeKnowledgeExchange.cs" />
     <Compile Include="Messages\Communication\BetweenPlayersMessage.cs" />
@@ -159,11 +161,7 @@
     <Compile Include="Enums\TeamColour.cs" />
     <Compile Include="Messages\Serialization\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sockets\IDataAccess.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sockets\Client\" />
-    <Folder Include="Sockets\Server\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

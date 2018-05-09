@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace Shared.Base.Communication
 {
-	public abstract class NetworkServerBase : NetworkComponentBase, INetworkServer
+	public abstract class NetworkServerBase : INetworkServer
 	{
-		#region NetworkComponentBase
-		public override void Dispose() => Listener.Stop();
-		#endregion
 		#region INetworkServer
+		public virtual void Dispose() => Listener.Stop();
+		public virtual INetworkFactory Factory { get; }
 		public abstract Task<INetworkClient> AcceptAsync( CancellationToken cancellationToken );
 		#endregion
 		#region NetworkServerBase
 		protected TcpListener Listener { get; }
-		protected NetworkServerBase( TcpListener listener, INetworkFactory factory ) : base( factory )
+		protected NetworkServerBase( TcpListener listener, INetworkFactory factory )
 		{
 			Listener = listener is null ? throw new ArgumentNullException( nameof( listener ) ) : listener;
+			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;
 			Listener.Start();
 		}
 		#endregion
