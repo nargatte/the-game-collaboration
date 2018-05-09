@@ -1,5 +1,7 @@
 ﻿using Shared.Interfaces.Factories;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayerCore.Interfaces.Proxies
 {
@@ -9,5 +11,6 @@ namespace PlayerCore.Interfaces.Proxies
 		int Port { get; }
 		uint KeepAliveInterval { get; }
 		INetworkFactory Factory { get; }
+		Task SendAsync< T >( T message, CancellationToken cancellationToken );
 	}
 }

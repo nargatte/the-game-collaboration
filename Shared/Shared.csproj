@@ -160,7 +160,6 @@
     <Compile Include="Sockets\IDataAccess.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\Tasks\" />
     <Folder Include="Sockets\Client\" />
     <Folder Include="Sockets\Server\" />
   </ItemGroup>

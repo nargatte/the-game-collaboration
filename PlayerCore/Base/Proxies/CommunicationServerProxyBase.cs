@@ -1,8 +1,11 @@
 ﻿using PlayerCore.Interfaces.Proxies;
 using Shared.Components.Extensions;
+using Shared.Components.Serialization;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayerCore.Base.Proxies
 {
@@ -14,6 +17,12 @@ namespace PlayerCore.Base.Proxies
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
 		public virtual INetworkFactory Factory { get; }
+		public virtual async Task SendAsync<T>( T message, CancellationToken cancellationToken )
+		{
+			string tmp = Serializer.Serialize( message );
+			Console.WriteLine( $"Send to server: { tmp }" );
+			await Client.SendAsync( tmp, cancellationToken );
+		}
 		#endregion
 		#region CommunicationServerProxyBase
 		protected INetworkClient Client { get; }
