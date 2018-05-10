@@ -47,15 +47,12 @@
   <ItemGroup>
     <Compile Include="Base\GameMasters\GameMasterBase.cs" />
     <Compile Include="Base\Modules\GameMasterModuleBase.cs" />
-    <Compile Include="Base\Proxies\CommunicationServerProxyBase.cs" />
     <Compile Include="Components\Factories\GameMasterFactory.cs" />
     <Compile Include="Components\GameMasters\GameMaster.cs" />
     <Compile Include="Components\Modules\GameMasterModule.cs" />
-    <Compile Include="Components\Proxies\CommunicationServerProxy.cs" />
     <Compile Include="GameMaster.cs" />
     <Compile Include="Interfaces\Factories\IGameMasterFactory.cs" />
     <Compile Include="Interfaces\Modules\IGameMasterModule.cs" />
-    <Compile Include="Interfaces\Proxies\ICommunicationServerProxy.cs" />
     <Compile Include="Interfaces\GameMasters\IGameMaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

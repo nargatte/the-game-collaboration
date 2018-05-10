@@ -10,7 +10,7 @@ namespace PlayerCore.Components.Modules
 {
 	public class PlayerModule : PlayerModuleBase
 	{
-		#region IPlayerModule
+		#region PlayerModuleBase
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();

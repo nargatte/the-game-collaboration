@@ -68,11 +68,6 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				{
-					RegisteredGames registeredGames;
-					if( ( registeredGames = await proxy.TryReceiveAsync<RegisteredGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
-						Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( registeredGames ) }." );
-					}
 					GetGames getGames;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{

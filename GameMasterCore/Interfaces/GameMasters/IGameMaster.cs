@@ -1,10 +1,14 @@
-﻿using GameMasterCore.Interfaces.Proxies;
+﻿using Shared.DTOs.Configuration;
 using Shared.Interfaces;
+using Shared.Interfaces.Proxies;
 
 namespace GameMasterCore.Interfaces.GameMasters
 {
-    public interface IGameMaster : IRunnable
+	public interface IGameMaster : IRunnable
     {
-        ICommunicationServerProxy Proxy { get; set; }
+		GameMasterSettingsGameDefinition GameDefinition { get; }
+		GameMasterSettingsActionCosts ActionCosts { get; }
+		uint RetryRegisterGameInterval { get; }
+		IServerProxy Proxy { get; set; }
     }
 }
