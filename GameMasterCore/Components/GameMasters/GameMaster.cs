@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameMasterCore.Components.GameMasters
 {
-    public class GameMaster : GameMasterBase
+	public class GameMaster : GameMasterBase
     {
         #region GameMasterBase
         public override async Task RunAsync( CancellationToken cancellationToken )

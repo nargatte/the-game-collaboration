@@ -5,6 +5,11 @@ namespace Shared.Components.Proxies
 {
 	public class ClientProxy : ClientProxyBase
 	{
+		#region ClientProxyBase
+		protected override void OnKeepAlive()
+		{
+		}
+		#endregion
 		#region ClientProxy
 		public ClientProxy( INetworkClient client, uint keepAliveInterval ) : base( client, keepAliveInterval )
 		{

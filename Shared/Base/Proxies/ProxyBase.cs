@@ -20,8 +20,11 @@ namespace Shared.Base.Proxies
 		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			if( buffer is null )
+			while( string.IsNullOrEmpty( buffer ) )
+			{
 				buffer = await Client.ReceiveAsync( cancellationToken ).ConfigureAwait( false );
+				OnKeepAlive();
+			}
 			var message = Serializer.Deserialize< T >( buffer );
 			if( message != null )
 				Discard();
@@ -30,6 +33,7 @@ namespace Shared.Base.Proxies
 		public virtual void Discard() => buffer = null;
 		#endregion
 		#region ProxyBase
+		protected abstract void OnKeepAlive();
 		protected INetworkClient Client { get; }
 		private string buffer;
 		protected ProxyBase( INetworkClient client, uint keepAliveInterval )
