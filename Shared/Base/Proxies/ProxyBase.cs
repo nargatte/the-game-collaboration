@@ -12,10 +12,11 @@ namespace Shared.Base.Proxies
 		#region IProxy
 		public virtual void Dispose() => Client.Dispose();
 		public virtual uint KeepAliveInterval { get; }
-		public virtual async Task SendAsync<T>( T message, CancellationToken cancellationToken ) where T : class
+		public virtual async Task SendAsync< T >( T message, CancellationToken cancellationToken ) where T : class
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			await Client.SendAsync( Serializer.Serialize( message ), cancellationToken ).ConfigureAwait( false );
+			await OnKeepAliveSent( cancellationToken );
 		}
 		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
 		{
@@ -23,7 +24,7 @@ namespace Shared.Base.Proxies
 			while( string.IsNullOrEmpty( buffer ) )
 			{
 				buffer = await Client.ReceiveAsync( cancellationToken ).ConfigureAwait( false );
-				OnKeepAlive();
+				await OnKeepAliveReceived( cancellationToken );
 			}
 			var message = Serializer.Deserialize< T >( buffer );
 			if( message != null )
@@ -33,7 +34,8 @@ namespace Shared.Base.Proxies
 		public virtual void Discard() => buffer = null;
 		#endregion
 		#region ProxyBase
-		protected abstract void OnKeepAlive();
+		protected abstract Task OnKeepAliveSent( CancellationToken cancellationToken );
+		protected abstract Task OnKeepAliveReceived( CancellationToken cancellationToken );
 		protected INetworkClient Client { get; }
 		private string buffer;
 		protected ProxyBase( INetworkClient client, uint keepAliveInterval )
