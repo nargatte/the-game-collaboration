@@ -15,14 +15,17 @@ namespace Shared.Base.Proxies
 		public virtual async Task SendAsync<T>( T message, CancellationToken cancellationToken ) where T : class
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			await Client.SendAsync( Serializer.Serialize( message ), cancellationToken );
+			await Client.SendAsync( Serializer.Serialize( message ), cancellationToken ).ConfigureAwait( false );
 		}
 		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( buffer is null )
-				buffer = await Client.ReceiveAsync( cancellationToken );
-			throw new NotImplementedException();
+				buffer = await Client.ReceiveAsync( cancellationToken ).ConfigureAwait( false );
+			var message = Serializer.Deserialize< T >( buffer );
+			if( message != null )
+				Discard();
+			return message;
 		}
 		public virtual void Discard() => buffer = null;
 		#endregion

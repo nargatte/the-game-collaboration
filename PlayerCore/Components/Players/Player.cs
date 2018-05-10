@@ -12,7 +12,7 @@ namespace PlayerCore.Components.Players
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			System.Console.WriteLine( $"Player sends: { Shared.Components.Serialization.Serializer.Serialize( new GetGames() ) }." );
-			await Proxy.SendAsync( new GetGames(), cancellationToken );
+			await Proxy.SendAsync( new GetGames(), cancellationToken ).ConfigureAwait( false );
 		}
 		#endregion
 		#region Player

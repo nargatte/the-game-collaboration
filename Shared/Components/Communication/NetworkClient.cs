@@ -18,7 +18,7 @@ namespace Shared.Components.Communication
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			byte[] data = ConstHelper.Encoding.GetBytes( message + ConstHelper.EndOfMessage );
-			await stream.WriteAsync( data, 0, data.Length, cancellationToken );
+			await stream.WriteAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
 		}
 		public override async Task<string> ReceiveAsync( CancellationToken cancellationToken )
 		{
@@ -26,7 +26,7 @@ namespace Shared.Components.Communication
 			byte[] data = new byte[ 256 ];
 			while( !builder.ToString().Contains( ConstHelper.EndOfMessage ) )
 			{
-				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken );
+				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
 				builder.Append( ConstHelper.Encoding.GetString( data, 0, bytes ) );
 			}
 			string buffer = builder.ToString();

@@ -8,7 +8,7 @@ namespace Shared.Enums
 	[XmlRoot( Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = false )]
 	public enum GoalFieldType
     {
-		Unknown,//serialization is prohibited
+		Unknown,//no serialization
 		[XmlEnum( "goal" )]
 		Goal,
 		[XmlEnum( "non-goal" )]

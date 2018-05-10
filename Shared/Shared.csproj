@@ -77,7 +77,9 @@
     <Compile Include="Components\Factories\IBoardComponentFactory.cs" />
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
+    <Compile Include="DTOs\Communication\GameInfo.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
+    <Compile Include="DTOs\Communication\RegisteredGames.cs" />
     <Compile Include="DTOs\Configuration\Field.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
@@ -97,7 +99,6 @@
     <Compile Include="Components\Pieces\PlayerPiece.cs" />
     <Compile Include="Components\Players\IPlayer.cs" />
     <Compile Include="Components\Players\Player.cs" />
-    <Compile Include="Components\Serialization\Deserializer.cs" />
     <Compile Include="Components\Serialization\Serializer.cs" />
     <Compile Include="Components\Serialization\StringWriterWithEncoding.cs" />
     <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
@@ -109,7 +110,6 @@
     <Compile Include="Interfaces\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />
-    <Compile Include="Interfaces\INetworkClient.cs" />
     <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Interfaces\Proxies\IClientProxy.cs" />
     <Compile Include="Interfaces\Proxies\IProxy.cs" />

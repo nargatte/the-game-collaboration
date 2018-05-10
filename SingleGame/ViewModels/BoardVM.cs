@@ -17,7 +17,7 @@ namespace SingleGame.ViewModels
 		#region ViewModel
 		protected override async Task InitializeAsync()
 		{
-			await base.InitializeAsync();
+			await base.InitializeAsync().ConfigureAwait( false );
 			MakeFieldVMs();
 			Subscribe();
 			UpdateAll();

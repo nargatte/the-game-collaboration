@@ -1,5 +1,6 @@
 ﻿using CommunicationServerCore.Base.Servers;
 using Shared.Components.Extensions;
+using Shared.DTOs.Communication;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
@@ -61,12 +62,23 @@ namespace CommunicationServerCore.Components.Servers
 		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
-		protected Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
+		protected async Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
 			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
-				return Task.CompletedTask;
+				{
+					RegisteredGames registeredGames;
+					if( ( registeredGames = await proxy.TryReceiveAsync<RegisteredGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( registeredGames ) }." );
+					}
+					GetGames getGames;
+					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+					}
+				}
 			}
 		}
 		#endregion

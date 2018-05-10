@@ -13,7 +13,7 @@ namespace GameMasterCore.Components.Modules
         {
             cancellationToken.ThrowIfCancellationRequested();
             GameMaster.Proxy = Factory.CreateProxy(Ip, Port, Configuration.KeepAliveInterval);
-            await GameMaster.RunAsync(cancellationToken).ConfigureAwait(false);
+            await GameMaster.RunAsync(cancellationToken).ConfigureAwait( false );
         }
         #endregion
         #region GameMasterModule

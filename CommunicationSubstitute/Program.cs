@@ -22,10 +22,12 @@ namespace CommunicationSubstitute
 				var cts = new CancellationTokenSource( timeout );
 				var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
 				var p1 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
+				var p2 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
 				var tasks = new List<Task>
 				{
 					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-					Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) )
+					Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
 				};
 				try
 				{

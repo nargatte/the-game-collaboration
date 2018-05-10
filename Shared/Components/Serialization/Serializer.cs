@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
@@ -7,7 +7,7 @@ namespace Shared.Components.Serialization
 {
 	public static class Serializer
 	{
-		public static string Serialize< T >( T o ) where T : class
+		public static string Serialize<T>( T o ) where T : class
 		{
 			var type = typeof( T );
 			var xmlWriterSettings = new XmlWriterSettings
@@ -23,6 +23,17 @@ namespace Shared.Components.Serialization
 				{
 					serializer.Serialize( xmlWriter, o, xmlSerializerNamespaces );
 					return stringWriter.ToString();
+				}
+			}
+		}
+		public static T Deserialize< T >( string s ) where T : class
+		{
+			var serializer = new XmlSerializer( typeof( T ) );
+			using( var stringReader = new StringReader( s ) )
+			{
+				using( var xmlReader = XmlReader.Create( stringReader ) )
+				{
+					return serializer.CanDeserialize( xmlReader ) ? serializer.Deserialize( xmlReader ) as T : null;
 				}
 			}
 		}
