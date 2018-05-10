@@ -80,6 +80,7 @@
     <Compile Include="DTOs\Communication\GameInfo.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="DTOs\Communication\RegisteredGames.cs" />
+    <Compile Include="DTOs\Communication\RegisterGame.cs" />
     <Compile Include="DTOs\Configuration\Field.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
