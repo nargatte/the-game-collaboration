@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shared.Components
+namespace Shared.Components.Tasks
 {
-	public static class TaskHelper
+	public static class ExtensionTaskT
 	{
-		public static async Task< T > WithCancellation<T>( this Task< T > task, CancellationToken cancellationToken )
+		public static async Task< T > WithCancellation< T >( this Task< T > task, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			var tcs = new TaskCompletionSource<bool>();

@@ -10,5 +10,6 @@ namespace Shared.Interfaces.Proxies
 		Task SendAsync< T >( T message, CancellationToken cancellationToken ) where T : class;
 		Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class;
 		void Discard();
+		CancellationToken CancellationToken { get; }
 	}
 }
