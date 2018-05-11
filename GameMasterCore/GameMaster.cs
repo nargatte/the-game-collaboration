@@ -27,7 +27,7 @@ namespace GameMasterCore
         public IBoard board;
         Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
-        int pieceIDcounter = 0;
+        ulong pieceIDcounter = 0;
         Config.GameMasterSettings config;
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
@@ -127,7 +127,7 @@ namespace GameMasterCore
             GenerateRandomPlaces(
                 config.GameDefinition.InitialNumberOfPieces,
                 0, result.Width, result.GoalsHeight, result.Height - result.GoalsHeight).ForEach(
-                    place => result.SetPiece(result.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
+                    place => result.SetPiece(result.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
                 );
 
             return result;
@@ -299,6 +299,19 @@ namespace GameMasterCore
                 }
             };
             return result;
+        }
+
+        private void PerformCreatePieceAndPlaceRandomly()
+        {
+            DTO.Location place;
+            do
+            {
+                place = GenerateRandomPlaces(1, 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight + 1).First();
+            } while (board.GetField(place.x, place.y).Player != null);
+
+            var field = new TaskField(place.x, place.y);
+            var newPiece = board.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, field);
+            board.SetPiece(newPiece);
         }
 
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
@@ -618,12 +631,12 @@ namespace GameMasterCore
                 Select(piece => piece as IFieldPiece).
                 Where(fieldPiece => fieldPiece.Field != null).
                 Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
-        
+
 
             #region returning
             // pieces has an "out" parameter modifier
             pieces = piecesToReturn.ToArray();
-                return fieldToReturn;
+            return fieldToReturn;
             #endregion
         }
 
