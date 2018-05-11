@@ -6,7 +6,7 @@ namespace Shared.Interfaces.Factories
 {
 	public interface IProxyFactory : INetworkFactory
 	{
-		IClientProxy CreateClientProxy( INetworkClient client, uint keepAliveInterval );
+		IClientProxy CreateClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken );
 		IServerProxy CreateServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken );
 	}
 }

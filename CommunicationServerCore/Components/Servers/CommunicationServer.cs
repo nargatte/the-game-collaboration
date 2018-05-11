@@ -51,7 +51,7 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				catch( Exception e )
 				{
-					throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
+					//throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
 				}
 				finally
 				{
@@ -75,7 +75,7 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		protected async Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
-			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval ) )
+			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				{
@@ -83,6 +83,7 @@ namespace CommunicationServerCore.Components.Servers
 					RegisterGame registerGame;
 					while( true )
 					{
+						cancellationToken.ThrowIfCancellationRequested();
 						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
 							Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );

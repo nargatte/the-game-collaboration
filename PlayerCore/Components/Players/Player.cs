@@ -16,7 +16,7 @@ namespace PlayerCore.Components.Players
 			await Task.Delay( 15000, cancellationToken );
 			System.Console.WriteLine( $"Player sends: { Shared.Components.Serialization.Serializer.Serialize( new GetGames() ) }." );
 			await Proxy.SendAsync( new GetGames(), cancellationToken ).ConfigureAwait( false );
-			await Task.Delay( 15000, cancellationToken );
+			await Task.Delay( 45000, cancellationToken );
 		}
 		#endregion
 		#region Player

@@ -30,12 +30,12 @@ namespace Shared.Components.Proxies
 		#endregion
 		#region ServerProxy
 		private TaskDelayer keepAlive;
-		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken ) : base( client, keepAliveInterval, cancellationToken ) => keepAlive = new TaskDelayer( SendKeepAlive, ( int )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), CancellationToken );
+		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken ) : base( client, keepAliveInterval, cancellationToken ) => keepAlive = new TaskDelayer( SendKeepAlive, ( uint )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), CancellationToken );
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			System.Console.WriteLine( "Auto keep alive sent to server." );
-			await Client.SendAsync( string.Empty, cancellationToken );
+			await Client.SendAsync( string.Empty, cancellationToken ).ConfigureAwait( false );
 		}
 		#endregion
 	}

@@ -19,11 +19,11 @@ namespace Shared.Components.Tasks
 			}
 		}
 		protected Func<CancellationToken, Task> Callback { get; }
-		protected int Delay { get; }
+		protected uint Delay { get; }
 		protected CancellationToken CancellationToken { get; }
 		private CancellationTokenSource cts;
 		private Task task;
-		public TaskDelayer( Func<CancellationToken, Task> callback, int delay, CancellationToken cancellationToken )
+		public TaskDelayer( Func<CancellationToken, Task> callback, uint delay, CancellationToken cancellationToken )
 		{
 			Callback = callback;
 			Delay = delay;
@@ -40,7 +40,7 @@ namespace Shared.Components.Tasks
 			cancellationToken.ThrowIfCancellationRequested();
 			while( true )
 			{
-				await Task.Delay( Delay, cancellationToken ).ConfigureAwait( false );
+				await Task.Delay( TimeSpan.FromMilliseconds( Delay ), cancellationToken ).ConfigureAwait( false );
 				await Callback( cancellationToken ).ConfigureAwait( false );
 			}
 		}

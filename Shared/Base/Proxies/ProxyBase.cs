@@ -32,16 +32,18 @@ namespace Shared.Base.Proxies
 			return message;
 		}
 		public virtual void Discard() => buffer = null;
+		public virtual CancellationToken CancellationToken { get; }
 		#endregion
 		#region ProxyBase
 		protected abstract Task OnKeepAliveSent( CancellationToken cancellationToken );
 		protected abstract Task OnKeepAliveReceived( CancellationToken cancellationToken );
 		protected INetworkClient Client { get; }
 		private string buffer;
-		protected ProxyBase( INetworkClient client, uint keepAliveInterval )
+		protected ProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken )
 		{
 			Client = client is null ? throw new ArgumentNullException( nameof( client ) ) : client;
 			KeepAliveInterval = keepAliveInterval;
+			CancellationToken = cancellationToken;
 		}
 		#endregion
 	}
