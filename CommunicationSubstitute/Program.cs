@@ -41,10 +41,6 @@ namespace CommunicationSubstitute
 					catch( OperationCanceledException )
 					{
 					}
-					catch( Exception )
-					{
-						throw;
-					}
 					finally
 					{
 						foreach( var task in tasks )

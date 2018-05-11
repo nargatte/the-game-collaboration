@@ -86,12 +86,12 @@ namespace CommunicationServerCore.Components.Servers
 						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
 							Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
-							break;
+							continue;//break;
 						}
 						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
 							Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
-							break;
+							continue;//break;
 						}
 						proxy.Discard();
 					}

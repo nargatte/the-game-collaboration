@@ -39,9 +39,8 @@ namespace Shared.Base.Proxies
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Keep alive sent to server." );
-			//await Client.SendAsync( string.Empty, cancellationToken );
-			await Client.SendAsync( Serializer.Serialize( new GetGames() ), cancellationToken ).ConfigureAwait( false );
+			System.Console.WriteLine( "Auto keep alive sent to server." );
+			await Client.SendAsync( string.Empty, cancellationToken );
 		}
 		#endregion
 	}

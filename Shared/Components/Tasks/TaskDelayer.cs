@@ -61,12 +61,10 @@ namespace Shared.Components.Tasks
 			{
 				task.Wait();
 			}
-			catch( OperationCanceledException )
+			catch( AggregateException )
 			{
-			}
-			catch( Exception )
-			{
-				//throw;
+				if( !task.IsCanceled )
+					throw;
 			}
 			finally
 			{
