@@ -1,5 +1,6 @@
 ﻿using GameMasterCore.Base.GameMasters;
 using Shared.Components.Factories;
+using Shared.Components.Tasks;
 using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Messages.Communication;
@@ -8,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace GameMasterCore.Components.GameMasters
 {
-	public class GameMaster : GameMasterBase
+    public class GameMaster : GameMasterBase
     {
         #region GameMasterBase
-        public override async Task RunAsync( CancellationToken cancellationToken )
+        public override async Task RunAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
-			await Proxy.SendAsync( 
+            //System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
+            await Proxy.SendAsync(
                 new Shared.DTOs.Communication.RegisterGame()
                 {
                     NewGameInfo = new Shared.DTOs.Communication.GameInfo()
@@ -24,12 +25,14 @@ namespace GameMasterCore.Components.GameMasters
                         RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
                         GameName = GameDefinition.GameName
                     }
-                }, cancellationToken ).ConfigureAwait( false );
-		    await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
+                }, cancellationToken).ConfigureAwait(false);
+            //TODO: weź odpowiedź od serwera i sprawdź game id
+
+            await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
         }
         #endregion
         #region GameMaster
-        public GameMaster( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval ) : base( gameDefinition, actionCosts, retryRegisterGameInterval )
+        public GameMaster(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval) : base(gameDefinition, actionCosts, retryRegisterGameInterval)
         {
             initTmpInnerGM(gameDefinition, actionCosts);
         }
@@ -46,8 +49,9 @@ namespace GameMasterCore.Components.GameMasters
             }, new BoardComponentFactory());
         }
 
-        async Task Listener( CancellationToken cancellationToken )
+        async Task Listener(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             while (innerGM.playerGuidToId.Keys.Count != GameDefinition.NumberOfPlayersPerTeam * 2)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -60,43 +64,56 @@ namespace GameMasterCore.Components.GameMasters
                 else
                     Proxy.Discard();
             }
-            foreach(var player in innerGM.playerGuidToId)
+            foreach (var player in innerGM.playerGuidToId)
             {
                 await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken);
             }
-            //Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
-            while (true)
+            var taskPlacer = Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Move moveRequest;
-                Discover discoverRequest;
-                PickUpPiece pickUpRequest;
-                TestPiece testPieceRequest;
-                PlacePiece placeRequest;
-                //+knowledge exchange
-                if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
+                while (true)
                 {
-                    await Proxy.SendAsync(innerGM.PerformMove(moveRequest), cancellationToken);
+                    Move moveRequest;
+                    Discover discoverRequest;
+                    PickUpPiece pickUpRequest;
+                    TestPiece testPieceRequest;
+                    PlacePiece placeRequest;
+                    //+knowledge exchange
+                    if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        new TaskDelayer(async (ct) => await Proxy.SendAsync(innerGM.PerformMove(moveRequest), ct), ActionCosts.MoveDelay, cancellationToken);
+                    }
+                    else if ((discoverRequest = await Proxy.TryReceiveAsync<Discover>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        new TaskDelayer(async (ct) => await Proxy.SendAsync(innerGM.PerformDiscover(discoverRequest), ct), ActionCosts.DiscoverDelay, cancellationToken);
+                    }
+                    else if ((pickUpRequest = await Proxy.TryReceiveAsync<PickUpPiece>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        //todo: taskdelayer
+                        await Proxy.SendAsync(innerGM.PerformPickUp(pickUpRequest), cancellationToken);
+                    }
+                    else if ((testPieceRequest = await Proxy.TryReceiveAsync<TestPiece>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        await Proxy.SendAsync(innerGM.PerformTestPiece(testPieceRequest), cancellationToken);
+                    }
+                    else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        await Proxy.SendAsync(innerGM.PerformPlace(placeRequest), cancellationToken);
+                    }
+                    else
+                        Proxy.Discard();
                 }
-                else if ((discoverRequest = await Proxy.TryReceiveAsync<Discover>(cancellationToken).ConfigureAwait(false)) != null)
-                {
-                    await Proxy.SendAsync(innerGM.PerformDiscover(discoverRequest), cancellationToken);
-                }
-                else if ((pickUpRequest = await Proxy.TryReceiveAsync<PickUpPiece>(cancellationToken).ConfigureAwait(false)) != null)
-                {
-                    await Proxy.SendAsync(innerGM.PerformPickUp(pickUpRequest), cancellationToken);
-                }
-                else if ((testPieceRequest = await Proxy.TryReceiveAsync<TestPiece>(cancellationToken).ConfigureAwait(false)) != null)
-                {
-                    await Proxy.SendAsync(innerGM.PerformTestPiece(testPieceRequest), cancellationToken);
-                }
-                else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
-                {
-                    await Proxy.SendAsync(innerGM.PerformPlace(placeRequest), cancellationToken);
-                }
-                else
-                    Proxy.Discard();
             }
+            finally
+            {
+                await taskPlacer;
+            }
+            
+        }
+
+        async Task PiecePlacer(CancellationToken cancellationToken)
+        {
+
         }
     }
 }
