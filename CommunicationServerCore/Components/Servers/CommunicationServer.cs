@@ -5,6 +5,7 @@ using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace CommunicationServerCore.Components.Servers
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			var tasks = new List<Task>();
+			Exception ex = null;
 			try
 			{
 				using( var server = Factory.MakeNetworkServer( Ip, Port ) )
@@ -30,6 +32,13 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
+			catch( OperationCanceledException )
+			{
+			}
+			catch( Exception e )
+			{
+				ex = e;
+			}
 			finally
 			{
 				try
@@ -38,17 +47,19 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				catch( OperationCanceledException )
 				{
+					if( ex != null )
+						throw new AggregateException( ex );
 				}
-				catch( Exception )
+				catch( Exception e )
 				{
-					throw;
+					throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
 				}
 				finally
 				{
 					foreach( var task in tasks )
 					{
 						if( task.IsFaulted )
-							Console.WriteLine( $"Server task faulted with { task.Exception }." );
+							Console.WriteLine( $"Server task faulted with { task.Exception.GetType().Name }." );
 						else if( task.IsCanceled )
 							Console.WriteLine( $"Server task canceled." );
 						else
@@ -56,6 +67,7 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
+			cancellationToken.ThrowIfCancellationRequested();
 		}
 		#endregion
 		#region CommunicationServer
@@ -64,15 +76,32 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		protected async Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
-			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval ) )
+			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
+				try
 				{
 					GetGames getGames;
-					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					RegisterGame registerGame;
+					while( true )
 					{
-						Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+						cancellationToken.ThrowIfCancellationRequested();
+						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
+						{
+							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+							continue;//break;
+						}
+						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
+						{
+							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
+							continue;//break;
+						}
+						proxy.Discard();
 					}
+				}
+				catch( IOException )
+				{
+					throw;
 				}
 			}
 		}

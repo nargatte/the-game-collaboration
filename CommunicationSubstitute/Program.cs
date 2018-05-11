@@ -19,47 +19,45 @@ namespace CommunicationSubstitute
 			try
 			{
 				string ip = "127.0.0.1";
-				int timeout = 5000;
+				int timeout = 10000;
 				int port = 65535;
-				var cts = new CancellationTokenSource( timeout );
-				var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
-				var gm1 = new GameMasterModule( ip, port, new GameMasterSettings(), new GameMasterFactory() );
-				var p1 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
-				var p2 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
-				var tasks = new List<Task>
+				using( var cts = new CancellationTokenSource( timeout ) )
 				{
-					Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-					Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-					Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-					Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
-				};
-				try
-				{
-					await Task.WhenAll( tasks );
-				}
-				catch( OperationCanceledException )
-				{
-				}
-				catch( Exception )
-				{
-					throw;
-				}
-				finally
-				{
-					foreach( var task in tasks )
+					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
+					var gm1 = new GameMasterModule( ip, port, new GameMasterSettings(), new GameMasterFactory() );
+					var p1 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
+					var p2 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
+					var tasks = new List<Task>
 					{
-						if( task.IsFaulted )
-							Console.WriteLine( $"Module task faulted with { task.Exception }." );
-						else if( task.IsCanceled )
-							Console.WriteLine( $"Module task canceled." );
-						else
-							Console.WriteLine( "Module task completed." );
+						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						//Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						//Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
+					};
+					try
+					{
+						await Task.WhenAll( tasks );
+					}
+					catch( OperationCanceledException )
+					{
+					}
+					finally
+					{
+						foreach( var task in tasks )
+						{
+							if( task.IsFaulted )
+								Console.WriteLine( $"Module task faulted with { task.Exception.GetType().Name }." );
+							else if( task.IsCanceled )
+								Console.WriteLine( $"Module task canceled." );
+							else
+								Console.WriteLine( "Module task completed." );
+						}
 					}
 				}
 			}
 			catch( Exception e )
 			{
-				Console.WriteLine( e );
+				Console.WriteLine( e.GetType().Name );
 			}
 		}
 	}

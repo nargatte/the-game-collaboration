@@ -14,7 +14,7 @@ namespace GameMasterCore.Components.Modules
         public override async Task RunAsync( CancellationToken cancellationToken )
         {
 			cancellationToken.ThrowIfCancellationRequested();
-			using( GameMaster.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval ) )
+			using( GameMaster.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
 			{
 				if( GameMaster.Proxy is null )
 					throw new NotImplementedException( nameof( Factory ) );

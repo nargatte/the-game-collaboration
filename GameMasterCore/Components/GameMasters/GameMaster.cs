@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace GameMasterCore.Components.GameMasters
 {
-    public class GameMaster : GameMasterBase
+	public class GameMaster : GameMasterBase
     {
         #region GameMasterBase
         public override async Task RunAsync( CancellationToken cancellationToken )
         {
             cancellationToken.ThrowIfCancellationRequested();
+			System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
+			await Proxy.SendAsync( new RegisterGame(), cancellationToken ).ConfigureAwait( false );
+		}
             await Proxy.SendAsync(new Shared.DTOs.Communication.GameInfo() { BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam, RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam, GameName = GameDefinition.GameName }, cancellationToken);
             await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
             //return Task.CompletedTask;

@@ -14,7 +14,7 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval ) )
+			using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
 			{
 				if( Player.Proxy is null )
 					throw new NotImplementedException( nameof( Factory ) );
