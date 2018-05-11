@@ -17,14 +17,14 @@ namespace Shared.Components.Proxies
 		protected override Task OnKeepAliveSent( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Keep alive sent to server." );
+			System.Console.WriteLine( "CLIENT sent keep alive." );
 			keepAlive.Postpone();
 			return Task.CompletedTask;
 		}
 		protected override Task OnKeepAliveReceived( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Keep alive received from server." );
+			System.Console.WriteLine( "CLIENT received keep alive." );
 			return Task.CompletedTask;
 		}
 		#endregion
@@ -34,7 +34,7 @@ namespace Shared.Components.Proxies
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Auto keep alive sent to server." );
+			System.Console.WriteLine( "CLIENT AUTO sent keep alive." );
 			await Client.SendAsync( string.Empty, cancellationToken ).ConfigureAwait( false );
 		}
 		#endregion

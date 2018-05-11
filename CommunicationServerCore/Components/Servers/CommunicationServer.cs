@@ -5,6 +5,7 @@ using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,14 +52,14 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				catch( Exception e )
 				{
-					//throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
+					throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
 				}
 				finally
 				{
 					foreach( var task in tasks )
 					{
 						if( task.IsFaulted )
-							Console.WriteLine( $"Server task faulted with { task.Exception }." );
+							Console.WriteLine( $"Server task faulted with { task.Exception.GetType().Name }." );
 						else if( task.IsCanceled )
 							Console.WriteLine( $"Server task canceled." );
 						else
@@ -78,6 +79,7 @@ namespace CommunicationServerCore.Components.Servers
 			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
+				try
 				{
 					GetGames getGames;
 					RegisterGame registerGame;
@@ -86,16 +88,20 @@ namespace CommunicationServerCore.Components.Servers
 						cancellationToken.ThrowIfCancellationRequested();
 						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
-							Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
 							continue;//break;
 						}
 						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
-							Console.WriteLine( $"Server receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
+							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
 							continue;//break;
 						}
 						proxy.Discard();
 					}
+				}
+				catch( IOException )
+				{
+					throw;
 				}
 			}
 		}

@@ -11,16 +11,16 @@ namespace Shared.Components.Proxies
 		protected override Task OnKeepAliveSent( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Keep alive sent to client." );
+			System.Console.WriteLine( "SERVER sent keep alive." );
 			return Task.CompletedTask;
 		}
 		protected override async Task OnKeepAliveReceived( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Keep alive received from client." );
+			System.Console.WriteLine( "SERVER received keep alive." );
 			disconnection.Postpone();
+			System.Console.WriteLine( "SERVER sent keep alive." );
 			await Client.SendAsync( string.Empty, cancellationToken ).ConfigureAwait( false );
-			System.Console.WriteLine( "Keep alive responded to client." );
 		}
 		#region ClientProxy
 		private TaskDelayer disconnection;
@@ -28,7 +28,7 @@ namespace Shared.Components.Proxies
 		protected Task CheckDisconnection( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "Client disconnected." );
+			System.Console.WriteLine( "CLIENT DISCONNECTED." );
 			return Task.CompletedTask;
 		}
 		#endregion

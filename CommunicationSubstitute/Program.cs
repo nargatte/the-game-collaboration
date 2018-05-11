@@ -19,7 +19,7 @@ namespace CommunicationSubstitute
 			try
 			{
 				string ip = "127.0.0.1";
-				int timeout = 30000;
+				int timeout = 10000;
 				int port = 65535;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
@@ -46,7 +46,7 @@ namespace CommunicationSubstitute
 						foreach( var task in tasks )
 						{
 							if( task.IsFaulted )
-								Console.WriteLine( $"Module task faulted with { task.Exception }." );
+								Console.WriteLine( $"Module task faulted with { task.Exception.GetType().Name }." );
 							else if( task.IsCanceled )
 								Console.WriteLine( $"Module task canceled." );
 							else
@@ -57,7 +57,7 @@ namespace CommunicationSubstitute
 			}
 			catch( Exception e )
 			{
-				Console.WriteLine( e );
+				Console.WriteLine( e.GetType().Name );
 			}
 		}
 	}
