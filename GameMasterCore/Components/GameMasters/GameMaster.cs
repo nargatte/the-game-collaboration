@@ -15,11 +15,17 @@ namespace GameMasterCore.Components.GameMasters
         {
             cancellationToken.ThrowIfCancellationRequested();
 			System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
-			await Proxy.SendAsync( new RegisterGame(), cancellationToken ).ConfigureAwait( false );
-		}
-            await Proxy.SendAsync(new Shared.DTOs.Communication.GameInfo() { BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam, RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam, GameName = GameDefinition.GameName }, cancellationToken);
-            await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
-            //return Task.CompletedTask;
+			await Proxy.SendAsync( 
+                new Shared.DTOs.Communication.RegisterGame()
+                {
+                    NewGameInfo = new Shared.DTOs.Communication.GameInfo()
+                    {
+                        BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
+                        RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
+                        GameName = GameDefinition.GameName
+                    }
+                }, cancellationToken ).ConfigureAwait( false );
+		    await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
         }
         #endregion
         #region GameMaster
