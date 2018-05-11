@@ -7,24 +7,15 @@ namespace Shared.Components.Tasks
 	public class TaskDelayer : IDisposable
 	{
 		#region IDisposable
-		public virtual void Dispose()
-		{
-			Stop();
-			semaphore.Dispose();
-		}
+		public virtual void Dispose() => Stop();
 		#endregion
 		#region TaskDelayer
 		public void Postpone()
 		{
-			semaphore.Wait();
-			try
+			lock( cts )
 			{
 				Stop();
 				Start();
-			}
-			finally
-			{
-				semaphore.Release();
 			}
 		}
 		protected Func<CancellationToken, Task> Callback { get; }
@@ -32,7 +23,6 @@ namespace Shared.Components.Tasks
 		protected CancellationToken CancellationToken { get; }
 		private CancellationTokenSource cts;
 		private Task task;
-		private SemaphoreSlim semaphore = new SemaphoreSlim( 1, 1 );
 		public TaskDelayer( Func<CancellationToken, Task> callback, int delay, CancellationToken cancellationToken )
 		{
 			Callback = callback;
