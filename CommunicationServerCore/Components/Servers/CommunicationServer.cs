@@ -17,6 +17,7 @@ namespace CommunicationServerCore.Components.Servers
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			var tasks = new List<Task>();
+			Exception ex = null;
 			try
 			{
 				using( var server = Factory.MakeNetworkServer( Ip, Port ) )
@@ -30,6 +31,13 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
+			catch( OperationCanceledException )
+			{
+			}
+			catch( Exception e )
+			{
+				ex = e;
+			}
 			finally
 			{
 				try
@@ -38,10 +46,12 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				catch( OperationCanceledException )
 				{
+					if( ex != null )
+						throw new AggregateException( ex );
 				}
-				catch( Exception )
+				catch( Exception e )
 				{
-					throw;
+					throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
 				}
 				finally
 				{
@@ -56,6 +66,7 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
+			cancellationToken.ThrowIfCancellationRequested();
 		}
 		#endregion
 		#region CommunicationServer
