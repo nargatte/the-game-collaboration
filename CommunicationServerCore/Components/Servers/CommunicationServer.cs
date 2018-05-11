@@ -43,6 +43,7 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				try
 				{
+					Console.WriteLine( $"Server waits for completion." );
 					await Task.WhenAll( tasks );
 				}
 				catch( OperationCanceledException )
@@ -83,25 +84,28 @@ namespace CommunicationServerCore.Components.Servers
 				{
 					GetGames getGames;
 					RegisterGame registerGame;
-					while( true )
+					//while( true )
 					{
+						Console.WriteLine( "#" );
 						cancellationToken.ThrowIfCancellationRequested();
 						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
 							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
-							continue;//break;
+							//continue;//break;
 						}
 						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 						{
+							Console.WriteLine( "#" );
 							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
-							continue;//break;
+							//continue;//break;
 						}
 						proxy.Discard();
 					}
 				}
 				catch( IOException )
 				{
-					throw;
+					if( !proxy.CancellationToken.IsCancellationRequested )
+						throw;
 				}
 			}
 		}
