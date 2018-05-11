@@ -19,7 +19,7 @@ namespace CommunicationSubstitute
 			try
 			{
 				string ip = "127.0.0.1";
-				int timeout = 5000;
+				int timeout = 30000;
 				int port = 65535;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
@@ -30,8 +30,8 @@ namespace CommunicationSubstitute
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						//Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						//Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
 						Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
 					};
 					try

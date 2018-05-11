@@ -13,6 +13,8 @@ namespace PlayerCore.Components.Players
 			cancellationToken.ThrowIfCancellationRequested();
 			System.Console.WriteLine( $"Player sends: { Shared.Components.Serialization.Serializer.Serialize( new GetGames() ) }." );
 			await Proxy.SendAsync( new GetGames(), cancellationToken ).ConfigureAwait( false );
+			await Proxy.SendAsync( new GetGames(), cancellationToken ).ConfigureAwait( false );
+			await Task.Delay( 30000, cancellationToken );
 		}
 		#endregion
 		#region Player

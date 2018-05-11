@@ -16,7 +16,7 @@ namespace Shared.Base.Proxies
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			await Client.SendAsync( Serializer.Serialize( message ), cancellationToken ).ConfigureAwait( false );
-			await OnKeepAliveSent( cancellationToken );
+			await OnKeepAliveSent( cancellationToken ).ConfigureAwait( false );
 		}
 		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
 		{
@@ -24,7 +24,7 @@ namespace Shared.Base.Proxies
 			while( string.IsNullOrEmpty( buffer ) )
 			{
 				buffer = await Client.ReceiveAsync( cancellationToken ).ConfigureAwait( false );
-				await OnKeepAliveReceived( cancellationToken );
+				await OnKeepAliveReceived( cancellationToken ).ConfigureAwait( false );
 			}
 			var message = Serializer.Deserialize< T >( buffer );
 			if( message != null )
