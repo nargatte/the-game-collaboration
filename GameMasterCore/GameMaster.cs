@@ -11,7 +11,7 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
-using Config = Shared.Messages.Configuration;
+using Config = Shared.DTOs.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
@@ -25,7 +25,7 @@ namespace GameMasterCore
         Random random;
         public virtual IReadOnlyBoard Board => board;
         public IBoard board;
-        Dictionary<string, ulong> playerGuidToId;
+        public Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
         int pieceIDcounter = 0;
         Config.GameMasterSettings config;
