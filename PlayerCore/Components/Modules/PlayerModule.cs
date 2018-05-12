@@ -14,13 +14,19 @@ namespace PlayerCore.Components.Modules
 		public override async Task RunAsync( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
+			try
 			{
-				if( Player.Proxy is null )
-					throw new NotImplementedException( nameof( Factory ) );
-				await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
+				using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
+				{
+					if( Player.Proxy is null )
+						throw new NotImplementedException( nameof( Factory ) );
+					await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
+				}
 			}
-			Player.Proxy = null;
+			finally
+			{
+				Player.Proxy = null;
+			}
 		}
 		#endregion
 		#region PlayerModule

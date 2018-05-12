@@ -3,9 +3,9 @@ using Shared.Components.Extensions;
 using Shared.DTOs.Communication;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Proxies;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,6 +43,7 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				try
 				{
+					Console.WriteLine( $"Server waits for completion." );
 					await Task.WhenAll( tasks );
 				}
 				catch( OperationCanceledException )
@@ -67,7 +68,6 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
-			cancellationToken.ThrowIfCancellationRequested();
 		}
 		#endregion
 		#region CommunicationServer
@@ -79,31 +79,35 @@ namespace CommunicationServerCore.Components.Servers
 			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
-				try
+				GetGames getGames;
+				RegisterGame registerGame;
+				while( true )
 				{
-					GetGames getGames;
-					RegisterGame registerGame;
-					while( true )
+					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						cancellationToken.ThrowIfCancellationRequested();
-						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
-						{
-							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
-							continue;//break;
-						}
-						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
-						{
-							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
-							continue;//break;
-						}
-						proxy.Discard();
+						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+						await AsAnonymousPlayer( proxy, getGames, cancellationToken );
+						continue;
 					}
-				}
-				catch( IOException )
-				{
-					throw;
+					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
+						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken );
+						continue;
+					}
+					proxy.Discard();
 				}
 			}
+		}
+		protected Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
+		}
+		protected Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
 		}
 		#endregion
 	}

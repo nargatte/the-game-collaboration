@@ -1,5 +1,5 @@
 ﻿using Shared.Base.Communication;
-using System;
+using Shared.Components.Tasks;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace Shared.Components.Communication
 			byte[] data = new byte[ 256 ];
 			while( !builder.ToString().Contains( ConstHelper.EndOfMessage ) )
 			{
-				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
+				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken ).WithCancellation( cancellationToken ).ConfigureAwait( false );
 				builder.Append( ConstHelper.Encoding.GetString( data, 0, bytes ) );
 			}
 			string buffer = builder.ToString();

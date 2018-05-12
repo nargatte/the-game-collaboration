@@ -14,13 +14,19 @@ namespace GameMasterCore.Components.Modules
         public override async Task RunAsync( CancellationToken cancellationToken )
         {
 			cancellationToken.ThrowIfCancellationRequested();
-			using( GameMaster.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
+			try
 			{
-				if( GameMaster.Proxy is null )
-					throw new NotImplementedException( nameof( Factory ) );
-				await GameMaster.RunAsync( cancellationToken ).ConfigureAwait( false );
+				using( GameMaster.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
+				{
+					if( GameMaster.Proxy is null )
+						throw new NotImplementedException( nameof( Factory ) );
+					await GameMaster.RunAsync( cancellationToken ).ConfigureAwait( false );
+				}
 			}
-			GameMaster.Proxy = null;
+			finally
+			{
+				GameMaster.Proxy = null;
+			}
 		}
         #endregion
         #region GameMasterModule

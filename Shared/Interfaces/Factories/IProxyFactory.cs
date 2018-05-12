@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Shared.Interfaces.Factories
 {
-	public interface IProxyFactory : INetworkFactory
+	public interface IProxyFactory : INetworkFactory, ITaskManagerFactory
 	{
 		IClientProxy CreateClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken );
 		IServerProxy CreateServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken );
