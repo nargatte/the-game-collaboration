@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Interfaces.Factories;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,5 +12,6 @@ namespace Shared.Interfaces.Proxies
 		Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class;
 		void Discard();
 		CancellationToken CancellationToken { get; }
+		ITaskManagerFactory Factory { get; }
 	}
 }

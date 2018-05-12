@@ -19,7 +19,7 @@ namespace CommunicationSubstitute
 			try
 			{
 				string ip = "127.0.0.1";
-				int timeout = 5000;
+				int timeout = 15000;
 				int port = 65535;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{

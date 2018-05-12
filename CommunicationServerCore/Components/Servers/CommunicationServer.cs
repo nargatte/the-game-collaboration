@@ -5,7 +5,6 @@ using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,7 +67,6 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
-			cancellationToken.ThrowIfCancellationRequested();
 		}
 		#endregion
 		#region CommunicationServer
@@ -80,32 +78,22 @@ namespace CommunicationServerCore.Components.Servers
 			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
-				try
+				GetGames getGames;
+				RegisterGame registerGame;
+				while( true )
 				{
-					GetGames getGames;
-					RegisterGame registerGame;
-					//while( true )
+					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+						continue;
+					}
+					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						Console.WriteLine( "#" );
-						cancellationToken.ThrowIfCancellationRequested();
-						if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
-						{
-							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
-							//continue;//break;
-						}
-						else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
-						{
-							Console.WriteLine( "#" );
-							Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
-							//continue;//break;
-						}
-						proxy.Discard();
+						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
+						continue;
 					}
-				}
-				catch( IOException )
-				{
-					if( !proxy.CancellationToken.IsCancellationRequested )
-						throw;
+					proxy.Discard();
 				}
 			}
 		}
