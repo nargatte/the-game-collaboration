@@ -18,7 +18,12 @@ namespace GameMasterCore.Components.GameMasters
         {
             cancellationToken.ThrowIfCancellationRequested();
             //System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
-            await Proxy.SendAsync(
+
+            int waitPeriod = 100;
+            ConfirmGameRegistration confirmedRegistration = null;
+            while (confirmedRegistration == null)
+            {
+                await Proxy.SendAsync(
                 new Shared.DTOs.Communication.RegisterGame()
                 {
                     NewGameInfo = new Shared.DTOs.Communication.GameInfo()
@@ -28,8 +33,24 @@ namespace GameMasterCore.Components.GameMasters
                         GameName = GameDefinition.GameName
                     }
                 }, cancellationToken).ConfigureAwait(false);
-            //TODO: weź odpowiedź od serwera i sprawdź game id
 
+                while (confirmedRegistration == null)
+                {
+                    if ((await Proxy.TryReceiveAsync<RejectGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        await Task.Delay(waitPeriod);
+                        break;
+                    }
+                    else if ((confirmedRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        innerGM.gameId = confirmedRegistration.gameId;
+                        break;
+                    }
+                    else
+                        Proxy.Discard();
+                }
+            }
+            
             await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
         }
         #endregion

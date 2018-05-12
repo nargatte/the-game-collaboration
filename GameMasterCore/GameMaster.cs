@@ -31,6 +31,7 @@ namespace GameMasterCore
         Config.GameMasterSettings config;
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
+        public ulong gameId;
 
         public BlockingGameMaster(int seed = 123456)
         {
@@ -500,7 +501,7 @@ namespace GameMasterCore
             board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
             {
-                gameId = 1,
+                gameId = gameId,
                 playerId = id,
                 privateGuid = guid,
                 PlayerDefinition = new DTO.Player()
