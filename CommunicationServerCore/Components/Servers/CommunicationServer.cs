@@ -3,6 +3,7 @@ using Shared.Components.Extensions;
 using Shared.DTOs.Communication;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Proxies;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -85,17 +86,28 @@ namespace CommunicationServerCore.Components.Servers
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
+						await AsAnonymousPlayer( proxy, getGames, cancellationToken );
 						continue;
 					}
 					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						Console.WriteLine( "#" );
 						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
+						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken );
 						continue;
 					}
 					proxy.Discard();
 				}
 			}
+		}
+		protected Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
+		}
+		protected Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
 		}
 		#endregion
 	}
