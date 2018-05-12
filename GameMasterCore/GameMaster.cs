@@ -80,18 +80,18 @@ namespace GameMasterCore
             result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
                 new Config.GoalField
                 {
-                    team = TeamColour.Blue,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Blue,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             ).Concat(goalLocationsRed.Select(location =>
                 new Config.GoalField
                 {
-                    team = TeamColour.Red,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Red,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             )).ToArray();
 
@@ -109,12 +109,12 @@ namespace GameMasterCore
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
             {
-                if (gf.team == TeamColour.Red)
+                if (gf.Team == TeamColour.Red)
                     redGoalsToScore++;
                 else
                     blueGoalsToScore++;
                 result.SetField(
-                    result.Factory.CreateGoalField(gf.x, gf.y, gf.team, DateTime.Now, null, GoalFieldType.Goal)
+                    result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.Goal)
                     );
             }
             //set the rest of GoalArea fields as NonGoals
