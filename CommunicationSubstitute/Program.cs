@@ -4,6 +4,8 @@ using GameMasterCore.Components.Factories;
 using GameMasterCore.Components.Modules;
 using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
+using Shared.Components.Serialization;
+using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,10 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
+				//RejectGameRegistration rejectGameRegistration = new RejectGameRegistration() { GameName = null };
+				//Console.WriteLine( Serializer.Serialize( rejectGameRegistration ) );
+				//RejectGameRegistration rejectGameRegistration2 = Serializer.Deserialize<RejectGameRegistration>( Serializer.Serialize( rejectGameRegistration ) );
+				//Console.WriteLine( Serializer.Serialize( rejectGameRegistration2 ) );
 				string ip = "127.0.0.1";
 				int timeout = 15000;
 				int port = 65535;
@@ -30,8 +36,8 @@ namespace CommunicationSubstitute
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						//Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) )//,
+						Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) )//,
+						//Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
 						//Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
 					};
 					try

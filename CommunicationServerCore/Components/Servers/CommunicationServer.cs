@@ -71,6 +71,8 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
+		private ulong nextGameId = 0u;
+		private IDictionary<string, GameInfo> games = new Dictionary<string, GameInfo>();
 		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
@@ -86,13 +88,13 @@ namespace CommunicationServerCore.Components.Servers
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
-						await AsAnonymousPlayer( proxy, getGames, cancellationToken );
+						await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
 						continue;
 					}
 					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
-						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken );
+						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken ).ConfigureAwait( false );
 						continue;
 					}
 					proxy.Discard();
@@ -104,10 +106,19 @@ namespace CommunicationServerCore.Components.Servers
 			cancellationToken.ThrowIfCancellationRequested();
 			return Task.CompletedTask;
 		}
-		protected Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
+		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{
+			Console.WriteLine( "AnonymousGameMaster" );
 			cancellationToken.ThrowIfCancellationRequested();
-			return Task.CompletedTask;
+			if( registerGame.NewGameInfo is null || games.ContainsKey( registerGame.NewGameInfo.GameName ) )
+			{
+				Console.WriteLine( $"SERVER sends: { Shared.Components.Serialization.Serializer.Serialize( new RejectGameRegistration() { GameName = registerGame.NewGameInfo?.GameName } ) }." );
+				await proxy.SendAsync( new RejectGameRegistration() { GameName = registerGame.NewGameInfo?.GameName }, cancellationToken );
+			}
+			else
+			{
+
+			}
 		}
 		#endregion
 	}

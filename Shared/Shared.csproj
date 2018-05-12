@@ -79,10 +79,12 @@
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
     <Compile Include="Components\Tasks\TaskManager.cs" />
+    <Compile Include="DTOs\Communication\ConfirmGameRegistration.cs" />
     <Compile Include="DTOs\Communication\GameInfo.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="DTOs\Communication\RegisteredGames.cs" />
     <Compile Include="DTOs\Communication\RegisterGame.cs" />
+    <Compile Include="DTOs\Communication\RejectGameRegistration.cs" />
     <Compile Include="DTOs\Configuration\Field.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
