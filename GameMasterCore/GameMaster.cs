@@ -301,17 +301,20 @@ namespace GameMasterCore
             return result;
         }
 
-        private void PerformCreatePieceAndPlaceRandomly()
+        public void PerformCreatePieceAndPlaceRandomly()
         {
-            DTO.Location place;
-            do
+            lock (board)
             {
-                place = GenerateRandomPlaces(1, 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight + 1).First();
-            } while (board.GetField(place.x, place.y).Player != null);
+                DTO.Location place;
+                do
+                {
+                    place = GenerateRandomPlaces(1, 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight + 1).First();
+                } while (board.GetField(place.x, place.y).Player != null);
 
-            var field = new TaskField(place.x, place.y);
-            var newPiece = board.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, field);
-            board.SetPiece(newPiece);
+                var field = board.GetField(place.x, place.y);
+                var newPiece = board.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)field);
+                board.SetPiece(newPiece);
+            }
         }
 
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
@@ -571,6 +574,25 @@ namespace GameMasterCore
                     );
         }
 
+        public DTO.Data Perform(DTO.GameMessage gameMessage)
+        {
+            switch (gameMessage)
+            {
+                case DTO.Move move:
+                    return PerformMove(move);
+                case DTO.Discover discover:
+                    return PerformDiscover(discover);
+                case DTO.TestPiece test:
+                    return PerformTestPiece(test);
+                case DTO.PlacePiece place:
+                    return PerformPlace(place);
+                case DTO.PickUpPiece pick:
+                    return PerformPickUp(pick);
+                default:
+                    return new DTO.Data() { playerId = GetPlayerIdFromGuid(gameMessage.playerGuid) };
+            }
+        }
+
         public virtual event EventHandler<LogArgs> Log = delegate { };
         #endregion
 
@@ -690,7 +712,7 @@ namespace GameMasterCore
                 result = function();
             }
             var milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
-            if (milisecondsToSleep == 0)
+            if (milisecondsToSleep > 0)
                 Task.Delay(milisecondsToSleep);
             return result;
         }

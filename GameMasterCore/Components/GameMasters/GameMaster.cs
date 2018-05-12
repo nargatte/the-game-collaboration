@@ -4,6 +4,8 @@ using Shared.Components.Tasks;
 using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Messages.Communication;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +41,7 @@ namespace GameMasterCore.Components.GameMasters
         #endregion
 
         BlockingGameMaster innerGM;
+        List<Task<GameMessage>> tasks;
 
         void initTmpInnerGM(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts)
         {
@@ -68,7 +71,12 @@ namespace GameMasterCore.Components.GameMasters
             {
                 await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken);
             }
-            var taskPlacer = Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
+            TaskManager taskPlacer = new TaskManager(async(ct) => innerGM.PerformCreatePieceAndPlaceRandomly(), GameDefinition.PlacingNewPiecesFrequency, true, cancellationToken);
+            taskPlacer.Start();
+            //var taskPlacer = Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
+            var taskPerformer = Task.Run(async () => await TaskPerformer(cancellationToken).ConfigureAwait(false));
+
+            Exception ex = null;
             try
             {
                 while (true)
@@ -81,39 +89,99 @@ namespace GameMasterCore.Components.GameMasters
                     //+knowledge exchange
                     if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        new TaskDelayer(async (ct) => await Proxy.SendAsync(innerGM.PerformMove(moveRequest), ct), ActionCosts.MoveDelay, cancellationToken);
+                        tasks.Add(DelayMessage(moveRequest, ActionCosts.MoveDelay, cancellationToken));
                     }
                     else if ((discoverRequest = await Proxy.TryReceiveAsync<Discover>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        new TaskDelayer(async (ct) => await Proxy.SendAsync(innerGM.PerformDiscover(discoverRequest), ct), ActionCosts.DiscoverDelay, cancellationToken);
+                        tasks.Add(DelayMessage(discoverRequest, ActionCosts.DiscoverDelay, cancellationToken));
                     }
                     else if ((pickUpRequest = await Proxy.TryReceiveAsync<PickUpPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        //todo: taskdelayer
-                        await Proxy.SendAsync(innerGM.PerformPickUp(pickUpRequest), cancellationToken);
+                        tasks.Add(DelayMessage(pickUpRequest, ActionCosts.PickUpDelay, cancellationToken));
                     }
                     else if ((testPieceRequest = await Proxy.TryReceiveAsync<TestPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        await Proxy.SendAsync(innerGM.PerformTestPiece(testPieceRequest), cancellationToken);
+                        tasks.Add(DelayMessage(testPieceRequest, ActionCosts.TestDelay, cancellationToken));
                     }
                     else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        await Proxy.SendAsync(innerGM.PerformPlace(placeRequest), cancellationToken);
+                        tasks.Add(DelayMessage(placeRequest, ActionCosts.PlacingDelay, cancellationToken));
                     }
                     else
                         Proxy.Discard();
                 }
             }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception e)
+            {
+                ex = e;
+            }
             finally
             {
-                await taskPlacer;
+                try
+                {
+                    taskPlacer.Stop();
+                }
+                catch (OperationCanceledException)
+                {
+                    if (ex != null)
+                        throw new AggregateException(ex);
+                }
+                catch (Exception e)
+                {
+                    throw ex is null ? new AggregateException(e) : new AggregateException(ex, e);
+                }
+
+                try
+                {
+                    await taskPerformer;
+                }
+                catch (OperationCanceledException)
+                {
+                    if (ex != null)
+                        throw new AggregateException(ex);
+                }
+                catch (Exception e)
+                {
+                    throw ex is null ? new AggregateException(e) : new AggregateException(ex, e);
+                }
+
+                try
+                {
+                    await Task.WhenAll(tasks.ToArray());
+                }
+                catch (OperationCanceledException)
+                {
+                    if (ex != null)
+                        throw new AggregateException(ex);
+                }
+                catch (Exception e)
+                {
+                    throw ex is null ? new AggregateException(e) : new AggregateException(ex, e);
+                }
+
             }
             
         }
 
-        async Task PiecePlacer(CancellationToken cancellationToken)
+        async Task TaskPerformer(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            while (true)
+            {
+                Task<GameMessage> task = await Task.WhenAny(tasks);
+                GameMessage message = await task;
+                await Proxy.SendAsync(innerGM.Perform(message), cancellationToken);
+            }
+        }
 
+        async Task<GameMessage> DelayMessage(GameMessage message, uint delay, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationToken).ConfigureAwait(false);
+            return message;
         }
     }
 }
