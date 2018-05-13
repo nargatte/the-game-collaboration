@@ -1,8 +1,10 @@
 ﻿using GameMasterCore.Base.GameMasters;
 using Shared.Components.Factories;
 using Shared.Components.Tasks;
+using Shared.Const;
 using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
+using Shared.Enums;
 using Shared.Messages.Communication;
 using System;
 using System.Collections.Generic;
@@ -19,10 +21,10 @@ namespace GameMasterCore.Components.GameMasters
             cancellationToken.ThrowIfCancellationRequested();
 			while( Proxy.Local.Id == ConstHelper.AnonymousId )
 			{
-				var registerGame = new RegisterGame
-				{
-					NewGameInfo = new GameInfo
-					{
+				var registerGame = new Shared.DTOs.Communication.RegisterGame
+                {
+					NewGameInfo = new Shared.DTOs.Communication.GameInfo
+                    {
 						GameName = GameDefinition.GameName,
 						RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
 						BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam
@@ -31,14 +33,14 @@ namespace GameMasterCore.Components.GameMasters
 				await Proxy.SendAsync( registerGame, cancellationToken ).ConfigureAwait( false );
 				while( true )
 				{
-					ConfirmGameRegistration confirmGameRegistration;
-					RejectGameRegistration rejectGameRegistration;
-					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+                    Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration;
+                    Shared.DTOs.Communication.RejectGameRegistration rejectGameRegistration;
+					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						PerformConfirmGameRegistration( confirmGameRegistration, cancellationToken );
 						break;
 					}
-					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
 						await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
 						break;
@@ -56,7 +58,7 @@ namespace GameMasterCore.Components.GameMasters
         {
             initTmpInnerGM(gameDefinition, actionCosts);
         }
-		protected void PerformConfirmGameRegistration( ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken )
+		protected void PerformConfirmGameRegistration(Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			id = confirmGameRegistration.GameId;
