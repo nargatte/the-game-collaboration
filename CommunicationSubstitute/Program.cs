@@ -82,33 +82,10 @@ namespace CommunicationSubstitute
 			communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;
 		}
-		private static void OnSent( object s, SentArgs e )
-		{
-			Console.WriteLine( $"{ e.Local } sends to { e.Remote }:" );
-			Console.WriteLine( e.SerializedMessage );
-			Console.WriteLine();
-		}
-		private static void OnReceived( object s, ReceivedArgs e )
-		{
-			Console.WriteLine( $"{ e.Local } received from { e.Remote }:" );
-			Console.WriteLine( e.SerializedMessage );
-			Console.WriteLine();
-		}
-		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e )
-		{
-			Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }." );
-			Console.WriteLine();
-		}
-		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e )
-		{
-			Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }." );
-			Console.WriteLine();
-		}
-		private static void OnDiscarded( object s, DiscardedArgs e )
-		{
-			Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:" );
-			Console.WriteLine( e.SerializedMessage );
-			Console.WriteLine();
-		}
+		private static void OnSent( object s, SentArgs e ) => Console.WriteLine( $"{ e.Local } sends to { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnReceived( object s, ReceivedArgs e ) => Console.WriteLine( $"{ e.Local } received from { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }.\n" );
+		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
+		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 	}
 }
