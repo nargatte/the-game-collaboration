@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using DTO = Shared.Messages.Communication;
-using Config = Shared.Messages.Configuration;
+using Config = Shared.DTOs.Configuration;
 using Shared.Interfaces;
 using Shared.Components.Factories;
 using Shared.Components.Boards;
@@ -32,8 +32,8 @@ namespace GameMasterCoreUnitTests
                     BoardWidth = 2,
                     GoalAreaLength = 1,
                     Goals = new Config.GoalField[] {
-                        new Config.GoalField { team = Shared.Enums.TeamColour.Blue, x = 0, y = 0, type = Shared.Enums.GoalFieldType.Goal},
-                        new Config.GoalField { team = Shared.Enums.TeamColour.Red, x = 0, y = 3, type = Shared.Enums.GoalFieldType.Goal}
+                        new Config.GoalField { Team = Shared.Enums.TeamColour.Blue, X = 0, Y = 0, Type = Shared.Enums.GoalFieldType.Goal},
+                        new Config.GoalField { Team = Shared.Enums.TeamColour.Red, X = 0, Y = 3, Type = Shared.Enums.GoalFieldType.Goal}
                     },
                     InitialNumberOfPieces = 1,
                     NumberOfPlayersPerTeam = 1,

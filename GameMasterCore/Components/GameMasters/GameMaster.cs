@@ -67,7 +67,7 @@ namespace GameMasterCore.Components.GameMasters
 		#endregion
 
         BlockingGameMaster innerGM;
-        List<Task<GameMessage>> tasks;
+        List<Task<GameMessage>> tasks = new List<Task<GameMessage>>();
 
         void initTmpInnerGM(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts)
         {
