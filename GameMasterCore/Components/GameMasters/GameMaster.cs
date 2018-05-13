@@ -87,8 +87,8 @@ namespace GameMasterCore.Components.GameMasters
             while (innerGM.playerGuidToId.Keys.Count != GameDefinition.NumberOfPlayersPerTeam * 2)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                JoinGame joinGame;
-                if ((joinGame = await Proxy.TryReceiveAsync<JoinGame>(cancellationToken).ConfigureAwait(false)) != null)
+                Shared.DTOs.Communication.JoinGame joinGame;
+                if ((joinGame = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.JoinGame>(cancellationToken).ConfigureAwait(false)) != null)
                 {
                     //Console.WriteLine($"GM receives: { Shared.Components.Serialization.Serializer.Serialize(joinGame) }.");
                     await Proxy.SendAsync(innerGM.PerformJoinGame(joinGame), cancellationToken);

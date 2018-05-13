@@ -14,10 +14,10 @@ namespace Shared.Interfaces
         Data PerformPlace(PlacePiece placeRequest);
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
-        PlayerMessage PerformJoinGame(JoinGame joinGame);
+        PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
         event EventHandler<LogArgs> Log;
 		IReadOnlyBoard Board { get; }
 #warning TEMP, to change in future stages
         Game GetGame(string guid);
-	}
+    }
 }

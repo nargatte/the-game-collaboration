@@ -173,24 +173,24 @@ namespace CommunicationSubstitute
             // blue registration
             for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
             {
-                BlueConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new JoinGame
+                BlueConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
                 {
-                    gameName = GameInfo.gameName,
-                    playerIdSpecified = false,
-                    preferredRole = i == 0 ? PlayerType.Leader : PlayerType.Member,
-                    preferredTeam = TeamColour.Blue
+                    GameName = GameInfo.gameName,
+                    PlayerIdSpecified = false,
+                    PreferredRole = i == 0 ? PlayerType.Leader : PlayerType.Member,
+                    PreferredTeam = TeamColour.Blue
                 });
             }
 
             // red registration
             for (ulong i = 0; i < GameInfo.redTeamPlayers; i++)
             {
-                RedConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new JoinGame
+                RedConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
                 {
-                    gameName = GameInfo.gameName,
-                    playerIdSpecified = false,
-                    preferredRole = i == 0 ? PlayerType.Leader : PlayerType.Member,
-                    preferredTeam = TeamColour.Red
+                    GameName = GameInfo.gameName,
+                    PlayerIdSpecified = false,
+                    PreferredRole = i == 0 ? PlayerType.Leader : PlayerType.Member,
+                    PreferredTeam = TeamColour.Red
                 });
             }
         }
