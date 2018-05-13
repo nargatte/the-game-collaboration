@@ -20,7 +20,7 @@ namespace Shared.Base.Proxies
 			string serializedMessage = Serializer.Serialize( message );
 			await Client.SendAsync( serializedMessage, cancellationToken ).ConfigureAwait( false );
 			OnSent( Local, Remote, message, serializedMessage );
-			OnSentKeepAlive( Local, Remote );
+			await WhenKeepAliveSent( cancellationToken );
 		}
 		public virtual async Task< T > TryReceiveAsync< T >( CancellationToken cancellationToken ) where T : class
 		{
@@ -28,7 +28,7 @@ namespace Shared.Base.Proxies
 			while( string.IsNullOrEmpty( buffer ) )
 			{
 				buffer = await Client.ReceiveAsync( cancellationToken ).ConfigureAwait( false );
-				OnReceivedKeepAlive( Local, Remote );
+				await WhenKeepAliveReceived( cancellationToken );
 			}
 			var message = Serializer.Deserialize< T >( buffer );
 			if( message != null )
@@ -49,6 +49,18 @@ namespace Shared.Base.Proxies
 		public virtual IProxyComponentFactory Factory { get; }
 		#endregion
 		#region ProxyBase
+		protected virtual Task WhenKeepAliveSent( CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			OnSentKeepAlive( Local, Remote );
+			return Task.CompletedTask;
+		}
+		protected virtual Task WhenKeepAliveReceived( CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			OnReceivedKeepAlive( Local, Remote );
+			return Task.CompletedTask;
+		}
 		protected INetworkClient Client { get; }
 		private string buffer;
 		protected ProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IIdentity remote, IProxyComponentFactory factory )

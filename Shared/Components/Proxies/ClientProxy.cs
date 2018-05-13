@@ -1,5 +1,4 @@
 ﻿using Shared.Base.Proxies;
-using Shared.Components.Events;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using Shared.Interfaces.Proxies;
@@ -20,6 +19,16 @@ namespace Shared.Components.Proxies
 			}
 			base.Dispose();
 		}
+		protected override async Task WhenKeepAliveReceived( CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			lock( disconnection )
+			{
+				disconnection.Postpone();
+			}
+			await Client.SendAsync( string.Empty, CancellationToken ).ConfigureAwait( false );
+			await base.WhenKeepAliveReceived( cancellationToken );
+		}
 		#endregion
 		#region ClientProxy
 		private ITaskManager disconnection;
@@ -27,17 +36,6 @@ namespace Shared.Components.Proxies
 		{
 			disconnection = Factory.CreateTaskManager( CheckDisconnection, KeepAliveInterval, false, CancellationToken );
 			disconnection.Start();
-			//ReceivedKeepAlive += ConfirmConnection;
-		}
-		protected async void ConfirmConnection( object s, ReceivedKeepAliveArgs e )
-		{
-			CancellationToken.ThrowIfCancellationRequested();
-			lock( disconnection )
-			{
-				disconnection.Postpone();
-			}
-			await Client.SendAsync( string.Empty, CancellationToken ).ConfigureAwait( false );
-			OnSentKeepAlive( Local, Remote );
 		}
 		protected Task CheckDisconnection( CancellationToken cancellationToken )
 		{

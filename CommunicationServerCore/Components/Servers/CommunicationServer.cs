@@ -1,6 +1,7 @@
 ﻿using CommunicationServerCore.Base.Servers;
 using Shared.Components.Extensions;
 using Shared.DTOs.Communication;
+using Shared.Enums;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using Shared.Interfaces.Proxies;
@@ -84,23 +85,24 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				PassAll( proxy );
-				await Task.Delay( 20000, cancellationToken );
-				/*while( true )
+				while( true )
 				{
 					GetGames getGames;
 					RegisterGame registerGame;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
+						proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
 						await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
 						continue;
 					}
 					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
+						proxy.UpdateRemote( Factory.MakeIdentity( HostType.GameMaster ) );
 						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken ).ConfigureAwait( false );
 						break;
 					}
 					proxy.Discard();
-				}*/
+				}
 			}
 		}
 		protected Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )
@@ -111,7 +113,7 @@ namespace CommunicationServerCore.Components.Servers
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			await PerformRegisterGame( proxy, registerGame, cancellationToken );
+			//await PerformRegisterGame( proxy, registerGame, cancellationToken );
 		}
 		protected async Task PerformRegisterGame( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{

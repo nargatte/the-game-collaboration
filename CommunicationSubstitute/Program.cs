@@ -5,8 +5,6 @@ using GameMasterCore.Components.Modules;
 using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
 using Shared.Components.Events;
-using Shared.Components.Serialization;
-using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using System;
 using System.Collections.Generic;
@@ -21,21 +19,17 @@ namespace CommunicationSubstitute
 		{
 			try
 			{
-				//RejectGameRegistration rejectGameRegistration = new RejectGameRegistration() { GameName = null };
-				//Console.WriteLine( Serializer.Serialize( rejectGameRegistration ) );
-				//RejectGameRegistration rejectGameRegistration2 = Serializer.Deserialize<RejectGameRegistration>( Serializer.Serialize( rejectGameRegistration ) );
-				//Console.WriteLine( Serializer.Serialize( rejectGameRegistration2 ) );
 				string ip = "127.0.0.1";
 				int port = 65535;
 				var gameMasterSettings = new GameMasterSettings
 				{
 					GameDefinition = new GameMasterSettingsGameDefinition
 					{
-						GameName = "Test Game",
-						NumberOfPlayersPerTeam = 1u
+						//GameName = "Test Game",
+						//NumberOfPlayersPerTeam = 1u
 					}
 				};
-				int timeout = 20000;
+				int timeout = 30000;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
@@ -95,8 +89,8 @@ namespace CommunicationSubstitute
 			Console.WriteLine( $"{ e.Local } received from { e.Remote }:" );
 			Console.WriteLine( e.SerializedMessage );
 		}
-		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }:" );
-		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }:" );
+		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }." );
+		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }." );
 		private static void OnDiscarded( object s, DiscardedArgs e )
 		{
 			Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:" );

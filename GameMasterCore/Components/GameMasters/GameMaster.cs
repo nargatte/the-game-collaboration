@@ -14,8 +14,7 @@ namespace GameMasterCore.Components.GameMasters
         {
             cancellationToken.ThrowIfCancellationRequested();
 			ConfirmGameRegistration confirmGameRegistration = null;
-			await Task.Delay( 20000, cancellationToken );
-			/*while( confirmGameRegistration is null )
+			while( confirmGameRegistration is null )
 			{
 				var registerGame = new RegisterGame
 				{
@@ -42,7 +41,7 @@ namespace GameMasterCore.Components.GameMasters
 						Proxy.Discard();
 				}
 				await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
-			}*/
+			}
 		}
         #endregion
         #region GameMaster
