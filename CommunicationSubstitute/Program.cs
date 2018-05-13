@@ -25,8 +25,8 @@ namespace CommunicationSubstitute
 				{
 					GameDefinition = new GameMasterSettingsGameDefinition
 					{
-						//GameName = "Test Game",
-						//NumberOfPlayersPerTeam = 1u
+						GameName = "Test Game",
+						NumberOfPlayersPerTeam = 1u
 					}
 				};
 				int timeout = 30000;

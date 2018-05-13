@@ -6,6 +6,7 @@ using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using Shared.Interfaces.Proxies;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,8 +75,8 @@ namespace CommunicationServerCore.Components.Servers
 		#region CommunicationServer
 		private const long nullId = 0L;
 		private long nextGameId = nullId;
-		private IDictionary<string, GameInfo> games = new Dictionary<string, GameInfo>();
-		private IDictionary<ulong, IClientProxy> gameMasters = new Dictionary<ulong, IClientProxy>();
+		private ConcurrentDictionary<string, GameInfo> games = new ConcurrentDictionary<string, GameInfo>();
+		private ConcurrentDictionary<ulong, IClientProxy> gameMasters = new ConcurrentDictionary<ulong, IClientProxy>();
 		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
@@ -85,23 +86,28 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				PassAll( proxy );
-				while( true )
+				GetGames getGames = null;
+				RegisterGame registerGame = null;
+				while( proxy.Remote.Type is HostType.Unknown )
 				{
-					GetGames getGames;
-					RegisterGame registerGame;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
-						await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
-						continue;
+						//proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
+						//await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
+						//continue;
 					}
 					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
 						proxy.UpdateRemote( Factory.MakeIdentity( HostType.GameMaster ) );
-						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken ).ConfigureAwait( false );
-						break;
-					}
-					proxy.Discard();
+					else
+						proxy.Discard();
+				}
+				switch( proxy.Remote.Type )
+				{
+				case HostType.Player:
+					break;
+				case HostType.GameMaster:
+					await AsAnonymousGameMaster( proxy, registerGame, cancellationToken ).ConfigureAwait( false );
+					break;
 				}
 			}
 		}
@@ -113,19 +119,36 @@ namespace CommunicationServerCore.Components.Servers
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			//await PerformRegisterGame( proxy, registerGame, cancellationToken );
+			await PerformRegisterGame( proxy, registerGame, cancellationToken );
+			while( proxy.Remote.Id == 0uL )
+			{
+				if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					await PerformRegisterGame( proxy, registerGame, cancellationToken );
+				else
+					proxy.Discard();
+			}
 		}
 		protected async Task PerformRegisterGame( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			if( registerGame.NewGameInfo?.GameName is null || games.ContainsKey( registerGame.NewGameInfo.GameName ) )
+			if( registerGame.NewGameInfo?.GameName is null || !games.TryAdd( registerGame.NewGameInfo.GameName, registerGame.NewGameInfo ) )
 			{
-				await proxy.SendAsync( new RejectGameRegistration() { GameName = registerGame.NewGameInfo?.GameName }, cancellationToken );
+				var rejectGameRegistration = new RejectGameRegistration
+				{
+					GameName = registerGame.NewGameInfo?.GameName
+				};
+				await proxy.SendAsync( rejectGameRegistration, cancellationToken );
 			}
 			else
 			{
 				ulong id = ( ulong )Interlocked.Increment( ref nextGameId );
-				//
+				proxy.UpdateRemote( Factory.CreateIdentity( HostType.GameMaster, id ) );
+				bool _ = gameMasters.TryAdd( id, proxy );
+				var confirmGameRegistration = new ConfirmGameRegistration
+				{
+					GameId = id
+				};
+				await proxy.SendAsync( confirmGameRegistration, cancellationToken );
 			}
 		}
 		#endregion

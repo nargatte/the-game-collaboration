@@ -21,13 +21,13 @@ namespace Shared.Components.Proxies
 		}
 		protected override async Task WhenKeepAliveReceived( CancellationToken cancellationToken )
 		{
-			cancellationToken.ThrowIfCancellationRequested();
+			await base.WhenKeepAliveReceived( cancellationToken );
 			lock( disconnection )
 			{
 				disconnection.Postpone();
 			}
 			await Client.SendAsync( string.Empty, CancellationToken ).ConfigureAwait( false );
-			await base.WhenKeepAliveReceived( cancellationToken );
+			OnSentKeepAlive( Local, Remote );
 		}
 		#endregion
 		#region ClientProxy

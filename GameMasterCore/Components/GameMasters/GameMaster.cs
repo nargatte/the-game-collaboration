@@ -30,13 +30,9 @@ namespace GameMasterCore.Components.GameMasters
 				{
 					RejectGameRegistration rejectGameRegistration;
 					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
 						break;
-					}
 					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
 						break;
-					}
 					else
 						Proxy.Discard();
 				}

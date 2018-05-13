@@ -22,12 +22,11 @@ namespace Shared.Components.Proxies
 		}
 		protected override async Task WhenKeepAliveSent( CancellationToken cancellationToken )
 		{
-			cancellationToken.ThrowIfCancellationRequested();
+			await base.WhenKeepAliveSent( cancellationToken );
 			lock( keepAlive )
 			{
 				keepAlive.Postpone();
 			}
-			await base.WhenKeepAliveSent( cancellationToken );
 		}
 		#endregion
 		#region ServerProxy
