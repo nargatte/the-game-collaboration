@@ -471,8 +471,7 @@ namespace GameMasterCore
             if (joinGame.gameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                // player shouldn't know their id if they're been rejected :/
-                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
+                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = joinGame.playerId };
                 return rejectingMessage;
             }
 
@@ -493,7 +492,7 @@ namespace GameMasterCore
             }
 
 
-            ulong id = GenerateNewPlayerID();
+            ulong id = joinGame.playerId;//GenerateNewPlayerID();
             string guid = GenerateNewPlayerGUID();
             playerGuidToId.Add(guid, id);
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);

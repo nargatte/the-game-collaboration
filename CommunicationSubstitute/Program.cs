@@ -44,8 +44,8 @@ namespace CommunicationSubstitute
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerType.Leader, new PlayerFactory() );
 					//var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerType.Leader, new PlayerFactory() );
-					//Debug( cs );
-					//Debug( gm1 );
+					Debug( cs );
+					Debug( gm1 );
 					Debug( p1 );
 					var tasks = new List<Task>
 					{
