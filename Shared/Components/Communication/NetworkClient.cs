@@ -1,5 +1,6 @@
 ﻿using Shared.Base.Communication;
 using Shared.Components.Tasks;
+using Shared.Const;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;

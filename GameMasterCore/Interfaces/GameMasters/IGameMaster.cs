@@ -1,6 +1,6 @@
 ﻿using Shared.DTOs.Configuration;
-using Shared.Interfaces;
 using Shared.Interfaces.Proxies;
+using Shared.Interfaces.Tasks;
 
 namespace GameMasterCore.Interfaces.GameMasters
 {

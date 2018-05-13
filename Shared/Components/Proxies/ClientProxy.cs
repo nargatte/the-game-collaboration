@@ -1,6 +1,7 @@
 ﻿using Shared.Base.Proxies;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Proxies;
 using Shared.Interfaces.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,30 +13,26 @@ namespace Shared.Components.Proxies
 		#region ClientProxyBase
 		public override void Dispose()
 		{
-			disconnection.Stop();
+			lock( disconnection )
+			{
+				disconnection.Stop();
+			}
 			base.Dispose();
 		}
-		protected override Task OnKeepAliveSent( CancellationToken cancellationToken )
+		protected override async Task WhenKeepAliveReceived( CancellationToken cancellationToken )
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "SERVER sent keep alive." );
-			return Task.CompletedTask;
-		}
-		protected override async Task OnKeepAliveReceived( CancellationToken cancellationToken )
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "SERVER received keep alive." );
+			await base.WhenKeepAliveReceived( cancellationToken );
 			lock( disconnection )
 			{
 				disconnection.Postpone();
 			}
-			System.Console.WriteLine( "SERVER sent keep alive." );
-			await Client.SendAsync( string.Empty, cancellationToken ).ConfigureAwait( false );
+			await Client.SendAsync( string.Empty, CancellationToken ).ConfigureAwait( false );
+			OnSentKeepAlive( Local, Remote );
 		}
 		#endregion
 		#region ClientProxy
 		private ITaskManager disconnection;
-		public ClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, ITaskManagerFactory factory ) : base( client, keepAliveInterval, cancellationToken, factory )
+		public ClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity remote, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, remote, factory )
 		{
 			disconnection = Factory.CreateTaskManager( CheckDisconnection, KeepAliveInterval, false, CancellationToken );
 			disconnection.Start();
