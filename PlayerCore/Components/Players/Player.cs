@@ -1,5 +1,6 @@
 ﻿using PlayerCore.Base.Players;
 using Shared.DTOs.Communication;
+using Shared.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace PlayerCore.Components.Players
 		}
 		#endregion
 		#region Player
-		public Player( uint retryJoinGameInterval ) : base( retryJoinGameInterval )
+		public Player( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerType role ) : base( retryJoinGameInterval, gameName, team, role )
 		{
 		}
 		#endregion
