@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using JoinGame = Shared.Messages.Communication.JoinGame;
 
 namespace GameMasterCore.Components.GameMasters
 {
@@ -49,7 +50,6 @@ namespace GameMasterCore.Components.GameMasters
 					else
 						Proxy.Discard();
 				}
-                while()
 			}
             await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
         }
