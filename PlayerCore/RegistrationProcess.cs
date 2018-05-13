@@ -79,7 +79,7 @@ namespace PlayerCore
         {
             cancellationToken.ThrowIfCancellationRequested();
             GetGames getGames = new GetGames();
-            LogSend(getGames);
+            //LogSend(getGames);
             await Proxy.SendAsync(getGames, cancellationToken).ConfigureAwait(false);
         }
 
