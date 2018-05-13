@@ -72,13 +72,16 @@ namespace CommunicationServerCore.Components.Servers
 					}
 				}
 			}
+			cancellationToken.ThrowIfCancellationRequested();
 		}
 		#endregion
 		#region CommunicationServer
-		private const long nullId = 0L;
-		private long nextGameId = nullId;
+		private long nextPlayerId = ( long )ConstHelper.AnonymousId;
+		private long nextGameId = ( long )ConstHelper.AnonymousId;
 		private ConcurrentDictionary<string, GameInfo> games = new ConcurrentDictionary<string, GameInfo>();
+		private ConcurrentDictionary<string, ulong> gameIds = new ConcurrentDictionary<string, ulong>();
 		private ConcurrentDictionary<ulong, IClientProxy> gameMasters = new ConcurrentDictionary<ulong, IClientProxy>();
+		private ConcurrentDictionary<ulong, IClientProxy> players = new ConcurrentDictionary<ulong, IClientProxy>();
 		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
@@ -113,14 +116,18 @@ namespace CommunicationServerCore.Components.Servers
 		protected async Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )//when Player is anonymous
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			await PerformGetGames( proxy, getGames, cancellationToken );
-			while( true )
+			await PerformGetGames( proxy, getGames, cancellationToken );//process request
+			while( proxy.Remote.Id == ConstHelper.AnonymousId )//while Player is anonymous
 			{
+				JoinGame joinGame;
 				if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 					await PerformGetGames( proxy, getGames, cancellationToken );
+				else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
+					await PerformJoinGame( proxy, joinGame, cancellationToken );
 				else//doesn't matter
 					proxy.Discard();
 			}
+			await AsPlayer( proxy, cancellationToken );//continue as registered Player
 		}
 		protected async Task PerformGetGames( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )//when GetGames is pending
 		{
@@ -131,14 +138,45 @@ namespace CommunicationServerCore.Components.Servers
 			};
 			await proxy.SendAsync( registeredGames, cancellationToken );
 		}
+		protected async Task PerformJoinGame( IClientProxy proxy, JoinGame joinGame, CancellationToken cancellationToken )//when JoinGame is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( proxy.Remote.Id == ConstHelper.AnonymousId )//if Player is anonymous
+			{
+				ulong id = ( ulong )Interlocked.Increment( ref nextPlayerId );//generate new player id
+				proxy.UpdateRemote( Factory.CreateIdentity( HostType.Player, id ) );//set Player id
+				bool _ = players.TryAdd( id, proxy );//from now Player is visible to others
+			}
+			joinGame.PlayerId = proxy.Remote.Id;
+			joinGame.PlayerIdSpecified = true;
+			if( !gameIds.TryGetValue( joinGame.GameName, out ulong gameId ) )//if game exists
+			{
+				bool _ = gameMasters.TryGetValue( gameId, out var gameMaster );
+				await gameMaster.SendAsync( joinGame, cancellationToken );
+			}
+			else//if game doesn't exist
+			{
+				var rejectJoiningGame = new RejectJoiningGame
+				{
+					GameName = joinGame.GameName,
+					PlayerId = joinGame.PlayerId
+				};
+				await proxy.SendAsync( rejectJoiningGame, cancellationToken );
+			}
+		}
+		protected Task AsPlayer( IClientProxy proxy, CancellationToken cancellationToken )//when Player is registered
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
+		}
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			await PerformRegisterGame( proxy, registerGame, cancellationToken );//process message
+			await PerformRegisterGame( proxy, registerGame, cancellationToken );//process request
 			while( proxy.Remote.Id == ConstHelper.AnonymousId )//while GameMaster is anonymous
 			{
 				if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RegisterGame
-					await PerformRegisterGame( proxy, registerGame, cancellationToken );
+					await PerformRegisterGame( proxy, registerGame, cancellationToken );//process request
 				else//doesn't matter
 					proxy.Discard();
 			}
@@ -159,7 +197,8 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				ulong id = ( ulong )Interlocked.Increment( ref nextGameId );//generate new game id
 				proxy.UpdateRemote( Factory.CreateIdentity( HostType.GameMaster, id ) );//set GameMaster id
-				bool _ = gameMasters.TryAdd( id, proxy );//from now GameMaster is visible to others
+				bool _ = gameIds.TryAdd( registerGame.NewGameInfo.GameName, id );
+				_ = gameMasters.TryAdd( id, proxy );//from now GameMaster is visible to others
 				var confirmGameRegistration = new ConfirmGameRegistration
 				{
 					GameId = id
