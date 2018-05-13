@@ -1,6 +1,7 @@
 ﻿using GameMasterCore.Base.GameMasters;
 using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
+using Shared.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,8 +14,7 @@ namespace GameMasterCore.Components.GameMasters
         public override async Task RunAsync( CancellationToken cancellationToken )
         {
             cancellationToken.ThrowIfCancellationRequested();
-			ConfirmGameRegistration confirmGameRegistration = null;
-			while( confirmGameRegistration is null )
+			while( Proxy.Local.Id == 0uL )
 			{
 				var registerGame = new RegisterGame
 				{
@@ -28,22 +28,35 @@ namespace GameMasterCore.Components.GameMasters
 				await Proxy.SendAsync( registerGame, cancellationToken ).ConfigureAwait( false );
 				while( true )
 				{
+					ConfirmGameRegistration confirmGameRegistration;
 					RejectGameRegistration rejectGameRegistration;
 					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						PerformConfirmGameRegistration( confirmGameRegistration, cancellationToken );
 						break;
+					}
 					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
 						break;
+					}
 					else
 						Proxy.Discard();
 				}
-				await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
 			}
 		}
-        #endregion
+		#endregion
+		private ulong id;
         #region GameMaster
         public GameMaster( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval ) : base( gameDefinition, actionCosts, retryRegisterGameInterval )
         {
         }
-        #endregion
-    }
+		protected void PerformConfirmGameRegistration( ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			id = confirmGameRegistration.GameId;
+			Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.GameMaster, id ) );
+		}
+		#endregion
+	}
 }
