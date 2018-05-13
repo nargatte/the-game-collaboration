@@ -271,7 +271,7 @@ namespace GameMasterCore
 
             OnLog("pickup", DateTime.Now, 1, playerPawn.Id, pickUpRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
-            ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as TaskField);
+            ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as Shared.Components.Fields.TaskField);
             IPiece piece = field.Piece;
 
             if (piece == null)
