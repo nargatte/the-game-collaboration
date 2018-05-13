@@ -11,7 +11,7 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
-using Config = Shared.Messages.Configuration;
+using Config = Shared.DTOs.Configuration;
 using DTO = Shared.Messages.Communication;
 using System.Threading;
 using Shared.Components.Events;
@@ -25,12 +25,13 @@ namespace GameMasterCore
         Random random;
         public virtual IReadOnlyBoard Board => board;
         public IBoard board;
-        Dictionary<string, ulong> playerGuidToId;
+        public Dictionary<string, ulong> playerGuidToId;
         int playerIDcounter = 0;
-        int pieceIDcounter = 0;
+        ulong pieceIDcounter = 0;
         Config.GameMasterSettings config;
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
+        public ulong gameId;
 
         public BlockingGameMaster(int seed = 123456)
         {
@@ -80,18 +81,18 @@ namespace GameMasterCore
             result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
                 new Config.GoalField
                 {
-                    team = TeamColour.Blue,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Blue,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             ).Concat(goalLocationsRed.Select(location =>
                 new Config.GoalField
                 {
-                    team = TeamColour.Red,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Red,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             )).ToArray();
 
@@ -109,12 +110,12 @@ namespace GameMasterCore
             //set Goals from configuration
             foreach (var gf in config.GameDefinition.Goals)
             {
-                if (gf.team == TeamColour.Red)
+                if (gf.Team == TeamColour.Red)
                     redGoalsToScore++;
                 else
                     blueGoalsToScore++;
                 result.SetField(
-                    result.Factory.CreateGoalField(gf.x, gf.y, gf.team, DateTime.Now, null, GoalFieldType.Goal)
+                    result.Factory.CreateGoalField(gf.X, gf.Y, gf.Team, DateTime.Now, null, GoalFieldType.Goal)
                     );
             }
             //set the rest of GoalArea fields as NonGoals
@@ -127,7 +128,7 @@ namespace GameMasterCore
             GenerateRandomPlaces(
                 config.GameDefinition.InitialNumberOfPieces,
                 0, result.Width, result.GoalsHeight, result.Height - result.GoalsHeight).ForEach(
-                    place => result.SetPiece(result.Factory.CreateFieldPiece((ulong)++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
+                    place => result.SetPiece(result.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
                 );
 
             return result;
@@ -301,6 +302,22 @@ namespace GameMasterCore
             return result;
         }
 
+        public void PerformCreatePieceAndPlaceRandomly()
+        {
+            lock (board)
+            {
+                DTO.Location place;
+                do
+                {
+                    place = GenerateRandomPlaces(1, 0, board.Width, board.TasksHeight, board.Height - board.TasksHeight + 1).First();
+                } while (board.GetField(place.x, place.y).Player != null);
+
+                var field = board.GetField(place.x, place.y);
+                var newPiece = board.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)field);
+                board.SetPiece(newPiece);
+            }
+        }
+
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
@@ -454,8 +471,7 @@ namespace GameMasterCore
             if (joinGame.gameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                // player shouldn't know their id if they're been rejected :/
-                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = 0 };
+                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = joinGame.playerId };
                 return rejectingMessage;
             }
 
@@ -476,7 +492,7 @@ namespace GameMasterCore
             }
 
 
-            ulong id = GenerateNewPlayerID();
+            ulong id = joinGame.playerId;//GenerateNewPlayerID();
             string guid = GenerateNewPlayerGUID();
             playerGuidToId.Add(guid, id);
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
@@ -484,7 +500,7 @@ namespace GameMasterCore
             board.SetPlayer(generatedPlayer);
             return new DTO.ConfirmJoiningGame()
             {
-                gameId = 1,
+                gameId = gameId,
                 playerId = id,
                 privateGuid = guid,
                 PlayerDefinition = new DTO.Player()
@@ -558,6 +574,25 @@ namespace GameMasterCore
                     );
         }
 
+        public DTO.Data Perform(DTO.GameMessage gameMessage)
+        {
+            switch (gameMessage)
+            {
+                case DTO.Move move:
+                    return PerformMove(move);
+                case DTO.Discover discover:
+                    return PerformDiscover(discover);
+                case DTO.TestPiece test:
+                    return PerformTestPiece(test);
+                case DTO.PlacePiece place:
+                    return PerformPlace(place);
+                case DTO.PickUpPiece pick:
+                    return PerformPickUp(pick);
+                default:
+                    return new DTO.Data() { playerId = GetPlayerIdFromGuid(gameMessage.playerGuid) };
+            }
+        }
+
         public virtual event EventHandler<LogArgs> Log = delegate { };
         #endregion
 
@@ -618,12 +653,12 @@ namespace GameMasterCore
                 Select(piece => piece as IFieldPiece).
                 Where(fieldPiece => fieldPiece.Field != null).
                 Min(fieldPiece => Math.Abs(fieldPiece.Field.X - x) + Math.Abs(fieldPiece.Field.Y - y));
-        
+
 
             #region returning
             // pieces has an "out" parameter modifier
             pieces = piecesToReturn.ToArray();
-                return fieldToReturn;
+            return fieldToReturn;
             #endregion
         }
 
@@ -677,7 +712,7 @@ namespace GameMasterCore
                 result = function();
             }
             var milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
-            if (milisecondsToSleep == 0)
+            if (milisecondsToSleep > 0)
                 Task.Delay(milisecondsToSleep);
             return result;
         }

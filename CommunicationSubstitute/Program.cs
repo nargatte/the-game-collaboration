@@ -29,19 +29,26 @@ namespace CommunicationSubstitute
 					GameDefinition = new GameMasterSettingsGameDefinition
 					{
 						GameName = gameName,
-						NumberOfPlayersPerTeam = 1u
-					}
+						NumberOfPlayersPerTeam = 1u,
+                        Goals = new GoalField[]
+                        {
+                            new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal},
+                            new GoalField { Team = TeamColour.Red, X = 0, Y = 9, Type = GoalFieldType.Goal}
+                        }
+                    }
 				};
-				int timeout = 30000;
+				int timeout = 10000;
 				using( var cts = new CancellationTokenSource(timeout) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerType.Leader, new PlayerFactory() );
 					//var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerType.Leader, new PlayerFactory() );
-					//Debug( cs );
-					//Debug( gm1 );
+					Debug( cs );
+					Debug( gm1 );
 					Debug( p1 );
+					//Debug( gm1 );
+					//Debug( p1 );
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),

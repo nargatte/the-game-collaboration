@@ -8,7 +8,7 @@ using Shared.Components.Factories;
 using Shared.Enums;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
-using Shared.Messages.Configuration;
+using Shared.DTOs.Configuration;
 
 namespace CommunicationSubstitute
 {
@@ -81,12 +81,12 @@ namespace CommunicationSubstitute
             return coordinateListToReturn.ToList();
         }
 
-        private Shared.Messages.Configuration.GameMasterSettings GenerateDefaultConfig()
+        private Shared.DTOs.Configuration.GameMasterSettings GenerateDefaultConfig()
         {
-            var result = new Shared.Messages.Configuration.GameMasterSettings
+            var result = new Shared.DTOs.Configuration.GameMasterSettings
             {
-                ActionCosts = new Shared.Messages.Configuration.GameMasterSettingsActionCosts(), // default ActionCosts
-                GameDefinition = new Shared.Messages.Configuration.GameMasterSettingsGameDefinition()
+                ActionCosts = new Shared.DTOs.Configuration.GameMasterSettingsActionCosts(), // default ActionCosts
+                GameDefinition = new Shared.DTOs.Configuration.GameMasterSettingsGameDefinition()
                 {
                     GameName = "default game"
                 }, //default GameDefinition, without Goals(!) and Name
@@ -103,20 +103,20 @@ namespace CommunicationSubstitute
             );
 
             result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
-                new Shared.Messages.Configuration.GoalField
+                new Shared.DTOs.Configuration.GoalField
                 {
-                    team = TeamColour.Blue,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Blue,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             ).Concat(goalLocationsRed.Select(location =>
-                new Shared.Messages.Configuration.GoalField
+                new Shared.DTOs.Configuration.GoalField
                 {
-                    team = TeamColour.Red,
-                    type = GoalFieldType.Goal,
-                    x = location.x,
-                    y = location.y
+                    Team = TeamColour.Red,
+                    Type = GoalFieldType.Goal,
+                    X = location.x,
+                    Y = location.y
                 }
             )).ToArray();
 
