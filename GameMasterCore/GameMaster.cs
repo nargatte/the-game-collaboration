@@ -17,6 +17,7 @@ using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
 using Shared.Components;
+using Shared.DTOs.Communication;
 
 namespace GameMasterCore
 {
@@ -466,48 +467,48 @@ namespace GameMasterCore
                 }
             };
         }
-        public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
+        public PlayerMessage PerformJoinGame(JoinGame joinGame)
         {
-            if (joinGame.gameName != config.GameDefinition.GameName
+            if (joinGame.GameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.gameName, playerId = joinGame.playerId };
+                var rejectingMessage = new RejectJoiningGame() { GameName = joinGame.GameName, PlayerId = joinGame.PlayerId };
                 return rejectingMessage;
             }
 
-            int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.preferredTeam).Count();
+            int totalNumberOfPlayersOfSameColour = board.Players.Where(player => player.Team == joinGame.PreferredTeam).Count();
 
             // if maximum player count reached then force change of teams
             if (config.GameDefinition.NumberOfPlayersPerTeam == totalNumberOfPlayersOfSameColour)
             {
-                joinGame.preferredTeam = joinGame.preferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
+                joinGame.PreferredTeam = joinGame.PreferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
             }
 
-            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.preferredTeam && player.Type == PlayerType.Leader).Count() > 0;
+            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.PreferredTeam && player.Type == PlayerType.Leader).Count() > 0;
 
             // if there is a leader already then modify the request accordingly
-            if (teamAlreadyHasLeader && joinGame.preferredRole == PlayerType.Leader)
+            if (teamAlreadyHasLeader && joinGame.PreferredRole == PlayerType.Leader)
             {
-                joinGame.preferredRole = PlayerType.Member;
+                joinGame.PreferredRole = PlayerType.Member;
             }
 
 
-            ulong id = joinGame.playerId;//GenerateNewPlayerID();
+            ulong id = joinGame.PlayerId;//GenerateNewPlayerID();
             string guid = GenerateNewPlayerGUID();
             playerGuidToId.Add(guid, id);
-            var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.preferredTeam);
-            var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.preferredTeam, joinGame.preferredRole, DateTime.Now, fieldToPlacePlayer, null);
+            var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.PreferredTeam);
+            var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.PreferredTeam, joinGame.PreferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
-            return new DTO.ConfirmJoiningGame()
+            return new ConfirmJoiningGame()
             {
-                gameId = gameId,
-                playerId = id,
-                privateGuid = guid,
-                PlayerDefinition = new DTO.Player()
+                GameId = gameId,
+                PlayerId = id,
+                PrivateGuid = guid,
+                PlayerDefinition = new Shared.DTOs.Communication.Player()
                 {
-                    id = id,
-                    team = joinGame.preferredTeam,
-                    type = joinGame.preferredRole
+                    Id = id,
+                    Team = joinGame.PreferredTeam,
+                    Type = joinGame.PreferredRole
                 }
             };
         }
