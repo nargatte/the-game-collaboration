@@ -24,8 +24,8 @@ namespace CommunicationSubstitute
 
         public PlayerInGame[] BluePlayers;
         public PlayerInGame[] RedPlayers;
-        public ConfirmJoiningGame[] BlueConfirms;
-        public ConfirmJoiningGame[] RedConfirms;
+        public Shared.DTOs.Communication.ConfirmJoiningGame[] BlueConfirms;
+        public Shared.DTOs.Communication.ConfirmJoiningGame[] RedConfirms;
         public Thread[] BlueThreads;
         public Thread[] RedThreads;
 
@@ -162,8 +162,8 @@ namespace CommunicationSubstitute
 
             BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
             RedPlayers = new PlayerInGame[GameInfo.redTeamPlayers];
-            BlueConfirms = new ConfirmJoiningGame[GameInfo.blueTeamPlayers];
-            RedConfirms = new ConfirmJoiningGame[GameInfo.redTeamPlayers];
+            BlueConfirms = new Shared.DTOs.Communication.ConfirmJoiningGame[GameInfo.blueTeamPlayers];
+            RedConfirms = new Shared.DTOs.Communication.ConfirmJoiningGame[GameInfo.redTeamPlayers];
             BlueThreads = new Thread[GameInfo.blueTeamPlayers];
             RedThreads = new Thread[GameInfo.redTeamPlayers];
         }
@@ -173,7 +173,7 @@ namespace CommunicationSubstitute
             // blue registration
             for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
             {
-                BlueConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
+                BlueConfirms[i] = (Shared.DTOs.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
                 {
                     GameName = GameInfo.gameName,
                     PlayerIdSpecified = false,
@@ -185,7 +185,7 @@ namespace CommunicationSubstitute
             // red registration
             for (ulong i = 0; i < GameInfo.redTeamPlayers; i++)
             {
-                RedConfirms[i] = (ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
+                RedConfirms[i] = (Shared.DTOs.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
                 {
                     GameName = GameInfo.gameName,
                     PlayerIdSpecified = false,
@@ -201,8 +201,8 @@ namespace CommunicationSubstitute
             for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
             {
                 var myConfirm = BlueConfirms[i];
-                var game = GameMaster.GetGame(myConfirm.privateGuid);
-                EndGame.Add(myConfirm.playerId, false);
+                var game = GameMaster.GetGame(myConfirm.PrivateGuid);
+                EndGame.Add(myConfirm.PlayerId, false);
                 /*BluePlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
@@ -219,8 +219,8 @@ namespace CommunicationSubstitute
             for (ulong i = 0; i < GameInfo.redTeamPlayers; i++)
             {
                 var myConfirm = RedConfirms[i];
-                var game = GameMaster.GetGame(myConfirm.privateGuid);
-                EndGame.Add(myConfirm.playerId, false);
+                var game = GameMaster.GetGame(myConfirm.PrivateGuid);
+                EndGame.Add(myConfirm.PlayerId, false);
                 /*RedPlayers[i] = new PlayerInGame(GameMaster, game, myConfirm.playerId, myConfirm.privateGuid, myConfirm.gameId,
                     (s, a) =>
                     {
@@ -242,7 +242,7 @@ namespace CommunicationSubstitute
                 var myConfirm = BlueConfirms[i];
                 BlueThreads[i].Start(new PlayerThreadArgs
                 {
-                    id = myConfirm.playerId,
+                    id = myConfirm.PlayerId,
                     player = BluePlayers[i]
                 });
             }
@@ -253,7 +253,7 @@ namespace CommunicationSubstitute
                 var myConfirm = RedConfirms[i];
                 RedThreads[i].Start(new PlayerThreadArgs
                 {
-                    id = myConfirm.playerId,
+                    id = myConfirm.PlayerId,
                     player = RedPlayers[i]
                 });
             }

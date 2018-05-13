@@ -14,7 +14,7 @@ namespace Shared.Interfaces
         Data PerformPlace(PlacePiece placeRequest);
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
-        PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
+        Shared.DTOs.Communication.PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
         event EventHandler<LogArgs> Log;
 		IReadOnlyBoard Board { get; }
 #warning TEMP, to change in future stages

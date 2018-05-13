@@ -467,12 +467,12 @@ namespace GameMasterCore
                 }
             };
         }
-        public DTO.PlayerMessage PerformJoinGame(JoinGame joinGame)
+        public PlayerMessage PerformJoinGame(JoinGame joinGame)
         {
             if (joinGame.GameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
             {
-                var rejectingMessage = new DTO.RejectJoiningGame() { gameName = joinGame.GameName, playerId = joinGame.PlayerId };
+                var rejectingMessage = new RejectJoiningGame() { GameName = joinGame.GameName, PlayerId = joinGame.PlayerId };
                 return rejectingMessage;
             }
 
@@ -499,16 +499,16 @@ namespace GameMasterCore
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.PreferredTeam);
             var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.PreferredTeam, joinGame.PreferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
-            return new DTO.ConfirmJoiningGame()
+            return new ConfirmJoiningGame()
             {
-                gameId = gameId,
-                playerId = id,
-                privateGuid = guid,
-                PlayerDefinition = new DTO.Player()
+                GameId = gameId,
+                PlayerId = id,
+                PrivateGuid = guid,
+                PlayerDefinition = new Shared.DTOs.Communication.Player()
                 {
-                    id = id,
-                    team = joinGame.PreferredTeam,
-                    type = joinGame.PreferredRole
+                    Id = id,
+                    Team = joinGame.PreferredTeam,
+                    Type = joinGame.PreferredRole
                 }
             };
         }
