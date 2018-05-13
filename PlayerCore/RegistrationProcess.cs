@@ -45,7 +45,7 @@ namespace PlayerCore
                     await SendGetGames(cancellationToken);
                     var registeredGmes = await ReceiveRegisteredGames(cancellationToken);
 
-                    gameInfo = registeredGmes.GameInfo.FirstOrDefault(g => g.gameName == GameName);
+                    gameInfo = registeredGmes.GameInfo?.FirstOrDefault(g => g.gameName == GameName);
                     if (gameInfo != null)
                         break;
 
@@ -67,19 +67,19 @@ namespace PlayerCore
 
         private void LogSend(object o)
         {
-            Logger(this, $"PLAYER sends: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
+            //Logger(this, $"PLAYER sends: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
         }
 
         private void LogReceive(object o)
         {
-            Logger(this, $"PLAYER received: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
+            //Logger(this, $"PLAYER received: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
         }
 
         private async Task SendGetGames(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             GetGames getGames = new GetGames();
-            //LogSend(getGames);
+            LogSend(getGames);
             await Proxy.SendAsync(getGames, cancellationToken).ConfigureAwait(false);
         }
 
