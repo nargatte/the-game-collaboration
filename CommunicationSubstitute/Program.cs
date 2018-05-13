@@ -36,11 +36,11 @@ namespace CommunicationSubstitute
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), new PlayerFactory() );
-					//cs.Sent += OnSent;
-					//cs.Received += OnReceived;
-					//cs.SentKeepAlive += OnSentKeepAlive;
-					//cs.ReceivedKeepAlive += OnReceivedKeepAlive;
-					//cs.Discarded += OnDiscarded;
+					cs.Sent += OnSent;
+					cs.Received += OnReceived;
+					cs.SentKeepAlive += OnSentKeepAlive;
+					cs.ReceivedKeepAlive += OnReceivedKeepAlive;
+					cs.Discarded += OnDiscarded;
 					gm1.Sent += OnSent;
 					gm1.Received += OnReceived;
 					gm1.SentKeepAlive += OnSentKeepAlive;
