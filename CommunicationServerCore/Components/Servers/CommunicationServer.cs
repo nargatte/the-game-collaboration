@@ -176,10 +176,20 @@ namespace CommunicationServerCore.Components.Servers
 				await proxy.SendAsync( rejectJoiningGame, cancellationToken );
 			}
 		}
-		protected Task AsPlayer( IClientProxy proxy, CancellationToken cancellationToken )//when Player is registered
+		protected async Task AsPlayer( IClientProxy proxy, CancellationToken cancellationToken )//when Player is registered
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			return Task.CompletedTask;
+			while( true )
+			{
+				GetGames getGames;
+				JoinGame joinGame;
+				if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
+					await PerformGetGames( proxy, getGames, cancellationToken );//process request
+				else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
+					await PerformJoinGame( proxy, joinGame, cancellationToken );//process request
+				else//doesn't matter
+					proxy.Discard();
+			}
 		}
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
