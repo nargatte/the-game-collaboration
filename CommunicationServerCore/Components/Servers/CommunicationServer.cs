@@ -176,10 +176,20 @@ namespace CommunicationServerCore.Components.Servers
 				await proxy.SendAsync( rejectJoiningGame, cancellationToken );
 			}
 		}
-		protected Task AsPlayer( IClientProxy proxy, CancellationToken cancellationToken )//when Player is registered
+		protected async Task AsPlayer( IClientProxy proxy, CancellationToken cancellationToken )//when Player is registered
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			return Task.CompletedTask;
+			while( true )
+			{
+				GetGames getGames;
+				JoinGame joinGame;
+				if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
+					await PerformGetGames( proxy, getGames, cancellationToken );//process request
+				else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
+					await PerformJoinGame( proxy, joinGame, cancellationToken );//process request
+				else//doesn't matter
+					proxy.Discard();
+			}
 		}
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
@@ -225,10 +235,24 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				ConfirmJoiningGame confirmJoiningGame;
 				RejectJoiningGame rejectJoiningGame;
+				Game game;
 				if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 					await PassToPlayer( proxy, confirmJoiningGame, cancellationToken );//pass message
-				if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
+				else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
 					await PassToPlayer( proxy, rejectJoiningGame, cancellationToken );//pass message
+				else if( ( game = await proxy.TryReceiveAsync<Game>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Game
+				{
+					await PassToPlayer( proxy, game, cancellationToken );//pass message
+					break;
+				}
+				else//doesn't matter
+					proxy.Discard();
+			}
+			while( true )//while GameMaster is starting game
+			{
+				Game game;
+				if( ( game = await proxy.TryReceiveAsync<Game>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Game
+					await PassToPlayer( proxy, game, cancellationToken );//pass message
 				else//doesn't matter
 					proxy.Discard();
 			}
