@@ -71,34 +71,36 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
-		private ulong nextGameId = 0u;
+		private const long nullId = 0L;
+		private long nextGameId = nullId;
 		private IDictionary<string, GameInfo> games = new Dictionary<string, GameInfo>();
+		private IDictionary<ulong, IClientProxy> gameMasters = new Dictionary<ulong, IClientProxy>();
 		public CommunicationServer( string ip, int port, uint keepAliveInterval, IProxyFactory factory ) : base( ip, port, keepAliveInterval, factory )
 		{
 		}
 		protected async Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )
 		{
-			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken ) )
+			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken, Factory.MakeIdentity() ) )
 			{
 				cancellationToken.ThrowIfCancellationRequested();
-				GetGames getGames;
-				RegisterGame registerGame;
-				while( true )
+				PassAll( proxy );
+				await Task.Delay( 20000, cancellationToken );
+				/*while( true )
 				{
+					GetGames getGames;
+					RegisterGame registerGame;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( getGames ) }." );
 						await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
 						continue;
 					}
 					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						Console.WriteLine( $"SERVER receives: { Shared.Components.Serialization.Serializer.Serialize( registerGame ) }." );
 						await AsAnonymousGameMaster( proxy, registerGame, cancellationToken ).ConfigureAwait( false );
-						continue;
+						break;
 					}
 					proxy.Discard();
-				}
+				}*/
 			}
 		}
 		protected Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )
@@ -108,16 +110,20 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
 		{
-			Console.WriteLine( "AnonymousGameMaster" );
 			cancellationToken.ThrowIfCancellationRequested();
-			if( registerGame.NewGameInfo is null || games.ContainsKey( registerGame.NewGameInfo.GameName ) )
+			await PerformRegisterGame( proxy, registerGame, cancellationToken );
+		}
+		protected async Task PerformRegisterGame( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( registerGame.NewGameInfo?.GameName is null || games.ContainsKey( registerGame.NewGameInfo.GameName ) )
 			{
-				Console.WriteLine( $"SERVER sends: { Shared.Components.Serialization.Serializer.Serialize( new RejectGameRegistration() { GameName = registerGame.NewGameInfo?.GameName } ) }." );
 				await proxy.SendAsync( new RejectGameRegistration() { GameName = registerGame.NewGameInfo?.GameName }, cancellationToken );
 			}
 			else
 			{
-
+				ulong id = ( ulong )Interlocked.Increment( ref nextGameId );
+				//
 			}
 		}
 		#endregion

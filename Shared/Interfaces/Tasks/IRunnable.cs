@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shared.Interfaces
+namespace Shared.Interfaces.Tasks
 {
 	public interface IRunnable
 	{

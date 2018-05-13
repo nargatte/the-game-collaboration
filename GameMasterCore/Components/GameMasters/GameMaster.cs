@@ -14,28 +14,35 @@ namespace GameMasterCore.Components.GameMasters
         {
             cancellationToken.ThrowIfCancellationRequested();
 			ConfirmGameRegistration confirmGameRegistration = null;
-			RejectGameRegistration rejectGameRegistration;
-			while( confirmGameRegistration is null )
+			await Task.Delay( 20000, cancellationToken );
+			/*while( confirmGameRegistration is null )
 			{
-				System.Console.WriteLine( $"GAMEMASTER sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
-				await Proxy.SendAsync( new RegisterGame(), cancellationToken ).ConfigureAwait( false );
+				var registerGame = new RegisterGame
+				{
+					NewGameInfo = new GameInfo
+					{
+						GameName = GameDefinition.GameName,
+						RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
+						BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam
+					}
+				};
+				await Proxy.SendAsync( registerGame, cancellationToken ).ConfigureAwait( false );
 				while( true )
 				{
+					RejectGameRegistration rejectGameRegistration;
 					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						System.Console.WriteLine( $"GAMEMASTER received: { Shared.Components.Serialization.Serializer.Serialize( confirmGameRegistration ) }." );
 						break;
 					}
 					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
 					{
-						System.Console.WriteLine( $"GAMEMASTER received: { Shared.Components.Serialization.Serializer.Serialize( rejectGameRegistration ) }." );
 						break;
 					}
 					else
 						Proxy.Discard();
 				}
 				await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
-			}
+			}*/
 		}
         #endregion
         #region GameMaster

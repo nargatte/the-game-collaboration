@@ -22,6 +22,7 @@ namespace CommunicationServerCore.Base.Modules
 			CommunicationServer = Factory.CreateCommunicationServer( Ip, Port, Configuration.KeepAliveInterval );
 			if( CommunicationServer is null )
 				throw new NotImplementedException( nameof( Factory ) );
+			PassAll( CommunicationServer );
 		}
 		#endregion
 	}

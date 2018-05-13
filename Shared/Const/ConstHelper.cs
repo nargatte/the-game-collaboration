@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Shared.Components
+namespace Shared.Const
 {
 	public static class ConstHelper
 	{

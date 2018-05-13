@@ -1,6 +1,9 @@
 ﻿using Shared.Base.Proxies;
+using Shared.Components.Events;
+using Shared.Const;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
+using Shared.Interfaces.Proxies;
 using Shared.Interfaces.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,38 +15,39 @@ namespace Shared.Components.Proxies
 		#region ServerProxyBase
 		public override void Dispose()
 		{
-			keepAlive.Stop();
-			base.Dispose();
-		}
-		protected override Task OnKeepAliveSent( CancellationToken cancellationToken )
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "CLIENT sent keep alive." );
 			lock( keepAlive )
 			{
-				keepAlive.Postpone();
+				keepAlive.Stop();
 			}
-			return Task.CompletedTask;
-		}
-		protected override Task OnKeepAliveReceived( CancellationToken cancellationToken )
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "CLIENT received keep alive." );
-			return Task.CompletedTask;
+			base.Dispose();
 		}
 		#endregion
 		#region ServerProxy
 		private ITaskManager keepAlive;
-		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, ITaskManagerFactory factory ) : base( client, keepAliveInterval, cancellationToken, factory )
+		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory )
 		{
 			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), true, CancellationToken );
 			keepAlive.Start();
+			SentKeepAlive += DelayKeepAlive;
+			System.Console.WriteLine( "on" );
+		}
+		protected void DelayKeepAlive( object s, SentKeepAliveArgs e )
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			System.Console.WriteLine( "delay" );
+			lock( keepAlive )
+			{
+				System.Console.WriteLine( "before lock" );
+				keepAlive.Postpone();
+				System.Console.WriteLine( "after lock" );
+			}
 		}
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )
 		{
+			System.Console.WriteLine( "begin" );
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "CLIENT AUTO sent keep alive." );
 			await Client.SendAsync( string.Empty, cancellationToken ).ConfigureAwait( false );
+			OnSentKeepAlive( Local, Remote );
 		}
 		#endregion
 	}

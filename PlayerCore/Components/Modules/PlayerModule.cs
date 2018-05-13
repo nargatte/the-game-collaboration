@@ -2,6 +2,7 @@
 using PlayerCore.Interfaces.Factories;
 using Shared.Components.Extensions;
 using Shared.DTOs.Configuration;
+using Shared.Enums;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +17,11 @@ namespace PlayerCore.Components.Modules
 			cancellationToken.ThrowIfCancellationRequested();
 			try
 			{
-				using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken ) )
+				using( Player.Proxy = Factory.CreateServerProxy( Factory.MakeNetworkClient( Ip, Port ), Configuration.KeepAliveInterval, cancellationToken, Factory.MakeIdentity( HostType.Player ) ) )
 				{
 					if( Player.Proxy is null )
 						throw new NotImplementedException( nameof( Factory ) );
+					PassAll( Player.Proxy );
 					await Player.RunAsync( cancellationToken ).ConfigureAwait( false );
 				}
 			}
