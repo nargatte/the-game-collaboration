@@ -206,13 +206,27 @@ namespace CommunicationServerCore.Components.Servers
 				await proxy.SendAsync( confirmGameRegistration, cancellationToken );
 			}
 		}
-		protected Task AsGameMaster( IClientProxy proxy, CancellationToken cancellationToken )//when GameMaster is registered
+		protected async Task AsGameMaster( IClientProxy proxy, CancellationToken cancellationToken )//when GameMaster is registered
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			//while( true )
+			while( true )//while GameMaster is collecting players
 			{
+				ConfirmJoiningGame confirmJoiningGame;
+				RejectJoiningGame rejectJoiningGame;
+				if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
+					await PassToPlayer( proxy, confirmJoiningGame, cancellationToken );//pass message
+				if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
+					await PassToPlayer( proxy, rejectJoiningGame, cancellationToken );//pass message
+				else//doesn't matter
+					proxy.Discard();
 			}
-			return Task.CompletedTask;
+		}
+		protected async Task PassToPlayer< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered player
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( players.TryGetValue( playerMessage.PlayerId, out var player ) )//if player exists
+				await player.SendAsync( playerMessage, cancellationToken );
+			//else ERROR
 		}
 		#endregion
 	}
