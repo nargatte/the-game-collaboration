@@ -17,49 +17,52 @@ namespace GameMasterCore.Components.GameMasters
         public override async Task RunAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            //System.Console.WriteLine( $"GameMaster sends: { Shared.Components.Serialization.Serializer.Serialize( new RegisterGame() ) }." );
-
-            int waitPeriod = 100;
-            ConfirmGameRegistration confirmedRegistration = null;
-            while (confirmedRegistration == null)
-            {
-                await Proxy.SendAsync(
-                new Shared.DTOs.Communication.RegisterGame()
-                {
-                    NewGameInfo = new Shared.DTOs.Communication.GameInfo()
-                    {
-                        BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
-                        RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
-                        GameName = GameDefinition.GameName
-                    }
-                }, cancellationToken).ConfigureAwait(false);
-
-                while (confirmedRegistration == null)
-                {
-                    if ((await Proxy.TryReceiveAsync<RejectGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
-                    {
-                        await Task.Delay(waitPeriod);
-                        break;
-                    }
-                    else if ((confirmedRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
-                    {
-                        innerGM.gameId = confirmedRegistration.gameId;
-                        break;
-                    }
-                    else
-                        Proxy.Discard();
-                }
-            }
-            
+			while( Proxy.Local.Id == ConstHelper.AnonymousId )
+			{
+				var registerGame = new RegisterGame
+				{
+					NewGameInfo = new GameInfo
+					{
+						GameName = GameDefinition.GameName,
+						RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
+						BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam
+					}
+				};
+				await Proxy.SendAsync( registerGame, cancellationToken ).ConfigureAwait( false );
+				while( true )
+				{
+					ConfirmGameRegistration confirmGameRegistration;
+					RejectGameRegistration rejectGameRegistration;
+					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						PerformConfirmGameRegistration( confirmGameRegistration, cancellationToken );
+						break;
+					}
+					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
+					{
+						await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
+						break;
+					}
+					else
+						Proxy.Discard();
+				}
+			}
             await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
         }
-        #endregion
+		#endregion
+		private ulong id;
         #region GameMaster
         public GameMaster(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval) : base(gameDefinition, actionCosts, retryRegisterGameInterval)
         {
             initTmpInnerGM(gameDefinition, actionCosts);
         }
-        #endregion
+		protected void PerformConfirmGameRegistration( ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken )
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			id = confirmGameRegistration.GameId;
+			Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.GameMaster, id ) );
+		}
+		#endregion
 
         BlockingGameMaster innerGM;
         List<Task<GameMessage>> tasks;

@@ -2,5 +2,6 @@
 {
 	public interface IClientProxy : IProxy
 	{
+		void UpdateRemote( IIdentity identity );
 	}
 }

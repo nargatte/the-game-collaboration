@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Shared.Const;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;

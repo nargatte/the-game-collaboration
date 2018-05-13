@@ -2,5 +2,6 @@
 {
 	public interface IServerProxy : IProxy
 	{
+		void UpdateLocal( IIdentity identity );
 	}
 }
