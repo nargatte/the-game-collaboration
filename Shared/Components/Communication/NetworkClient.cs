@@ -1,6 +1,8 @@
 ﻿using Shared.Base.Communication;
+using Shared.Components.Exceptions;
 using Shared.Components.Tasks;
 using Shared.Const;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -20,7 +22,14 @@ namespace Shared.Components.Communication
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			byte[] data = ConstHelper.Encoding.GetBytes( message + ConstHelper.EndOfMessage );
-			await stream.WriteAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
+			try
+			{
+				await stream.WriteAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
+			}
+			catch( IOException e )
+			{
+				throw new DisconnectionException( "Failed to write.", e );
+			}
 		}
 		public override async Task<string> ReceiveAsync( CancellationToken cancellationToken )
 		{
@@ -28,7 +37,15 @@ namespace Shared.Components.Communication
 			byte[] data = new byte[ 256 ];
 			while( !builder.ToString().Contains( ConstHelper.EndOfMessage ) )
 			{
-				int bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken ).WithCancellation( cancellationToken ).ConfigureAwait( false );
+				int bytes;
+				try
+				{
+					bytes = await stream.ReadAsync( data, 0, data.Length, cancellationToken ).WithCancellation( cancellationToken ).ConfigureAwait( false );
+				}
+				catch( IOException e )
+				{
+					throw new DisconnectionException( "Failed to read.", e );
+				}
 				builder.Append( ConstHelper.Encoding.GetString( data, 0, bytes ) );
 			}
 			string buffer = builder.ToString();
