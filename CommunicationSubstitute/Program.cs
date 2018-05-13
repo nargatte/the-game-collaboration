@@ -29,8 +29,13 @@ namespace CommunicationSubstitute
 					GameDefinition = new GameMasterSettingsGameDefinition
 					{
 						GameName = gameName,
-						NumberOfPlayersPerTeam = 1u
-					}
+						NumberOfPlayersPerTeam = 1u,
+                        Goals = new GoalField[]
+                        {
+                            new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal},
+                            new GoalField { Team = TeamColour.Red, X = 0, Y = 9, Type = GoalFieldType.Goal}
+                        }
+                    }
 				};
 				int timeout = 30000;
 				using( var cts = new CancellationTokenSource( timeout ) )

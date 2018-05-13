@@ -62,8 +62,11 @@ namespace GameMasterCore.Components.GameMasters
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			id = confirmGameRegistration.GameId;
-			Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.GameMaster, id ) );
-		}
+            Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.GameMaster, id ) );
+
+            //temp
+            innerGM.gameId = confirmGameRegistration.GameId;
+        }
 		#endregion
 
         BlockingGameMaster innerGM;
