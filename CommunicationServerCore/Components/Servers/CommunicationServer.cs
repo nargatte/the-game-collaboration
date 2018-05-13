@@ -121,9 +121,9 @@ namespace CommunicationServerCore.Components.Servers
 			{
 				JoinGame joinGame;
 				if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
-					await PerformGetGames( proxy, getGames, cancellationToken );
+					await PerformGetGames( proxy, getGames, cancellationToken );//process request
 				else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
-					await PerformJoinGame( proxy, joinGame, cancellationToken );
+					await PerformJoinGame( proxy, joinGame, cancellationToken );//process request
 				else//doesn't matter
 					proxy.Discard();
 			}
@@ -209,6 +209,9 @@ namespace CommunicationServerCore.Components.Servers
 		protected Task AsGameMaster( IClientProxy proxy, CancellationToken cancellationToken )//when GameMaster is registered
 		{
 			cancellationToken.ThrowIfCancellationRequested();
+			//while( true )
+			{
+			}
 			return Task.CompletedTask;
 		}
 		#endregion
