@@ -1,4 +1,5 @@
 ﻿using CommunicationServerCore.Base.Servers;
+using Shared.Components.Exceptions;
 using Shared.Components.Extensions;
 using Shared.Const;
 using Shared.DTOs.Communication;
@@ -38,9 +39,11 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			catch( OperationCanceledException )
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 			}
 			catch( Exception e )
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				ex = e;
 			}
 			finally
@@ -52,11 +55,13 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				catch( OperationCanceledException )
 				{
+					cancellationToken.ThrowIfCancellationRequested();
 					if( ex != null )
 						throw new AggregateException( ex );
 				}
 				catch( Exception e )
 				{
+					cancellationToken.ThrowIfCancellationRequested();
 					throw ex is null ? new AggregateException( e ) : new AggregateException( ex, e );
 				}
 				finally
@@ -64,7 +69,14 @@ namespace CommunicationServerCore.Components.Servers
 					foreach( var task in tasks )
 					{
 						if( task.IsFaulted )
-							Console.WriteLine( $"Server task faulted with { task.Exception.GetType().Name }." );
+						{
+							Console.WriteLine( "Server task faulted by:" );
+							foreach( var e in task.Exception.Flatten().InnerExceptions )
+								if( e is DisconnectionException )
+									Console.WriteLine( "Disconnection." );
+								else
+									Console.WriteLine( $"Exception: { e }." );
+						}
 						else if( task.IsCanceled )
 							Console.WriteLine( $"Server task canceled." );
 						else
