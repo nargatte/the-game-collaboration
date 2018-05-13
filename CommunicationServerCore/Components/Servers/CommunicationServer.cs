@@ -1,5 +1,6 @@
 ﻿using CommunicationServerCore.Base.Servers;
 using Shared.Components.Extensions;
+using Shared.Const;
 using Shared.DTOs.Communication;
 using Shared.Enums;
 using Shared.Interfaces.Communication;
@@ -88,7 +89,7 @@ namespace CommunicationServerCore.Components.Servers
 				PassAll( proxy );//pass events from proxy
 				GetGames getGames = null;
 				RegisterGame registerGame = null;
-				while( proxy.Remote.Type is HostType.Unknown )//while client isn't Player nor GameMaster
+				while( proxy.Remote.Type is HostType.Unknown )//while cannot identify client
 				{
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
@@ -97,7 +98,7 @@ namespace CommunicationServerCore.Components.Servers
 					else//doesn't matter
 						proxy.Discard();
 				}
-				switch( proxy.Remote.Type )//type of client
+				switch( proxy.Remote.Type )//identified client
 				{
 				case HostType.Player://treat as anonymous Player
 					await AsAnonymousPlayer( proxy, getGames, cancellationToken ).ConfigureAwait( false );
@@ -117,13 +118,14 @@ namespace CommunicationServerCore.Components.Servers
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			await PerformRegisterGame( proxy, registerGame, cancellationToken );//process message
-			while( proxy.Remote.Id == 0uL )//while GameMaster is anonymous
+			while( proxy.Remote.Id == ConstHelper.AnonymousId )//while GameMaster is anonymous
 			{
 				if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RegisterGame
 					await PerformRegisterGame( proxy, registerGame, cancellationToken );
 				else//doesn't matter
 					proxy.Discard();
 			}
+			await AsGameMaster( proxy, cancellationToken );//continue as registered GameMaster
 		}
 		protected async Task PerformRegisterGame( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when RegisterGame is pending
 		{
@@ -147,6 +149,11 @@ namespace CommunicationServerCore.Components.Servers
 				};
 				await proxy.SendAsync( confirmGameRegistration, cancellationToken );
 			}
+		}
+		protected Task AsGameMaster( IClientProxy proxy, CancellationToken cancellationToken )//when GameMaster is registered
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			return Task.CompletedTask;
 		}
 		#endregion
 	}

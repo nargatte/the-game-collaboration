@@ -1,4 +1,5 @@
 ﻿using GameMasterCore.Base.GameMasters;
+using Shared.Const;
 using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Enums;
@@ -14,7 +15,7 @@ namespace GameMasterCore.Components.GameMasters
         public override async Task RunAsync( CancellationToken cancellationToken )
         {
             cancellationToken.ThrowIfCancellationRequested();
-			while( Proxy.Local.Id == 0uL )
+			while( Proxy.Local.Id == ConstHelper.AnonymousId )
 			{
 				var registerGame = new RegisterGame
 				{
