@@ -3,62 +3,133 @@ using PlayerCore.Interfaces;
 using Shared.Enums;
 using Shared.Messages.Communication;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Shared.Interfaces.Proxies;
 
 namespace PlayerCore
 {
     public class RegistrationProcess
     {
-        //private ICommunicationServerProxy _communicationServerProxy;
-        private readonly string _gameName;
-        private readonly TeamColour _teamColour;
-        private readonly PlayerType _playerType;
+        private IServerProxy Proxy;
+        private readonly string GameName;
+        private readonly TeamColour TeamColour;
+        private readonly PlayerType PlayerType;
+        private uint RetryJoinGameInterval;
+
+        public event EventHandler<string> Logger = (sender, s) => { };
 
         public RegistrationProcess(
-            //ICommunicationServerProxy communicationServerProxy,
+            IServerProxy proxy,
             string gameName,
             TeamColour teamColour,
-            PlayerType playerType)
+            PlayerType playerType,
+            uint retryJoinGameInterval)
         {
-            //_communicationServerProxy = communicationServerProxy;
-            _gameName = gameName;
-            _teamColour = teamColour;
-            _playerType = playerType;
+            Proxy = proxy;
+            GameName = gameName;
+            TeamColour = teamColour;
+            PlayerType = playerType;
+            RetryJoinGameInterval = retryJoinGameInterval;
         }
 
-        public PlayerInGame Registration()
+        public async Task<PlayerInGame> Registration(CancellationToken cancellationToken)
         {
-            GameInfo gameInfo = null;
-
-            do
+            ConfirmJoiningGame confirmJoiningGame = null;
+            while (true)
             {
-                //_communicationServerProxy.Send(new GetGames());
+                cancellationToken.ThrowIfCancellationRequested();
+                GameInfo gameInfo = null;
+                while (true)
+                {
+                    await SendGetGames(cancellationToken);
+                    var registeredGmes = await ReceiveRegisteredGames(cancellationToken);
 
-                //_communicationServerProxy.TryReceive(out RegisteredGames registeredGames);
+                    gameInfo = registeredGmes.GameInfo?.FirstOrDefault(g => g.gameName == GameName);
+                    if (gameInfo != null)
+                        break;
 
-                //if(registeredGames == null)
-                    continue;
+                    Thread.Sleep((int) RetryJoinGameInterval);
+                }
 
-                //gameInfo = registeredGames.GameInfo.FirstOrDefault(g => g.gameName == _gameName);
+                await SendJoinGame(cancellationToken);
 
-            } while (gameInfo == null);
+                confirmJoiningGame = await ReceiveConfirmJoiningGame(cancellationToken);
+                if (confirmJoiningGame != null)
+                    break;
+            }
 
-            /*_communicationServerProxy.Send(new JoinGame
+            Game game = await ReceiveGame(cancellationToken);
+
+            PlayerInGame playerInGame = new PlayerInGame(Proxy, game, confirmJoiningGame.playerId, confirmJoiningGame.privateGuid, confirmJoiningGame.gameId);
+            return playerInGame;
+        }
+
+        private void LogSend(object o)
+        {
+            //Logger(this, $"PLAYER sends: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
+        }
+
+        private void LogReceive(object o)
+        {
+            //Logger(this, $"PLAYER received: {Shared.Components.Serialization.Serializer.Serialize(o)}.");
+        }
+
+        private async Task SendGetGames(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            GetGames getGames = new GetGames();
+            LogSend(getGames);
+            await Proxy.SendAsync(getGames, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<RegisteredGames> ReceiveRegisteredGames(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            RegisteredGames registeredGames = await Proxy.TryReceiveAsync<RegisteredGames>(cancellationToken).ConfigureAwait(false);
+            if(registeredGames is null)
+                throw new Exception("Unexpected message received, should be RegisteredGames");
+            LogReceive(registeredGames);
+            return registeredGames;
+        }
+
+        private async Task SendJoinGame(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var jg = new JoinGame
             {
-                gameName = gameInfo.gameName,
+                gameName = GameName,
                 playerIdSpecified = false,
-                preferredRole = _playerType,
-                preferredTeam = _teamColour
-            });*/
+                preferredRole = PlayerType,
+                preferredTeam = TeamColour
+            };
+            await Proxy.SendAsync(jg, cancellationToken);
+            LogSend(jg);
+        }
 
-            //_communicationServerProxy.TryReceive(out ConfirmJoiningGame confirmJoiningGame);
-
-            //if (confirmJoiningGame == null)
+        private async Task<ConfirmJoiningGame> ReceiveConfirmJoiningGame(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ConfirmJoiningGame confirmJoiningGame = await Proxy.TryReceiveAsync<ConfirmJoiningGame>(cancellationToken).ConfigureAwait(false);
+            RejectJoiningGame receiveConfirmJoiningGame = await Proxy.TryReceiveAsync<RejectJoiningGame>(cancellationToken).ConfigureAwait(false);
+            if (confirmJoiningGame is null && receiveConfirmJoiningGame is null)
+                throw new Exception("Unexpected message received, should be ConfirmJoiningGame or RejectJoiningGame");
+            if (confirmJoiningGame is null)
+            {
+                LogReceive(receiveConfirmJoiningGame);
                 return null;
+            }
+            LogReceive(confirmJoiningGame);
+            return confirmJoiningGame;
+        }
 
-            //_communicationServerProxy.TryReceive(out Game game);
-
-            //PlayerInGame playerInGame = new PlayerInGame(_communicationServerProxy, game, confirmJoiningGame.playerId, confirmJoiningGame.privateGuid, confirmJoiningGame.gameId);
-            //return playerInGame;
+        private async Task<Game> ReceiveGame(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            Game game = await Proxy.TryReceiveAsync<Game>(cancellationToken);
+            if (game is null)
+                throw new Exception("Unexpected message received, should be Game");
+            return game;
         }
     }
 }
