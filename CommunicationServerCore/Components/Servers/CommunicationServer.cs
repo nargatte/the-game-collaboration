@@ -149,7 +149,7 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			joinGame.PlayerId = proxy.Remote.Id;
 			joinGame.PlayerIdSpecified = true;
-			if( !gameIds.TryGetValue( joinGame.GameName, out ulong gameId ) )//if game exists
+			if( gameIds.TryGetValue( joinGame.GameName, out ulong gameId ) )//if game exists
 			{
 				bool _ = gameMasters.TryGetValue( gameId, out var gameMaster );
 				await gameMaster.SendAsync( joinGame, cancellationToken );
