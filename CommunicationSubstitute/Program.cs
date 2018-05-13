@@ -41,11 +41,12 @@ namespace CommunicationSubstitute
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerType.Leader, new PlayerFactory() );
 					Debug( cs );
 					Debug( gm1 );
+					Debug( p1 );
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) )//,
-						//Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+						Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) )//,
 						//Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
 					};
 					try

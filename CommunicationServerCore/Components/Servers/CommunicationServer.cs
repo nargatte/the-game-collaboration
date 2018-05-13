@@ -9,6 +9,7 @@ using Shared.Interfaces.Proxies;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -109,10 +110,26 @@ namespace CommunicationServerCore.Components.Servers
 				}
 			}
 		}
-		protected Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )//when Player is anonymous
+		protected async Task AsAnonymousPlayer( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )//when Player is anonymous
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			return Task.CompletedTask;
+			await PerformGetGames( proxy, getGames, cancellationToken );
+			while( true )
+			{
+				if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
+					await PerformGetGames( proxy, getGames, cancellationToken );
+				else//doesn't matter
+					proxy.Discard();
+			}
+		}
+		protected async Task PerformGetGames( IClientProxy proxy, GetGames getGames, CancellationToken cancellationToken )//when GetGames is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			var registeredGames = new RegisteredGames
+			{
+				GameInfo = games.Values.ToArray()
+			};
+			await proxy.SendAsync( registeredGames, cancellationToken );
 		}
 		protected async Task AsAnonymousGameMaster( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
