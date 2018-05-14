@@ -93,7 +93,12 @@ namespace GameMasterCore.Components.GameMasters
                 if ((joinGame = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.JoinGame>(cancellationToken).ConfigureAwait(false)) != null)
                 {
                     //Console.WriteLine($"GM receives: { Shared.Components.Serialization.Serializer.Serialize(joinGame) }.");
-                    await Proxy.SendAsync(innerGM.PerformJoinGame(joinGame), cancellationToken);
+                    Shared.DTOs.Communication.PlayerMessage message = innerGM.PerformJoinGame(joinGame);
+                    if(message is Shared.DTOs.Communication.RejectJoiningGame)
+                        await Proxy.SendAsync(message as Shared.DTOs.Communication.RejectJoiningGame, cancellationToken);
+                    else
+                        await Proxy.SendAsync(message as Shared.DTOs.Communication.ConfirmJoiningGame, cancellationToken);
+
                 }
                 else
                     Proxy.Discard();
