@@ -92,19 +92,20 @@ namespace GameMasterCore.Components.GameMasters
                     //Console.WriteLine($"GM receives: { Shared.Components.Serialization.Serializer.Serialize(joinGame) }.");
                     Shared.DTOs.Communication.PlayerMessage message = innerGM.PerformJoinGame(joinGame);
                     if(message is Shared.DTOs.Communication.RejectJoiningGame)
-                        await Proxy.SendAsync(message as Shared.DTOs.Communication.RejectJoiningGame, cancellationToken);
+                        await Proxy.SendAsync(message as Shared.DTOs.Communication.RejectJoiningGame, cancellationToken).ConfigureAwait(false);
                     else
-                        await Proxy.SendAsync(message as Shared.DTOs.Communication.ConfirmJoiningGame, cancellationToken);
+                        await Proxy.SendAsync(message as Shared.DTOs.Communication.ConfirmJoiningGame, cancellationToken).ConfigureAwait(false);
 
                 }
                 else
                     Proxy.Discard();
             }
+            await Proxy.SendAsync(new GameStarted() { gameId = id }, cancellationToken).ConfigureAwait(false);
             foreach (var player in innerGM.playerGuidToId)
             {
-                await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken);
+                await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken).ConfigureAwait(false);
             }
-            TaskManager taskPlacer = new TaskManager(async(ct) => innerGM.PerformCreatePieceAndPlaceRandomly(), GameDefinition.PlacingNewPiecesFrequency, true, cancellationToken);
+            TaskManager taskPlacer = new TaskManager(async(ct) => await PiecePlacer(ct).ConfigureAwait(false), GameDefinition.PlacingNewPiecesFrequency, true, cancellationToken);
             taskPlacer.Start();
             //var taskPlacer = Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
             var taskPerformer = Task.Run(async () => await TaskPerformer(cancellationToken).ConfigureAwait(false));
@@ -205,9 +206,17 @@ namespace GameMasterCore.Components.GameMasters
             while (true)
             {
                 Task<GameMessage> task = await Task.WhenAny(tasks);
+                tasks.Remove(task);
                 GameMessage message = await task;
-                await Proxy.SendAsync(innerGM.Perform(message), cancellationToken);
+                await Proxy.SendAsync(innerGM.Perform(message), cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        Task PiecePlacer(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            innerGM.PerformCreatePieceAndPlaceRandomly();
+            return Task.CompletedTask;
         }
 
         async Task<GameMessage> DelayMessage(GameMessage message, uint delay, CancellationToken cancellationToken)
