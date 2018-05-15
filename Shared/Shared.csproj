@@ -95,6 +95,7 @@
     <Compile Include="DTOs\Communication\GameBoard.cs" />
     <Compile Include="DTOs\Communication\GameInfo.cs" />
     <Compile Include="DTOs\Communication\GameMasterDisconnected.cs" />
+    <Compile Include="DTOs\Communication\GameStarted.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="DTOs\Communication\GoalField.cs" />
     <Compile Include="DTOs\Communication\JoinGame.cs" />

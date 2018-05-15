@@ -295,12 +295,15 @@ namespace CommunicationServerCore.Components.Servers
 					ConfirmJoiningGame confirmJoiningGame;
 					RejectJoiningGame rejectJoiningGame;
 					Game game;
+					GameStarted gameStarted;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
-						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//pass message
+						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
 						await PassToPlayerAsync( proxy, rejectJoiningGame, cancellationToken );//pass message
 					else if( ( game = await proxy.TryReceiveAsync<Game>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Game
 						await PassToPlayerAsync( proxy, game, cancellationToken );//pass message
+					else if( ( gameStarted = await proxy.TryReceiveAsync<GameStarted>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GameStarted
+						await GameStartedAsync( proxy, gameStarted, cancellationToken );//process request
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -344,6 +347,13 @@ namespace CommunicationServerCore.Components.Servers
 				//else Player fault
 			}
 			//else GameMaster fault
+		}
+		protected Task GameStartedAsync( IClientProxy proxy, GameStarted gameStarted, CancellationToken cancellationToken )//when GameStarted is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			gamesById.TryGetValue( proxy.Remote.Id, out var game );
+			game.GameInfo = null;
+			return Task.CompletedTask;
 		}
 		#endregion
 	}
