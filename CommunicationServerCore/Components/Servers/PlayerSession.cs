@@ -9,14 +9,10 @@ namespace CommunicationServerCore.Components.Servers
 	{
 		#region IPlayerSession
 		public virtual IClientProxy Player { get; }
-		public virtual ulong GameId { get; set; }
+		public virtual ulong GameId { get; set; } = ConstHelper.AnonymousId;
 		#endregion
 		#region PlayerSession
-		public PlayerSession( IClientProxy player )
-		{
-			Player = player is null ? throw new ArgumentNullException( nameof( player ) ) : player;
-			GameId = ConstHelper.AnonymousId;
-		}
+		public PlayerSession( IClientProxy player ) => Player = player is null ? throw new ArgumentNullException( nameof( player ) ) : player;
 		#endregion
 	}
 }

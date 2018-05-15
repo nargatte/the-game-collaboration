@@ -2,6 +2,7 @@
 using Shared.DTOs.Communication;
 using Shared.Interfaces.Proxies;
 using System;
+using System.Collections.Concurrent;
 
 namespace CommunicationServerCore.Components.Servers
 {
@@ -11,6 +12,7 @@ namespace CommunicationServerCore.Components.Servers
 		public virtual string Name { get; }
 		public virtual GameInfo GameInfo { get; set; }
 		public virtual IClientProxy GameMaster { get; }
+		public virtual ConcurrentBag<ulong> Players { get; } = new ConcurrentBag<ulong>();
 		#endregion
 		#region GameSession
 		public GameSession( string name, GameInfo gameInfo, IClientProxy gameMaster )

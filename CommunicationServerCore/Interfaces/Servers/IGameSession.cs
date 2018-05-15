@@ -1,5 +1,6 @@
 ﻿using Shared.DTOs.Communication;
 using Shared.Interfaces.Proxies;
+using System.Collections.Concurrent;
 
 namespace CommunicationServerCore.Interfaces.Servers
 {
@@ -8,5 +9,6 @@ namespace CommunicationServerCore.Interfaces.Servers
 		string Name { get; }
 		GameInfo GameInfo { get; set; }
 		IClientProxy GameMaster { get; }
+		ConcurrentBag<ulong> Players { get; }
 	}
 }
