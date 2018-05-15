@@ -13,7 +13,7 @@ namespace Shared.Base.Proxies
 		public virtual void UpdateRemote( IIdentity identity ) => Remote = identity;
 		#endregion
 		#region ClientProxyBase
-		protected ClientProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity remote, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, factory.MakeIdentity( HostType.CommunicationServer ), remote, factory )
+		protected ClientProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity remote, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, factory.MakeIdentity( HostType.CommunicationServer ), remote, factory )
 		{
 		}
 		#endregion

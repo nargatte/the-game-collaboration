@@ -13,7 +13,7 @@ namespace Shared.Base.Proxies
 		public virtual void UpdateLocal( IIdentity identity ) => Local = identity;
 		#endregion
 		#region ServerProxyBase
-		protected ServerProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory.MakeIdentity( HostType.CommunicationServer ), factory )
+		protected ServerProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory.MakeIdentity( HostType.CommunicationServer ), factory )
 		{
 		}
 		#endregion

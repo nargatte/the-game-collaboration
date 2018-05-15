@@ -2,7 +2,6 @@
 using Shared.Components.Factories;
 using Shared.Components.Tasks;
 using Shared.Const;
-using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Enums;
 using Shared.Messages.Communication;
@@ -10,12 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using JoinGame = Shared.Messages.Communication.JoinGame;
 
 namespace GameMasterCore.Components.GameMasters
 {
-    public class GameMaster : GameMasterBase
+	public class GameMaster : GameMasterBase
     {
         #region GameMasterBase
         public override async Task RunAsync(CancellationToken cancellationToken)

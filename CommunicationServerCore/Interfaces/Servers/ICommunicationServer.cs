@@ -1,5 +1,5 @@
-﻿using Shared.Interfaces.Events;
-using Shared.Interfaces.Factories;
+﻿using CommunicationServerCore.Interfaces.Factories;
+using Shared.Interfaces.Events;
 using Shared.Interfaces.Tasks;
 
 namespace CommunicationServerCore.Interfaces.Servers
@@ -9,6 +9,6 @@ namespace CommunicationServerCore.Interfaces.Servers
 		string Ip { get; }
 		int Port { get; }
 		uint KeepAliveInterval { get; }
-		IProxyFactory Factory { get; }
+		ICommunicationServerFactory Factory { get; }
 	}
 }

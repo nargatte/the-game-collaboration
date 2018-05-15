@@ -31,7 +31,7 @@ namespace Shared.Components.Proxies
 		#endregion
 		#region ServerProxy
 		private ITaskManager keepAlive;
-		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory )
+		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory )
 		{
 			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), true, CancellationToken );
 			keepAlive.Start();
