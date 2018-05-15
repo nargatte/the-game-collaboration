@@ -203,6 +203,12 @@ namespace GameMasterCore.Components.GameMasters
         async Task TaskPerformer(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            tasks.Add(Task.Run( () =>
+            {
+                cancellationToken.WaitHandle.WaitOne(Timeout.Infinite);
+                cancellationToken.ThrowIfCancellationRequested();
+                return (GameMessage)null;
+            }));
             while (true)
             {
                 Task<GameMessage> task = await Task.WhenAny(tasks);
