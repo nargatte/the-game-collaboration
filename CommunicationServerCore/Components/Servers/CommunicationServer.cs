@@ -215,6 +215,8 @@ namespace CommunicationServerCore.Components.Servers
 				if( session.GameId != ConstHelper.AnonymousId )
 				{
 					if( gamesById.TryGetValue( session.GameId, out var game ) )
+					{
+						////////////////////////////////
 						try
 						{
 							await game.GameMaster.SendAsync( playerDisconnected, cancellationToken );
@@ -222,6 +224,7 @@ namespace CommunicationServerCore.Components.Servers
 						catch( Exception )//GameMaster fault
 						{
 						}
+					}
 					//else GameMaster fault
 				}
 				throw;
@@ -310,6 +313,24 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			catch( Exception )//disconnect GameMaster
 			{
+				var gameMasterDisconnected = new GameMasterDisconnected
+				{
+					GameId = proxy.Remote.Id
+				};
+				gamesById.TryGetValue( proxy.Remote.Id, out var game );
+				if( game.GameInfo is null )
+					foreach( ulong id in game.Players )
+					{
+						if( players.TryGetValue( id, out var session ) )
+							try
+							{
+								await session.Player.SendAsync( gameMasterDisconnected, cancellationToken );
+							}
+							catch( Exception )//Player fault
+							{
+							}
+						//else Player fault
+					}
 				throw;
 			}
 		}
