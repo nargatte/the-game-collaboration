@@ -48,15 +48,17 @@ namespace PlayerCore
                     gameInfo = registeredGmes.GameInfo?.FirstOrDefault(g => g.gameName == GameName);
                     if (gameInfo != null)
                         break;
-
-                    Thread.Sleep((int) RetryJoinGameInterval);
+					await Task.Delay( TimeSpan.FromMilliseconds( RetryJoinGameInterval ) );
                 }
 
                 await SendJoinGame(cancellationToken);
 
                 confirmJoiningGame = await ReceiveConfirmJoiningGame(cancellationToken);
                 if (confirmJoiningGame != null)
-                    break;
+				{
+					Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.Player, confirmJoiningGame.playerId ) );
+					break;
+				}
             }
 
             Game game = await ReceiveGame(cancellationToken);
