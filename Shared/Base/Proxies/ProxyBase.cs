@@ -46,7 +46,7 @@ namespace Shared.Base.Proxies
 		public virtual CancellationToken CancellationToken { get; }
 		public virtual IIdentity Local { get; protected set; }
 		public virtual IIdentity Remote { get; protected set; }
-		public virtual IProxyComponentFactory Factory { get; }
+		public virtual IProxyFactory Factory { get; }
 		#endregion
 		#region ProxyBase
 		protected virtual Task WhenKeepAliveSent( CancellationToken cancellationToken )
@@ -63,7 +63,7 @@ namespace Shared.Base.Proxies
 		}
 		protected INetworkClient Client { get; }
 		private string buffer;
-		protected ProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IIdentity remote, IProxyComponentFactory factory )
+		protected ProxyBase( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IIdentity remote, IProxyFactory factory )
 		{
 			Client = client is null ? throw new ArgumentNullException( nameof( client ) ) : client;
 			KeepAliveInterval = keepAliveInterval;

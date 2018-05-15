@@ -1,6 +1,6 @@
-﻿using CommunicationServerCore.Interfaces.Servers;
+﻿using CommunicationServerCore.Interfaces.Factories;
+using CommunicationServerCore.Interfaces.Servers;
 using Shared.Base.Events;
-using Shared.Interfaces.Factories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +14,10 @@ namespace CommunicationServerCore.Base.Servers
 		public virtual string Ip { get; }
 		public virtual int Port { get; }
 		public virtual uint KeepAliveInterval { get; }
-		public virtual IProxyFactory Factory { get; }
+		public virtual ICommunicationServerFactory Factory { get; }
 		#endregion
 		#region CommunicationServerBase
-		protected CommunicationServerBase( string ip, int port, uint keepAliveInterval, IProxyFactory factory )
+		protected CommunicationServerBase( string ip, int port, uint keepAliveInterval, ICommunicationServerFactory factory )
 		{
 			Ip = ip;
 			Port = port;

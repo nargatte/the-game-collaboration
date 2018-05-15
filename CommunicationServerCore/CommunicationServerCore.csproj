@@ -50,9 +50,13 @@
     <Compile Include="Components\Factories\CommunicationServerFactory.cs" />
     <Compile Include="Components\Modules\CommunicationServerModule.cs" />
     <Compile Include="Components\Servers\CommunicationServer.cs" />
+    <Compile Include="Components\Servers\GameSession.cs" />
+    <Compile Include="Components\Servers\PlayerSession.cs" />
     <Compile Include="Interfaces\Factories\ICommunicationServerFactory.cs" />
     <Compile Include="Interfaces\Servers\ICommunicationServer.cs" />
     <Compile Include="Interfaces\Modules\ICommunicationServerModule.cs" />
+    <Compile Include="Interfaces\Servers\IGameSession.cs" />
+    <Compile Include="Interfaces\Servers\IPlayerSession.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

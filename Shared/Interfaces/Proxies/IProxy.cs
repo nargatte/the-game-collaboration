@@ -15,6 +15,6 @@ namespace Shared.Interfaces.Proxies
 		CancellationToken CancellationToken { get; }
 		IIdentity Local { get; }
 		IIdentity Remote { get; }
-		IProxyComponentFactory Factory { get; }
+		IProxyFactory Factory { get; }
 	}
 }

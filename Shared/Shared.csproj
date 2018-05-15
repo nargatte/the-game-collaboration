@@ -66,7 +66,7 @@
     <Compile Include="Components\Events\PieceChangedArgs.cs" />
     <Compile Include="Components\Events\PlayerChangedArgs.cs" />
     <Compile Include="Components\Exceptions\DisconnectionException.cs" />
-    <Compile Include="Components\Extensions\ExtensionIProxyComponentFactory.cs" />
+    <Compile Include="Components\Extensions\ExtensionIProxyFactory.cs" />
     <Compile Include="Components\Extensions\ExtensionINetworkFactory.cs" />
     <Compile Include="Components\Extensions\ExtensionIBoardComponentFactory.cs" />
     <Compile Include="Components\Extensions\ExtensionIField.cs" />
@@ -77,7 +77,6 @@
     <Compile Include="Components\Extensions\ExtensionIPlayerPiece.cs" />
     <Compile Include="Components\Extensions\ExtensionITaskField.cs" />
     <Compile Include="Components\Factories\ProxyFactory.cs" />
-    <Compile Include="Components\Factories\ProxyComponentFactory.cs" />
     <Compile Include="Components\Proxies\ClientProxy.cs" />
     <Compile Include="Components\Proxies\Identity.cs" />
     <Compile Include="Components\Proxies\ServerProxy.cs" />
@@ -135,7 +134,6 @@
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
     <Compile Include="Interfaces\Factories\IProxyFactory.cs" />
-    <Compile Include="Interfaces\Factories\IProxyComponentFactory.cs" />
     <Compile Include="Interfaces\Tasks\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />

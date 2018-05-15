@@ -32,7 +32,7 @@ namespace Shared.Components.Proxies
 		#endregion
 		#region ClientProxy
 		private ITaskManager disconnection;
-		public ClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity remote, IProxyComponentFactory factory ) : base( client, keepAliveInterval, cancellationToken, remote, factory )
+		public ClientProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity remote, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, remote, factory )
 		{
 			disconnection = Factory.CreateTaskManager( CheckDisconnection, KeepAliveInterval, false, CancellationToken );
 			disconnection.Start();
