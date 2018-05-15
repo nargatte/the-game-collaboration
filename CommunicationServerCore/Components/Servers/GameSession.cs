@@ -1,6 +1,7 @@
 ﻿using CommunicationServerCore.Interfaces.Servers;
 using Shared.DTOs.Communication;
 using Shared.Interfaces.Proxies;
+using System;
 
 namespace CommunicationServerCore.Components.Servers
 {
@@ -14,9 +15,9 @@ namespace CommunicationServerCore.Components.Servers
 		#region GameSession
 		public GameSession( string name, GameInfo gameInfo, IClientProxy gameMaster )
 		{
-			Name = name;
-			GameInfo = gameInfo;
-			GameMaster = gameMaster;
+			Name = name is null ? throw new ArgumentNullException( nameof( name ) ) : name;
+			GameInfo = gameInfo is null ? throw new ArgumentNullException( nameof( gameInfo ) ) : gameInfo;
+			GameMaster = gameMaster is null ? throw new ArgumentNullException( nameof( gameMaster ) ) : gameMaster;
 		}
 		#endregion
 	}

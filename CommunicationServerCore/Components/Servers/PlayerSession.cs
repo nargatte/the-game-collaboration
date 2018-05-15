@@ -1,6 +1,7 @@
 ﻿using CommunicationServerCore.Interfaces.Servers;
 using Shared.Const;
 using Shared.Interfaces.Proxies;
+using System;
 
 namespace CommunicationServerCore.Components.Servers
 {
@@ -13,7 +14,7 @@ namespace CommunicationServerCore.Components.Servers
 		#region PlayerSession
 		public PlayerSession( IClientProxy player )
 		{
-			Player = player;
+			Player = player is null ? throw new ArgumentNullException( nameof( player ) ) : player;
 			GameId = ConstHelper.AnonymousId;
 		}
 		#endregion
