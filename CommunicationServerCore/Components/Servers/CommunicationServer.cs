@@ -171,7 +171,13 @@ namespace CommunicationServerCore.Components.Servers
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( gamesByName.TryGetValue( joinGame.GameName, out var game ) )//if game exists
-				await game.GameMaster.SendAsync( joinGame, cancellationToken );
+				try
+				{
+					await game.GameMaster.SendAsync( joinGame, cancellationToken );
+				}
+				catch( Exception )//GameMaster fault
+				{
+				}
 			else//if game doesn't exist
 			{
 				var rejectJoiningGame = new RejectJoiningGame
@@ -199,8 +205,9 @@ namespace CommunicationServerCore.Components.Servers
 						proxy.Discard();
 				}
 			}
-			finally//disconnect Player
+			catch( Exception )//disconnect Player
 			{
+				throw;
 			}
 		}
 		protected async Task AsAnonymousGameMasterAsync( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
@@ -281,15 +288,22 @@ namespace CommunicationServerCore.Components.Servers
 						proxy.Discard();
 				}
 			}
-			finally//disconnect GameMaster
+			catch( Exception )//disconnect GameMaster
 			{
+				throw;
 			}
 		}
 		protected async Task PassToPlayerAsync< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered player
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( players.TryGetValue( playerMessage.PlayerId, out var session ) )//if player exists
-				await session.Player.SendAsync( playerMessage, cancellationToken );
+				try
+				{
+					await session.Player.SendAsync( playerMessage, cancellationToken );await session.Player.SendAsync( playerMessage, cancellationToken );
+				}
+				catch( Exception )//Player fault
+				{
+				}
 			//else GameMaster fault
 		}
 		protected async Task ConfirmJoiningGameAsync( IClientProxy proxy, ConfirmJoiningGame confirmJoiningGame, CancellationToken cancellationToken )//when ConfirmJoiningGame is pending
@@ -302,7 +316,13 @@ namespace CommunicationServerCore.Components.Servers
 					session.GameId = confirmJoiningGame.GameId;
 					gamesById.TryGetValue( proxy.Remote.Id, out var game );
 					game.Players.Add( proxy.Remote.Id );
-					await session.Player.SendAsync( confirmJoiningGame, cancellationToken );
+					try
+					{
+						await session.Player.SendAsync( confirmJoiningGame, cancellationToken );
+					}
+					catch( Exception )//Player fault
+					{
+					}
 				}
 				//else Player fault
 			}
