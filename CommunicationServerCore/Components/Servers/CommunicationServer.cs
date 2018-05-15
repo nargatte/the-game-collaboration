@@ -207,6 +207,23 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			catch( Exception )//disconnect Player
 			{
+				var playerDisconnected = new PlayerDisconnected
+				{
+					PlayerId = proxy.Remote.Id
+				};
+				players.TryGetValue( proxy.Remote.Id, out var session );
+				if( session.GameId != ConstHelper.AnonymousId )
+				{
+					if( gamesById.TryGetValue( session.GameId, out var game ) )
+						try
+						{
+							await game.GameMaster.SendAsync( playerDisconnected, cancellationToken );
+						}
+						catch( Exception )//GameMaster fault
+						{
+						}
+					//else GameMaster fault
+				}
 				throw;
 			}
 		}
