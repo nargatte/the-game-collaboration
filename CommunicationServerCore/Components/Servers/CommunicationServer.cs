@@ -216,7 +216,7 @@ namespace CommunicationServerCore.Components.Servers
 				{
 					if( gamesById.TryGetValue( session.GameId, out var game ) )
 					{
-						////////////////////////////////
+						game.Players.TryRemove( proxy.Remote.Id, out ulong _ );
 						try
 						{
 							await game.GameMaster.SendAsync( playerDisconnected, cancellationToken );
@@ -319,9 +319,11 @@ namespace CommunicationServerCore.Components.Servers
 				};
 				gamesById.TryGetValue( proxy.Remote.Id, out var game );
 				if( game.GameInfo is null )
-					foreach( ulong id in game.Players )
+					foreach( var id in game.Players )
 					{
-						if( players.TryGetValue( id, out var session ) )
+						if( players.TryGetValue( id.Key, out var session ) )
+						{
+							session.GameId = ConstHelper.AnonymousId;
 							try
 							{
 								await session.Player.SendAsync( gameMasterDisconnected, cancellationToken );
@@ -329,6 +331,7 @@ namespace CommunicationServerCore.Components.Servers
 							catch( Exception )//Player fault
 							{
 							}
+						}
 						//else Player fault
 					}
 				throw;
@@ -356,7 +359,7 @@ namespace CommunicationServerCore.Components.Servers
 				{
 					session.GameId = confirmJoiningGame.GameId;
 					gamesById.TryGetValue( proxy.Remote.Id, out var game );
-					game.Players.Add( proxy.Remote.Id );
+					game.Players.TryAdd( proxy.Remote.Id, proxy.Remote.Id );
 					try
 					{
 						await session.Player.SendAsync( confirmJoiningGame, cancellationToken );
