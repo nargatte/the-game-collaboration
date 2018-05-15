@@ -18,7 +18,7 @@ namespace Shared.Components.Serialization
 			var xmlSerializerNamespaces = new XmlSerializerNamespaces();
 			xmlSerializerNamespaces.Add( string.Empty, ( type.GetCustomAttributes( typeof( XmlTypeAttribute ), true ).FirstOrDefault() as XmlTypeAttribute )?.Namespace );
 			var serializer = new XmlSerializer( type );
-			using( var stringWriter = new StringWriterWithEncoding( ConstHelper.Encoding ) )
+			using( var stringWriter = new StringWriterWithEncoding( Constants.Encoding ) )
 			{
 				using( var xmlWriter = XmlWriter.Create( stringWriter, xmlWriterSettings ) )
 				{

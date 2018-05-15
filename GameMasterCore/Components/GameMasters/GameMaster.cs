@@ -18,7 +18,7 @@ namespace GameMasterCore.Components.GameMasters
         public override async Task RunAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-			while( Proxy.Local.Id == ConstHelper.AnonymousId )
+			while( Proxy.Local.Id == Constants.AnonymousId )
 			{
 				var registerGame = new Shared.DTOs.Communication.RegisterGame
                 {

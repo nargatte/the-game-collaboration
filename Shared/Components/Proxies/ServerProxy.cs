@@ -33,7 +33,7 @@ namespace Shared.Components.Proxies
 		private ITaskManager keepAlive;
 		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory )
 		{
-			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), true, CancellationToken );
+			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / Constants.KeepAliveFrequency ), true, CancellationToken );
 			keepAlive.Start();
 		}
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )

@@ -89,8 +89,8 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
-		private long nextPlayerId = ( long )ConstHelper.AnonymousId;
-		private long nextGameId = ( long )ConstHelper.AnonymousId;
+		private long nextPlayerId = ( long )Constants.AnonymousId;
+		private long nextGameId = ( long )Constants.AnonymousId;
 		private ConcurrentDictionary<string, IGameSession> gamesByName = new ConcurrentDictionary<string, IGameSession>();
 		private ConcurrentDictionary<ulong, IGameSession> gamesById = new ConcurrentDictionary<ulong, IGameSession>();
 		private ConcurrentDictionary<ulong, IPlayerSession> players = new ConcurrentDictionary<ulong, IPlayerSession>();
@@ -130,7 +130,7 @@ namespace CommunicationServerCore.Components.Servers
 			await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 			try
 			{
-				while( proxy.Remote.Id is ConstHelper.AnonymousId )//while Player is anonymous
+				while( proxy.Remote.Id is Constants.AnonymousId )//while Player is anonymous
 				{
 					JoinGame joinGame;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
@@ -144,7 +144,7 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			finally//unregister Player
 			{
-				if( proxy.Remote.Id != ConstHelper.AnonymousId )
+				if( proxy.Remote.Id != Constants.AnonymousId )
 					players.TryRemove( proxy.Remote.Id, out var _ );
 			}
 		}
@@ -212,7 +212,7 @@ namespace CommunicationServerCore.Components.Servers
 					PlayerId = proxy.Remote.Id
 				};
 				players.TryGetValue( proxy.Remote.Id, out var session );
-				if( session.GameId != ConstHelper.AnonymousId )
+				if( session.GameId != Constants.AnonymousId )
 				{
 					if( gamesById.TryGetValue( session.GameId, out var game ) )
 					{
@@ -236,7 +236,7 @@ namespace CommunicationServerCore.Components.Servers
 			try
 			{
 				await RegisterGameAsync( proxy, registerGame, cancellationToken );
-				while( proxy.Remote.Id is ConstHelper.AnonymousId )//while GameMaster is anonymous
+				while( proxy.Remote.Id is Constants.AnonymousId )//while GameMaster is anonymous
 				{
 					if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RegisterGame
 						await RegisterGameAsync( proxy, registerGame, cancellationToken );//process request
@@ -323,7 +323,7 @@ namespace CommunicationServerCore.Components.Servers
 					{
 						if( players.TryGetValue( id.Key, out var session ) )
 						{
-							session.GameId = ConstHelper.AnonymousId;
+							session.GameId = Constants.AnonymousId;
 							try
 							{
 								await session.Player.SendAsync( gameMasterDisconnected, cancellationToken );
@@ -355,7 +355,7 @@ namespace CommunicationServerCore.Components.Servers
 			cancellationToken.ThrowIfCancellationRequested();
 			if( players.TryGetValue( confirmJoiningGame.PlayerId, out var session ) )//if player exists
 			{
-				if( session.GameId is ConstHelper.AnonymousId )
+				if( session.GameId is Constants.AnonymousId )
 				{
 					session.GameId = confirmJoiningGame.GameId;
 					gamesById.TryGetValue( proxy.Remote.Id, out var game );

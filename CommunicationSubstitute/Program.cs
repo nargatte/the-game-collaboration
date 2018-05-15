@@ -90,8 +90,8 @@ namespace CommunicationSubstitute
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )
 		{
-			communicationObserver.Sent += OnSent;
-			communicationObserver.Received += OnReceived;
+			//communicationObserver.Sent += OnSent;
+			//communicationObserver.Received += OnReceived;
 			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
 			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;

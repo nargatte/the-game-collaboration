@@ -12,14 +12,14 @@ namespace Shared.Components.Proxies
 		public virtual ulong Id { get; }
 		#endregion
 		#region Identity
-		public Identity( HostType type = HostType.Unknown, ulong aId = ConstHelper.AnonymousId )
+		public Identity( HostType type = HostType.Unknown, ulong aId = Constants.AnonymousId )
 		{
 			Type = type;
-			if( ( Type is HostType.CommunicationServer || Type is HostType.Unknown ) && aId != ConstHelper.AnonymousId )
+			if( ( Type is HostType.CommunicationServer || Type is HostType.Unknown ) && aId != Constants.AnonymousId )
 				throw new ArgumentOutOfRangeException( nameof( aId ) );
 			Id = aId;
 		}
-		public override string ToString() => ( Type is HostType.CommunicationServer || Type is HostType.Unknown ) ? $"[{ Type }]" : ( Id == ConstHelper.AnonymousId ? $"[{ Type }:Anonymous]" : $"[{ Type }:{ Id }]" );
+		public override string ToString() => ( Type is HostType.CommunicationServer || Type is HostType.Unknown ) ? $"[{ Type }]" : ( Id == Constants.AnonymousId ? $"[{ Type }:Anonymous]" : $"[{ Type }:{ Id }]" );
 		#endregion
 	}
 }
