@@ -21,7 +21,7 @@ namespace Shared.Components.Communication
 		public override async Task SendAsync( string message, CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			byte[] data = ConstHelper.Encoding.GetBytes( message + ConstHelper.EndOfMessage );
+			byte[] data = Constants.Encoding.GetBytes( message + Constants.EndOfMessage );
 			try
 			{
 				await stream.WriteAsync( data, 0, data.Length, cancellationToken ).ConfigureAwait( false );
@@ -35,7 +35,7 @@ namespace Shared.Components.Communication
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			byte[] data = new byte[ 256 ];
-			while( !builder.ToString().Contains( ConstHelper.EndOfMessage ) )
+			while( !builder.ToString().Contains( Constants.EndOfMessage ) )
 			{
 				int bytes;
 				try
@@ -46,11 +46,11 @@ namespace Shared.Components.Communication
 				{
 					throw new DisconnectionException( "Failed to read.", e );
 				}
-				builder.Append( ConstHelper.Encoding.GetString( data, 0, bytes ) );
+				builder.Append( Constants.Encoding.GetString( data, 0, bytes ) );
 			}
 			string buffer = builder.ToString();
-			int pos = buffer.IndexOf( ConstHelper.EndOfMessage );
-			builder.Remove( 0, pos + ConstHelper.EndOfMessage.Length );
+			int pos = buffer.IndexOf( Constants.EndOfMessage );
+			builder.Remove( 0, pos + Constants.EndOfMessage.Length );
 			return buffer.Substring( 0, pos );
 		}
 		#endregion

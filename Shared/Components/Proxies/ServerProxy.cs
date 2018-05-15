@@ -14,26 +14,32 @@ namespace Shared.Components.Proxies
 		#region ServerProxyBase
 		public override void Dispose()
 		{
-			lock( keepAlive )
+			try
 			{
-				keepAlive.Stop();
+				lock( keepAlive )
+				{
+					keepAlive.Stop();
+				}
 			}
-			base.Dispose();
+			finally
+			{
+				base.Dispose();
+			}
 		}
 		protected override async Task WhenKeepAliveSent( CancellationToken cancellationToken )
 		{
-			await base.WhenKeepAliveSent( cancellationToken );
 			lock( keepAlive )
 			{
 				keepAlive.Postpone();
 			}
+			await base.WhenKeepAliveSent( cancellationToken );
 		}
 		#endregion
 		#region ServerProxy
 		private ITaskManager keepAlive;
 		public ServerProxy( INetworkClient client, uint keepAliveInterval, CancellationToken cancellationToken, IIdentity local, IProxyFactory factory ) : base( client, keepAliveInterval, cancellationToken, local, factory )
 		{
-			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / ConstHelper.KeepAliveFrequency ), true, CancellationToken );
+			keepAlive = Factory.CreateTaskManager( SendKeepAlive, ( uint )( KeepAliveInterval / Constants.KeepAliveFrequency ), true, CancellationToken );
 			keepAlive.Start();
 		}
 		protected async Task SendKeepAlive( CancellationToken cancellationToken )

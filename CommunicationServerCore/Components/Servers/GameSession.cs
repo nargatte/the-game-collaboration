@@ -12,7 +12,7 @@ namespace CommunicationServerCore.Components.Servers
 		public virtual string Name { get; }
 		public virtual GameInfo GameInfo { get; set; }
 		public virtual IClientProxy GameMaster { get; }
-		public virtual ConcurrentBag<ulong> Players { get; } = new ConcurrentBag<ulong>();
+		public virtual ConcurrentDictionary<ulong, ulong> Players { get; } = new ConcurrentDictionary<ulong, ulong>();
 		#endregion
 		#region GameSession
 		public GameSession( string name, GameInfo gameInfo, IClientProxy gameMaster )

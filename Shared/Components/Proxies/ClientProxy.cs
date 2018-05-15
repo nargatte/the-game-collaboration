@@ -13,11 +13,17 @@ namespace Shared.Components.Proxies
 		#region ClientProxyBase
 		public override void Dispose()
 		{
-			lock( disconnection )
+			try
 			{
-				disconnection.Stop();
+				lock( disconnection )
+				{
+					disconnection.Stop();
+				}
 			}
-			base.Dispose();
+			finally
+			{
+				base.Dispose();
+			}
 		}
 		protected override async Task WhenKeepAliveReceived( CancellationToken cancellationToken )
 		{
@@ -40,7 +46,7 @@ namespace Shared.Components.Proxies
 		protected Task CheckDisconnection( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "CLIENT DISCONNECTED." );
+			OnDisconnected( Local, Remote );
 			return Task.CompletedTask;
 		}
 		#endregion

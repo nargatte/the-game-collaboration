@@ -74,7 +74,7 @@ namespace CommunicationServerCore.Components.Servers
 							Console.WriteLine( "Server task faulted by:" );
 							foreach( var e in task.Exception.Flatten().InnerExceptions )
 								if( e is DisconnectionException )
-									Console.WriteLine( "Disconnection." );
+									Console.WriteLine( $"Disconnection ( { e.Message } )" );
 								else
 									Console.WriteLine( $"Exception: { e }." );
 						}
@@ -89,8 +89,8 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		#endregion
 		#region CommunicationServer
-		private long nextPlayerId = ( long )ConstHelper.AnonymousId;
-		private long nextGameId = ( long )ConstHelper.AnonymousId;
+		private long nextPlayerId = ( long )Constants.AnonymousId;
+		private long nextGameId = ( long )Constants.AnonymousId;
 		private ConcurrentDictionary<string, IGameSession> gamesByName = new ConcurrentDictionary<string, IGameSession>();
 		private ConcurrentDictionary<ulong, IGameSession> gamesById = new ConcurrentDictionary<ulong, IGameSession>();
 		private ConcurrentDictionary<ulong, IPlayerSession> players = new ConcurrentDictionary<ulong, IPlayerSession>();
@@ -99,28 +99,45 @@ namespace CommunicationServerCore.Components.Servers
 		}
 		protected async Task OnAcceptAsync( INetworkClient client, CancellationToken cancellationToken )//when new client connected
 		{
-			using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cancellationToken, Factory.MakeIdentity() ) )//make proxy for this unknown client
+			using( var cts = CancellationTokenSource.CreateLinkedTokenSource( cancellationToken ) )
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				PassAll( proxy );//pass events from proxy
-				GetGames getGames = null;
-				RegisterGame registerGame = null;
-				while( proxy.Remote.Type is HostType.Unknown )//while cannot identify client
+				try
 				{
-					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
+					using( var proxy = Factory.CreateClientProxy( client, KeepAliveInterval, cts.Token, Factory.MakeIdentity() ) )//make proxy for this unknown client
 					{
-						proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
-						await AsAnonymousPlayerAsync( proxy, getGames, cancellationToken ).ConfigureAwait( false );//continue as anonymous Player
-						break;
+						cts.Token.ThrowIfCancellationRequested();
+						PassAll( proxy );//pass events from proxy
+						proxy.Disconnected += ( s, e ) =>
+						{
+							cts.Cancel();
+						};
+						GetGames getGames = null;
+						RegisterGame registerGame = null;
+						while( proxy.Remote.Type is HostType.Unknown )//while cannot identify client
+						{
+							if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cts.Token ).ConfigureAwait( false ) ) != null )//check for GetGames
+							{
+								proxy.UpdateRemote( Factory.MakeIdentity( HostType.Player ) );
+								await AsAnonymousPlayerAsync( proxy, getGames, cts.Token ).ConfigureAwait( false );//continue as anonymous Player
+								break;
+							}
+							else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cts.Token ).ConfigureAwait( false ) ) != null )//check for RegisterGame
+							{
+								proxy.UpdateRemote( Factory.MakeIdentity( HostType.GameMaster ) );
+								await AsAnonymousGameMasterAsync( proxy, registerGame, cts.Token ).ConfigureAwait( false );//continue as anonymous GameMaster
+								break;
+							}
+							else//doesn't matter
+								proxy.Discard();
+						}
 					}
-					else if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RegisterGame
-					{
-						proxy.UpdateRemote( Factory.MakeIdentity( HostType.GameMaster ) );
-						await AsAnonymousGameMasterAsync( proxy, registerGame, cancellationToken ).ConfigureAwait( false );//continue as anonymous GameMaster
-						break;
-					}
-					else//doesn't matter
-						proxy.Discard();
+				}
+				catch( OperationCanceledException )
+				{
+					if( !cancellationToken.IsCancellationRequested )
+						throw new DisconnectionException( "Failed to keep alive." );
+					else
+						throw;
 				}
 			}
 		}
@@ -130,7 +147,7 @@ namespace CommunicationServerCore.Components.Servers
 			await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 			try
 			{
-				while( proxy.Remote.Id is ConstHelper.AnonymousId )//while Player is anonymous
+				while( proxy.Remote.Id is Constants.AnonymousId )//while Player is anonymous
 				{
 					JoinGame joinGame;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
@@ -144,7 +161,7 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			finally//unregister Player
 			{
-				if( proxy.Remote.Id != ConstHelper.AnonymousId )
+				if( proxy.Remote.Id != Constants.AnonymousId )
 					players.TryRemove( proxy.Remote.Id, out var _ );
 			}
 		}
@@ -207,6 +224,26 @@ namespace CommunicationServerCore.Components.Servers
 			}
 			catch( Exception )//disconnect Player
 			{
+				var playerDisconnected = new PlayerDisconnected
+				{
+					PlayerId = proxy.Remote.Id
+				};
+				players.TryGetValue( proxy.Remote.Id, out var session );
+				if( session.GameId != Constants.AnonymousId )
+				{
+					if( gamesById.TryGetValue( session.GameId, out var game ) )
+					{
+						game.Players.TryRemove( proxy.Remote.Id, out ulong _ );
+						try
+						{
+							await game.GameMaster.SendAsync( playerDisconnected, cancellationToken );
+						}
+						catch( Exception )//GameMaster fault
+						{
+						}
+					}
+					//else GameMaster fault
+				}
 				throw;
 			}
 		}
@@ -216,7 +253,7 @@ namespace CommunicationServerCore.Components.Servers
 			try
 			{
 				await RegisterGameAsync( proxy, registerGame, cancellationToken );
-				while( proxy.Remote.Id is ConstHelper.AnonymousId )//while GameMaster is anonymous
+				while( proxy.Remote.Id is Constants.AnonymousId )//while GameMaster is anonymous
 				{
 					if( ( registerGame = await proxy.TryReceiveAsync<RegisterGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RegisterGame
 						await RegisterGameAsync( proxy, registerGame, cancellationToken );//process request
@@ -278,18 +315,42 @@ namespace CommunicationServerCore.Components.Servers
 					ConfirmJoiningGame confirmJoiningGame;
 					RejectJoiningGame rejectJoiningGame;
 					Game game;
+					GameStarted gameStarted;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
-						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//pass message
+						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
 						await PassToPlayerAsync( proxy, rejectJoiningGame, cancellationToken );//pass message
 					else if( ( game = await proxy.TryReceiveAsync<Game>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Game
 						await PassToPlayerAsync( proxy, game, cancellationToken );//pass message
+					else if( ( gameStarted = await proxy.TryReceiveAsync<GameStarted>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GameStarted
+						await GameStartedAsync( proxy, gameStarted, cancellationToken );//process request
 					else//doesn't matter
 						proxy.Discard();
 				}
 			}
 			catch( Exception )//disconnect GameMaster
 			{
+				var gameMasterDisconnected = new GameMasterDisconnected
+				{
+					GameId = proxy.Remote.Id
+				};
+				gamesById.TryGetValue( proxy.Remote.Id, out var game );
+				if( game.GameInfo is null )
+					foreach( var id in game.Players )
+					{
+						if( players.TryGetValue( id.Key, out var session ) )
+						{
+							session.GameId = Constants.AnonymousId;
+							try
+							{
+								await session.Player.SendAsync( gameMasterDisconnected, cancellationToken );
+							}
+							catch( Exception )//Player fault
+							{
+							}
+						}
+						//else Player fault
+					}
 				throw;
 			}
 		}
@@ -311,11 +372,11 @@ namespace CommunicationServerCore.Components.Servers
 			cancellationToken.ThrowIfCancellationRequested();
 			if( players.TryGetValue( confirmJoiningGame.PlayerId, out var session ) )//if player exists
 			{
-				if( session.GameId is ConstHelper.AnonymousId )
+				if( session.GameId is Constants.AnonymousId )
 				{
 					session.GameId = confirmJoiningGame.GameId;
 					gamesById.TryGetValue( proxy.Remote.Id, out var game );
-					game.Players.Add( proxy.Remote.Id );
+					game.Players.TryAdd( proxy.Remote.Id, proxy.Remote.Id );
 					try
 					{
 						await session.Player.SendAsync( confirmJoiningGame, cancellationToken );
@@ -327,6 +388,13 @@ namespace CommunicationServerCore.Components.Servers
 				//else Player fault
 			}
 			//else GameMaster fault
+		}
+		protected Task GameStartedAsync( IClientProxy proxy, GameStarted gameStarted, CancellationToken cancellationToken )//when GameStarted is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			gamesById.TryGetValue( proxy.Remote.Id, out var game );
+			game.GameInfo = null;
+			return Task.CompletedTask;
 		}
 		#endregion
 	}

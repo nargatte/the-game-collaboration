@@ -54,7 +54,8 @@
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
-    <Compile Include="Const\ConstHelper.cs" />
+    <Compile Include="Components\Events\DisconnectedArgs.cs" />
+    <Compile Include="Const\Constants.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\ReceivedArgs.cs" />
     <Compile Include="Components\Events\ReceivedKeepAliveArgs.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="DTOs\Communication\GameBoard.cs" />
     <Compile Include="DTOs\Communication\GameInfo.cs" />
     <Compile Include="DTOs\Communication\GameMasterDisconnected.cs" />
+    <Compile Include="DTOs\Communication\GameStarted.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="DTOs\Communication\GoalField.cs" />
     <Compile Include="DTOs\Communication\JoinGame.cs" />

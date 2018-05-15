@@ -10,5 +10,6 @@ namespace Shared.Interfaces.Events
 		event EventHandler<SentKeepAliveArgs> SentKeepAlive;
 		event EventHandler<ReceivedKeepAliveArgs> ReceivedKeepAlive;
 		event EventHandler<DiscardedArgs> Discarded;
+		event EventHandler<DisconnectedArgs> Disconnected;
 	}
 }

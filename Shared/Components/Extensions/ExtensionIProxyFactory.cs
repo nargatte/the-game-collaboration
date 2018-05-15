@@ -7,6 +7,6 @@ namespace Shared.Components.Extensions
 {
 	public static class ExtensionIProxyFactory
 	{
-		public static IIdentity MakeIdentity( this IProxyFactory factory, HostType type = HostType.Unknown, ulong id = ConstHelper.AnonymousId ) => factory.CreateIdentity( type, id );
+		public static IIdentity MakeIdentity( this IProxyFactory factory, HostType type = HostType.Unknown, ulong id = Constants.AnonymousId ) => factory.CreateIdentity( type, id );
 	}
 }

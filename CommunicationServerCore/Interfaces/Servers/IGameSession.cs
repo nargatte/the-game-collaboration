@@ -9,6 +9,6 @@ namespace CommunicationServerCore.Interfaces.Servers
 		string Name { get; }
 		GameInfo GameInfo { get; set; }
 		IClientProxy GameMaster { get; }
-		ConcurrentBag<ulong> Players { get; }
+		ConcurrentDictionary<ulong, ulong> Players { get; }
 	}
 }
