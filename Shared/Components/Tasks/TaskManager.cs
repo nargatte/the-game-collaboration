@@ -29,6 +29,9 @@ namespace Shared.Components.Tasks
 					cts.Cancel();
 					task.Wait( CancellationToken );
 				}
+				catch( OperationCanceledException )
+				{
+				}
 				catch( AggregateException )
 				{
 					if( !task.IsCanceled )

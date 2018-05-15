@@ -14,19 +14,25 @@ namespace Shared.Components.Proxies
 		#region ServerProxyBase
 		public override void Dispose()
 		{
-			lock( keepAlive )
+			try
 			{
-				keepAlive.Stop();
+				lock( keepAlive )
+				{
+					keepAlive.Stop();
+				}
 			}
-			base.Dispose();
+			finally
+			{
+				base.Dispose();
+			}
 		}
 		protected override async Task WhenKeepAliveSent( CancellationToken cancellationToken )
 		{
-			await base.WhenKeepAliveSent( cancellationToken );
 			lock( keepAlive )
 			{
 				keepAlive.Postpone();
 			}
+			await base.WhenKeepAliveSent( cancellationToken );
 		}
 		#endregion
 		#region ServerProxy
