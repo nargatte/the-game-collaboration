@@ -54,7 +54,8 @@
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
-    <Compile Include="Const\ConstHelper.cs" />
+    <Compile Include="Components\Events\DisconnectedArgs.cs" />
+    <Compile Include="Const\Constants.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\ReceivedArgs.cs" />
     <Compile Include="Components\Events\ReceivedKeepAliveArgs.cs" />

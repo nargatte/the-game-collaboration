@@ -33,13 +33,13 @@ namespace CommunicationSubstitute
 						NumberOfPlayersPerTeam = 1u,
                         Goals = new GoalField[]
                         {
-                            new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal},
-                            new GoalField { Team = TeamColour.Red, X = 0, Y = 9, Type = GoalFieldType.Goal}
+                            new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal },
+                            new GoalField { Team = TeamColour.Red, X = 0, Y = 9, Type = GoalFieldType.Goal }
                         }
                     }
 				};
-				int timeout = 10000;
-				using( var cts = new CancellationTokenSource(timeout) )
+				int timeout = 20000;
+				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
@@ -72,7 +72,7 @@ namespace CommunicationSubstitute
 								Console.WriteLine( "Module task faulted by:" );
 								foreach( var e in task.Exception.Flatten().InnerExceptions )
 									if( e is DisconnectionException )
-										Console.WriteLine( "Disconnection." );
+										Console.WriteLine( $"Disconnection ( { e.Message } )" );
 									else
 										Console.WriteLine( $"Exception: { e }." );
 							}
@@ -95,11 +95,13 @@ namespace CommunicationSubstitute
 			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
 			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;
+			communicationObserver.Disconnected += OnDisconnected;
 		}
 		private static void OnSent( object s, SentArgs e ) => Console.WriteLine( $"{ e.Local } sends to { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnReceived( object s, ReceivedArgs e ) => Console.WriteLine( $"{ e.Local } received from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }.\n" );
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
 	}
 }

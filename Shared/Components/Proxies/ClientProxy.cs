@@ -40,7 +40,7 @@ namespace Shared.Components.Proxies
 		protected Task CheckDisconnection( CancellationToken cancellationToken )
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			System.Console.WriteLine( "CLIENT DISCONNECTED." );
+			OnDisconnected( Local, Remote );
 			return Task.CompletedTask;
 		}
 		#endregion
