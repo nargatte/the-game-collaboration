@@ -1,49 +1,78 @@
-﻿using Shared.Components.Communication;
+﻿using PlayerCore.Components.Factories;
+using PlayerCore.Components.Modules;
+using Shared.Components.Events;
+using Shared.Components.Exceptions;
+using Shared.DTOs.Configuration;
 using Shared.Enums;
-using Shared.Messages.Communication;
+using Shared.Interfaces.Events;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayerCore
 {
-    class Program
+	class Program
     {
-        static void Main(string[] args)
-        {
-            //using (var communicationServerProxy = new CommunicationServerProxy())
-            {
-                //communicationServerProxy.Connect("localhost", 21);
-                //Game g = new Game()
-                //{
-                //    Board = new GameBoard()
-                //    {
-                //        goalsHeight = 10,
-                //        tasksHeight = 20,
-                //        width = 30
-                //    },
-                //    PlayerLocation = new Location()
-                //    {
-                //        x = 12,
-                //        y = 13
-                //    },
-                //    Players = new Player[]
-                //    {
-                //        new Player() {id = 1, team = TeamColour.Blue, type = PlayerType.Leader},
-                //        new Player() {id = 2, team = TeamColour.Blue, type = PlayerType.Member},
-                //        new Player() {id = 3, team = TeamColour.Red, type = PlayerType.Leader},
-                //        new Player() {id = 4, team = TeamColour.Red, type = PlayerType.Member}
-                //    },
-                //    playerId = 2
-                //};
-                //networkClient.Send(g);
-
-                //if (networkClient.TryReceive(out Game g2))
-                //{
-                //    var q = g2.ToString();
-                //}
-
-                //var reg = new RegistrationProcess(communicationServerProxy, "Easy game", TeamColour.Blue,
-                    //PlayerType.Leader);
-                //var pig = reg.Registration();
-            }
-        }
-    }
+		public static async Task Main( string[] args )
+		{
+			try
+			{
+				string ip = "127.0.0.1";
+				int port = 65535;
+				var playerSettings = new PlayerSettings();
+				string gameName = default;
+				TeamColour team = default;
+				PlayerType role = default;
+				int timeout = 30000;
+				//using( var cts = new CancellationTokenSource() )
+				using( var cts = new CancellationTokenSource( timeout ) )
+				{
+					var module = new PlayerModule( ip, port, playerSettings, gameName, team, role, new PlayerFactory() );
+					Debug( module );
+					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
+					try
+					{
+						await task;
+					}
+					catch( OperationCanceledException )
+					{
+					}
+					finally
+					{
+						if( task.IsFaulted )
+						{
+							Console.WriteLine( "Module task faulted by:" );
+							foreach( var e in task.Exception.Flatten().InnerExceptions )
+								if( e is DisconnectionException )
+									Console.WriteLine( $"Disconnection ( { e.Message } )" );
+								else
+									Console.WriteLine( $"Exception: { e }." );
+						}
+						else if( task.IsCanceled )
+							Console.WriteLine( $"Module task canceled." );
+						else
+							Console.WriteLine( "Module task completed." );
+					}
+				}
+			}
+			catch( Exception )
+			{
+			}
+		}
+		private static void Debug( ICommunicationObserver communicationObserver )
+		{
+			communicationObserver.Sent += OnSent;
+			communicationObserver.Received += OnReceived;
+			communicationObserver.SentKeepAlive += OnSentKeepAlive;
+			communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
+			communicationObserver.Discarded += OnDiscarded;
+			communicationObserver.Disconnected += OnDisconnected;
+		}
+		private static void OnSent( object s, SentArgs e ) => Console.WriteLine( $"{ e.Local } sends to { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnReceived( object s, ReceivedArgs e ) => Console.WriteLine( $"{ e.Local } received from { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnSentKeepAlive( object s, SentKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } sends keep alive to { e.Remote }.\n" );
+		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
+		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
+		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
+	}
 }

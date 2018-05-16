@@ -38,7 +38,7 @@ namespace CommunicationSubstitute
                         }
                     }
 				};
-				int timeout = 40000;
+				int timeout = 20000;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
@@ -90,11 +90,11 @@ namespace CommunicationSubstitute
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )
 		{
-			//communicationObserver.Sent += OnSent;
-			//communicationObserver.Received += OnReceived;
-			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
-			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
-			//communicationObserver.Discarded += OnDiscarded;
+			communicationObserver.Sent += OnSent;
+			communicationObserver.Received += OnReceived;
+			communicationObserver.SentKeepAlive += OnSentKeepAlive;
+			communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
+			communicationObserver.Discarded += OnDiscarded;
 			communicationObserver.Disconnected += OnDisconnected;
 		}
 		private static void OnSent( object s, SentArgs e ) => Console.WriteLine( $"{ e.Local } sends to { e.Remote }:\n{ e.SerializedMessage }\n" );
