@@ -453,6 +453,12 @@ namespace GameMasterCore
         #endregion
 
         #region IGameMaster
+
+        public void DisconnectPlayer(DTO.PlayerDisconnected playerDisconnected)
+        {
+            var player = board.GetPlayer(playerDisconnected.playerId);
+            board.SetPlayer(board.Factory.CreatePlayer(player.Id, player.Team, player.Type, DateTime.Now, null, player.Piece));
+        }
         public DTO.RegisteredGames PerformConfirmGameRegistration()
         {
             return new DTO.RegisteredGames()

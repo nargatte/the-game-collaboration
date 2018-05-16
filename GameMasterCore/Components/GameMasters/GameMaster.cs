@@ -121,6 +121,7 @@ namespace GameMasterCore.Components.GameMasters
                     TestPiece testPieceRequest;
                     PlacePiece placeRequest;
                     //+knowledge exchange
+                    PlayerDisconnected playerDisconnected;
                     if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
                     {
                         tasks.Add(DelayMessage(moveRequest, ActionCosts.MoveDelay, cancellationToken));
@@ -140,6 +141,11 @@ namespace GameMasterCore.Components.GameMasters
                     else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
                         tasks.Add(DelayMessage(placeRequest, ActionCosts.PlacingDelay, cancellationToken));
+                    }
+                    //knowledge exchange
+                    else if ((playerDisconnected = await Proxy.TryReceiveAsync<PlayerDisconnected>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        innerGM.DisconnectPlayer(playerDisconnected);
                     }
                     else
                         Proxy.Discard();
