@@ -146,10 +146,10 @@ namespace GameMasterCore.Components.GameMasters
                     }
                     else if ((authorizeKnowledgeExchange = await Proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(authorizeKnowledgeExchange))
-                        {
-                            innerGM.BlockPlayer(authorizeKnowledgeExchange);
-                        }
+                        //if (!innerGM.IsPlayerBusy(authorizeKnowledgeExchange))
+                        //{
+                        //    innerGM.BlockPlayer(authorizeKnowledgeExchange);
+                        //}
                     }
                     else if ((playerDisconnected = await Proxy.TryReceiveAsync<PlayerDisconnected>(cancellationToken).ConfigureAwait(false)) != null)
                     {

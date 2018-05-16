@@ -27,7 +27,7 @@ namespace GameMasterCore
         public virtual IReadOnlyBoard Board => board;
         public IBoard board;
         public Dictionary<string, ulong> playerGuidToId;
-        public Dictionary<ulong, DTO.GameMessage> playerBusy;
+        public Dictionary<ulong, DTO.GameMessage> playerBusy = new Dictionary<ulong, DTO.GameMessage>();
         int playerIDcounter = 0;
         ulong pieceIDcounter = 0;
         Config.GameMasterSettings config;
