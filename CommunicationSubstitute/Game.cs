@@ -280,7 +280,7 @@ namespace CommunicationSubstitute
             bool endGame;
             do
             {
-                args.player.State.ReceiveData(args.player.PerformAction());
+                //args.player.State.ReceiveData(args.player.PerformAction());
 
                 lock (EndGame)
                 {

@@ -4,12 +4,14 @@ using Shared.Components.Factories;
 using Shared.Interfaces;
 using Shared.Interfaces.Proxies;
 using Shared.Messages.Communication;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PlayerCore
 {
     public class PlayerInGame
     {
-        //private readonly ICommunicationServerProxy _communicationServerProxy;
+        private readonly IServerProxy _communicationServerProxy;
 
         private Strategy2 Strategy { get; }
 
@@ -17,15 +19,12 @@ namespace PlayerCore
 
         public PlayerInGame(IServerProxy communicationServerProxy, Game game, ulong playerId, string playerGuid, ulong gameId)
         {
-            //_communicationServerProxy = communicationServerProxy;
+            _communicationServerProxy = communicationServerProxy;
             State = new State(game, playerId, gameId, playerGuid, new BoardFactory());
-            //Strategy = new Strategy2(_communicationServerProxy, State);
+            Strategy = new Strategy2(_communicationServerProxy, State);
         }
 
-        public Data PerformAction()
-        {
-            return Strategy.PerformAction();
-        }
+        public Task PerformAction(CancellationToken cancellationToken) => Strategy.PerformAction(cancellationToken);
 
 
     }
