@@ -27,6 +27,7 @@ namespace GameMasterCore
         public virtual IReadOnlyBoard Board => board;
         public IBoard board;
         public Dictionary<string, ulong> playerGuidToId;
+        public Dictionary<ulong, DTO.GameMessage> playerBusy;
         int playerIDcounter = 0;
         ulong pieceIDcounter = 0;
         Config.GameMasterSettings config;
@@ -458,6 +459,8 @@ namespace GameMasterCore
         {
             var player = board.GetPlayer(playerDisconnected.playerId);
             board.SetPlayer(board.Factory.CreatePlayer(player.Id, player.Team, player.Type, DateTime.Now, null, player.Piece));
+            var guidId = playerGuidToId.First(kvp => kvp.Value == playerDisconnected.playerId);
+            playerGuidToId.Remove(guidId.Key);
         }
         public DTO.RegisteredGames PerformConfirmGameRegistration()
         {
@@ -583,6 +586,7 @@ namespace GameMasterCore
 
         public DTO.Data Perform(DTO.GameMessage gameMessage)
         {
+            playerBusy.Remove(GetPlayerIdFromGuid(gameMessage.playerGuid));
             switch (gameMessage)
             {
                 case DTO.Move move:
@@ -598,6 +602,13 @@ namespace GameMasterCore
                 default:
                     return new DTO.Data() { playerId = GetPlayerIdFromGuid(gameMessage.playerGuid) };
             }
+        }
+
+        public bool IsPlayerBusy(DTO.GameMessage message)
+        {
+            if (!playerGuidToId.ContainsKey(message.playerGuid) || playerBusy.ContainsKey(GetPlayerIdFromGuid(message.playerGuid)))
+                return true;
+            return false;
         }
 
         public virtual event EventHandler<LogArgs> Log = delegate { };
@@ -773,7 +784,8 @@ namespace GameMasterCore
 
         private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message)
         {
-            // TODO: verify gameID?
+            if (!playerGuidToId.ContainsKey(message.playerGuid) || playerBusy.ContainsKey(GetPlayerIdFromGuid(message.playerGuid)))
+                return null;
             return board.GetPlayer(GetPlayerIdFromGuid(message.playerGuid));
         }
 

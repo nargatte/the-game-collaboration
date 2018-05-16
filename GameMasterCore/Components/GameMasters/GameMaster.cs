@@ -70,6 +70,7 @@ namespace GameMasterCore.Components.GameMasters
 
         BlockingGameMaster innerGM;
         List<Task<GameMessage>> tasks = new List<Task<GameMessage>>();
+        Dictionary<uint, GameMessage> playerBusy = new Dictionary<uint, GameMessage>();
 
         void initTmpInnerGM(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts)
         {
@@ -120,29 +121,40 @@ namespace GameMasterCore.Components.GameMasters
                     PickUpPiece pickUpRequest;
                     TestPiece testPieceRequest;
                     PlacePiece placeRequest;
-                    //+knowledge exchange
+                    AuthorizeKnowledgeExchange authorizeKnowledgeExchange;
                     PlayerDisconnected playerDisconnected;
                     if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        tasks.Add(DelayMessage(moveRequest, ActionCosts.MoveDelay, cancellationToken));
+                        if(!innerGM.IsPlayerBusy(moveRequest))
+                            tasks.Add(DelayMessage(moveRequest, ActionCosts.MoveDelay, cancellationToken));
                     }
                     else if ((discoverRequest = await Proxy.TryReceiveAsync<Discover>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        tasks.Add(DelayMessage(discoverRequest, ActionCosts.DiscoverDelay, cancellationToken));
+                        if (!innerGM.IsPlayerBusy(discoverRequest))
+                            tasks.Add(DelayMessage(discoverRequest, ActionCosts.DiscoverDelay, cancellationToken));
                     }
                     else if ((pickUpRequest = await Proxy.TryReceiveAsync<PickUpPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        tasks.Add(DelayMessage(pickUpRequest, ActionCosts.PickUpDelay, cancellationToken));
+                        if (!innerGM.IsPlayerBusy(pickUpRequest))
+                            tasks.Add(DelayMessage(pickUpRequest, ActionCosts.PickUpDelay, cancellationToken));
                     }
                     else if ((testPieceRequest = await Proxy.TryReceiveAsync<TestPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        tasks.Add(DelayMessage(testPieceRequest, ActionCosts.TestDelay, cancellationToken));
+                        if (!innerGM.IsPlayerBusy(testPieceRequest))
+                            tasks.Add(DelayMessage(testPieceRequest, ActionCosts.TestDelay, cancellationToken));
                     }
                     else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        tasks.Add(DelayMessage(placeRequest, ActionCosts.PlacingDelay, cancellationToken));
+                        if (!innerGM.IsPlayerBusy(placeRequest))
+                            tasks.Add(DelayMessage(placeRequest, ActionCosts.PlacingDelay, cancellationToken));
                     }
-                    //knowledge exchange
+                    else if ((authorizeKnowledgeExchange = await Proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>(cancellationToken).ConfigureAwait(false)) != null)
+                    {
+                        if (!innerGM.IsPlayerBusy(moveRequest))
+                        {
+
+                        }
+                    }
                     else if ((playerDisconnected = await Proxy.TryReceiveAsync<PlayerDisconnected>(cancellationToken).ConfigureAwait(false)) != null)
                     {
                         innerGM.DisconnectPlayer(playerDisconnected);
