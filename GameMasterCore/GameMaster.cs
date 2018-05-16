@@ -142,7 +142,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
 
-            OnLog("discover", DateTime.Now, 1, playerPawn.Id, discoverRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("discover", DateTime.Now, gameId, playerPawn.Id, discoverRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
             //Prepare partial result structures
             List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
@@ -194,7 +194,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
 
-            OnLog("move", DateTime.Now, 1, playerPawn.Id, moveRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("move", DateTime.Now, gameId, playerPawn.Id, moveRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
             int targetX = (int)playerPawn.GetX().Value, targetY = (int)playerPawn.GetY().Value;
             switch (moveRequest.direction)
@@ -270,7 +270,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
 
-            OnLog("pickup", DateTime.Now, 1, playerPawn.Id, pickUpRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("pickup", DateTime.Now, gameId, playerPawn.Id, pickUpRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
             ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as ITaskField);
             IPiece piece = field.Piece;
@@ -324,7 +324,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
 
-            OnLog("place", DateTime.Now, 1, playerPawn.Id, placeRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("place", DateTime.Now, gameId, playerPawn.Id, placeRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
             IPlayerPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
@@ -427,7 +427,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
 
-            OnLog("test", DateTime.Now, 1, playerPawn.Id, testPieceRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("test", DateTime.Now, gameId, playerPawn.Id, testPieceRequest.playerGuid, playerPawn.Team, playerPawn.Type);
 
             IPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
@@ -461,6 +461,7 @@ namespace GameMasterCore
             board.SetPlayer(board.Factory.CreatePlayer(player.Id, player.Team, player.Type, DateTime.Now, null, player.Piece));
             var guidId = playerGuidToId.First(kvp => kvp.Value == playerDisconnected.playerId);
             playerGuidToId.Remove(guidId.Key);
+            OnLog("Disconnected", DateTime.Now, gameId, guidId.Value, guidId.Key, player.Team, player.Type);
         }
         public DTO.RegisteredGames PerformConfirmGameRegistration()
         {
@@ -874,7 +875,7 @@ namespace GameMasterCore
             {
                 IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
-                OnLog(win ? "Victory" : "Defeat", DateTime.Now, 1, player.Id, guid, player.Team, player.Type);
+                OnLog(win ? "Victory" : "Defeat", DateTime.Now, gameId, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
                 {
                     gameFinished = true,

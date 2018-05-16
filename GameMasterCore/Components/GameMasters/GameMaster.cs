@@ -211,7 +211,7 @@ namespace GameMasterCore.Components.GameMasters
                 }
 
             }
-            
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         async Task TaskPerformer(CancellationToken cancellationToken)
