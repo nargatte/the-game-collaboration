@@ -319,9 +319,9 @@ namespace CommunicationServerCore.Components.Servers
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
-						await PassToPlayerAsync( proxy, rejectJoiningGame, cancellationToken );//pass message
+						await PassPlayerMessageAsync( proxy, rejectJoiningGame, cancellationToken );//pass message
 					else if( ( game = await proxy.TryReceiveAsync<Game>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Game
-						await PassToPlayerAsync( proxy, game, cancellationToken );//pass message
+						await PassPlayerMessageAsync( proxy, game, cancellationToken );//pass message
 					else if( ( gameStarted = await proxy.TryReceiveAsync<GameStarted>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GameStarted
 						await GameStartedAsync( proxy, gameStarted, cancellationToken );//process request
 					else//doesn't matter
@@ -354,7 +354,7 @@ namespace CommunicationServerCore.Components.Servers
 				throw;
 			}
 		}
-		protected async Task PassToPlayerAsync< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered player
+		protected async Task PassPlayerMessageAsync< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered player
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( players.TryGetValue( playerMessage.PlayerId, out var session ) )//if player exists

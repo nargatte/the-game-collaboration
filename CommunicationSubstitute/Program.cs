@@ -46,9 +46,9 @@ namespace CommunicationSubstitute
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerType.Leader, new PlayerFactory() );
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerType.Leader, new PlayerFactory() );
 					Debug( cs );
-					Debug( gm1 );
-					Debug( p1 );
-					Debug( p2 );
+					//Debug( gm1 );
+					//Debug( p1 );
+					//Debug( p2 );
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
