@@ -116,6 +116,7 @@ namespace GameMasterCore.Components.GameMasters
             {
                 while (true)
                 {
+                    //GameMessage gameMessage;
                     Move moveRequest;
                     Discover discoverRequest;
                     PickUpPiece pickUpRequest;
@@ -125,34 +126,29 @@ namespace GameMasterCore.Components.GameMasters
                     PlayerDisconnected playerDisconnected;
                     if ((moveRequest = await Proxy.TryReceiveAsync<Move>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if(!innerGM.IsPlayerBusy(moveRequest))
-                            tasks.Add(DelayMessage(moveRequest, ActionCosts.MoveDelay, cancellationToken));
+                        AddToTaskQueue(moveRequest, ActionCosts.MoveDelay, cancellationToken);
                     }
                     else if ((discoverRequest = await Proxy.TryReceiveAsync<Discover>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(discoverRequest))
-                            tasks.Add(DelayMessage(discoverRequest, ActionCosts.DiscoverDelay, cancellationToken));
+                        AddToTaskQueue(discoverRequest, ActionCosts.DiscoverDelay, cancellationToken);
                     }
                     else if ((pickUpRequest = await Proxy.TryReceiveAsync<PickUpPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(pickUpRequest))
-                            tasks.Add(DelayMessage(pickUpRequest, ActionCosts.PickUpDelay, cancellationToken));
+                        AddToTaskQueue(pickUpRequest, ActionCosts.PickUpDelay, cancellationToken);
                     }
                     else if ((testPieceRequest = await Proxy.TryReceiveAsync<TestPiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(testPieceRequest))
-                            tasks.Add(DelayMessage(testPieceRequest, ActionCosts.TestDelay, cancellationToken));
+                        AddToTaskQueue(testPieceRequest, ActionCosts.TestDelay, cancellationToken);
                     }
                     else if ((placeRequest = await Proxy.TryReceiveAsync<PlacePiece>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(placeRequest))
-                            tasks.Add(DelayMessage(placeRequest, ActionCosts.PlacingDelay, cancellationToken));
+                        AddToTaskQueue(placeRequest, ActionCosts.PlacingDelay, cancellationToken);
                     }
                     else if ((authorizeKnowledgeExchange = await Proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(moveRequest))
+                        if (!innerGM.IsPlayerBusy(authorizeKnowledgeExchange))
                         {
-
+                            innerGM.BlockPlayer(authorizeKnowledgeExchange);
                         }
                     }
                     else if ((playerDisconnected = await Proxy.TryReceiveAsync<PlayerDisconnected>(cancellationToken).ConfigureAwait(false)) != null)
@@ -233,6 +229,7 @@ namespace GameMasterCore.Components.GameMasters
                 tasks.Remove(task);
                 GameMessage message = await task;
                 await Proxy.SendAsync(innerGM.Perform(message), cancellationToken).ConfigureAwait(false);
+                innerGM.FreePlayer(message);
             }
         }
 
@@ -248,6 +245,15 @@ namespace GameMasterCore.Components.GameMasters
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationToken).ConfigureAwait(false);
             return message;
+        }
+
+        void AddToTaskQueue(GameMessage message, uint delay, CancellationToken cancellationToken)
+        {
+            if (!innerGM.IsPlayerBusy(message))
+            {
+                innerGM.BlockPlayer(message);
+                tasks.Add(DelayMessage(message, ActionCosts.MoveDelay, cancellationToken));
+            }
         }
     }
 }

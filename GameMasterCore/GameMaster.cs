@@ -586,7 +586,6 @@ namespace GameMasterCore
 
         public DTO.Data Perform(DTO.GameMessage gameMessage)
         {
-            playerBusy.Remove(GetPlayerIdFromGuid(gameMessage.playerGuid));
             switch (gameMessage)
             {
                 case DTO.Move move:
@@ -609,6 +608,16 @@ namespace GameMasterCore
             if (!playerGuidToId.ContainsKey(message.playerGuid) || playerBusy.ContainsKey(GetPlayerIdFromGuid(message.playerGuid)))
                 return true;
             return false;
+        }
+
+        public void FreePlayer(DTO.GameMessage message)
+        {
+            playerBusy.Remove(GetPlayerIdFromGuid(message.playerGuid));
+        }
+
+        public void BlockPlayer(DTO.GameMessage message)
+        {
+            playerBusy.Add(GetPlayerIdFromGuid(message.playerGuid), message);
         }
 
         public virtual event EventHandler<LogArgs> Log = delegate { };
