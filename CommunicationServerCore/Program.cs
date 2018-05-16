@@ -18,11 +18,12 @@ namespace CommunicationServerCore
 			{
 				string ip = "127.0.0.1";
 				int port = 65535;
+				var communicationServerSettings = new CommunicationServerSettings();
 				int timeout = 30000;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
-					var module = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
+					var module = new CommunicationServerModule( ip, port, communicationServerSettings, new CommunicationServerFactory() );
 					Debug( module );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
