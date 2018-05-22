@@ -88,33 +88,6 @@
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
     <Compile Include="Components\Tasks\TaskManager.cs" />
-    <Compile Include="DTOs\Communication\BetweenPlayersMessage.cs" />
-    <Compile Include="DTOs\Communication\ConfirmGameRegistration.cs" />
-    <Compile Include="DTOs\Communication\ConfirmJoiningGame.cs" />
-    <Compile Include="DTOs\Communication\Field.cs" />
-    <Compile Include="DTOs\Communication\Game.cs" />
-    <Compile Include="DTOs\Communication\GameBoard.cs" />
-    <Compile Include="DTOs\Communication\GameInfo.cs" />
-    <Compile Include="DTOs\Communication\GameMasterDisconnected.cs" />
-    <Compile Include="DTOs\Communication\GameStarted.cs" />
-    <Compile Include="DTOs\Communication\GetGames.cs" />
-    <Compile Include="DTOs\Communication\GoalField.cs" />
-    <Compile Include="DTOs\Communication\JoinGame.cs" />
-    <Compile Include="DTOs\Communication\Location.cs" />
-    <Compile Include="DTOs\Communication\Player.cs" />
-    <Compile Include="DTOs\Communication\PlayerDisconnected.cs" />
-    <Compile Include="DTOs\Communication\RegisteredGames.cs" />
-    <Compile Include="DTOs\Communication\RegisterGame.cs" />
-    <Compile Include="DTOs\Communication\RejectGameRegistration.cs" />
-    <Compile Include="DTOs\Communication\RejectJoiningGame.cs" />
-    <Compile Include="DTOs\Communication\TaskField.cs" />
-    <Compile Include="DTOs\Configuration\Field.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettingsGameDefinition.cs" />
-    <Compile Include="DTOs\Configuration\GoalField.cs" />
-    <Compile Include="DTOs\Configuration\Location.cs" />
-    <Compile Include="DTOs\Communication\PlayerMessage.cs" />
     <Compile Include="Enums\HostType.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
@@ -132,9 +105,6 @@
     <Compile Include="Components\Players\Player.cs" />
     <Compile Include="Components\Serialization\Serializer.cs" />
     <Compile Include="Components\Serialization\StringWriterWithEncoding.cs" />
-    <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
-    <Compile Include="DTOs\Configuration\Configuration.cs" />
-    <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerType.cs" />
     <Compile Include="Interfaces\Factories\IProxyFactory.cs" />
@@ -201,6 +171,13 @@
     <Compile Include="Messages\Serialization\Serialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="DTOs\Communication\TheProjectGameCommunication.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DTOs\Configuration\Configuration.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
