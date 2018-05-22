@@ -7,8 +7,8 @@ using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
+using Shared.DTOs.Communication;
 using Shared.Enums;
-using Shared.Messages.Communication;
 
 namespace PlayerCoreUnitTests
 {
@@ -26,12 +26,12 @@ namespace PlayerCoreUnitTests
             Assert.Multiple(() =>
             {
                 Assert.IsNull(state.HoldingPiece);
-                Assert.AreEqual(1, state.Game.Players.Length);
-                Assert.AreEqual(0, state.Game.PlayerLocation.x);
-                Assert.AreEqual(0, state.Game.PlayerLocation.y);
-                Assert.AreEqual(10, state.Game.Board.width);
-                Assert.AreEqual(10, state.Game.Board.tasksHeight);
-                Assert.AreEqual(10, state.Game.Board.goalsHeight);
+                Assert.AreEqual(1, state.Game.Players.Count);
+                Assert.AreEqual(0, state.Game.PlayerLocation.X);
+                Assert.AreEqual(0, state.Game.PlayerLocation.Y);
+                Assert.AreEqual(10, state.Game.Board.Width);
+                Assert.AreEqual(10, state.Game.Board.TasksHeight);
+                Assert.AreEqual(10, state.Game.Board.GoalsHeight);
             });
         }
 
@@ -59,17 +59,17 @@ namespace PlayerCoreUnitTests
         public void IsHoldingPiece_Test(uint id)
         {
             State state = GetState(id);
-            state.Game.Players = new Shared.Messages.Communication.Player[1];
+            state.Game.Players = new Shared.DTOs.Communication.Player[1];
             state.Game.Players[0] = GetPlayer(id);
             Data data = GetData();
 
-            data.Pieces = new Shared.Messages.Communication.Piece[1];
+            data.Pieces = new Shared.DTOs.Communication.Piece[1];
             var piece = GetPiece();
-            piece.id = id;
-            piece.playerId = id;
-            piece.playerIdSpecified = true;
-            piece.timestamp = new DateTime();
-            piece.type = PieceType.Unknown;
+            piece.Id = id;
+            piece.PlayerId = id;
+            piece.PlayerIdSpecified = true;
+            piece.Timestamp = new DateTime();
+            piece.Type = PieceType.Unknown;
             data.Pieces[0] = piece;
 
 
@@ -95,10 +95,10 @@ namespace PlayerCoreUnitTests
         public void ReceiveData_EndingGame_InvokeEvent()
         {
             State state = GetState(1);
-            state.Game.Players = new Shared.Messages.Communication.Player[1];
+            state.Game.Players = new Shared.DTOs.Communication.Player[1];
             state.Game.Players[0] = GetPlayer(1);
             Data data = GetData();
-            data.gameFinished = true;
+            data.GameFinished = true;
             bool wasCalled = false;
             state.EndGame += (s, a) => wasCalled = true;
 
@@ -115,18 +115,18 @@ namespace PlayerCoreUnitTests
             State state = GetState(1);
             Data data = GetData();
 
-            Shared.Messages.Communication.TaskField taskField = new Shared.Messages.Communication.TaskField();
-            taskField.x = x;
-            taskField.y = y;
-            taskField.playerIdSpecified = true;
-            taskField.playerId = 1;
-            taskField.distanceToPiece = 1;
-            data.TaskFields = new Shared.Messages.Communication.TaskField[1];
+            Shared.DTOs.Communication.TaskField taskField = new Shared.DTOs.Communication.TaskField();
+            taskField.X = x;
+            taskField.Y = y;
+            taskField.PlayerIdSpecified = true;
+            taskField.PlayerId = 1;
+            taskField.DistanceToPiece = 1;
+            data.TaskFields = new Shared.DTOs.Communication.TaskField[1];
             data.TaskFields[0] = taskField;
 
             state.ReceiveData(data);
 
-            Assert.AreEqual(taskField.playerId, state.Board.GetPlayer(1).Id);
+            Assert.AreEqual(taskField.PlayerId, state.Board.GetPlayer(1).Id);
 
         }
 
@@ -139,22 +139,22 @@ namespace PlayerCoreUnitTests
             State state = GetState(1);
             Data data = GetDataWithLocation(x, y);
 
-            Shared.Messages.Communication.GoalField goalField = new Shared.Messages.Communication.GoalField
+            Shared.DTOs.Communication.GoalField goalField = new Shared.DTOs.Communication.GoalField
             {
-                x = x,
-                y = y,
-                playerIdSpecified = true,
-                playerId = 1
+                X = x,
+                Y = y,
+                PlayerIdSpecified = true,
+                PlayerId = 1
             };
 
 
 
-            data.GoalFields = new Shared.Messages.Communication.GoalField[1];
+            data.GoalFields = new Shared.DTOs.Communication.GoalField[1];
             data.GoalFields[0] = goalField;
 
             state.ReceiveData(data);
 
-            Assert.AreEqual(goalField.playerId, state.Board.GetPlayer(1).Id);
+            Assert.AreEqual(goalField.PlayerId, state.Board.GetPlayer(1).Id);
 
         }
 
@@ -166,11 +166,11 @@ namespace PlayerCoreUnitTests
             State state = GetState(1);
             Data data = GetDataWithPiece(x,y);
 
-            Shared.Messages.Communication.Piece piece = GetPiece();
+            Shared.DTOs.Communication.Piece piece = GetPiece();
 
             state.ReceiveData(data);
 
-            Assert.AreEqual(piece.id, state.Board.GetPiece(piece.id).Id);
+            Assert.AreEqual(piece.Id, state.Board.GetPiece(piece.Id).Id);
 
         }
 
@@ -182,16 +182,16 @@ namespace PlayerCoreUnitTests
         {
             Game game = new Game
             {
-                Board = new Shared.Messages.Communication.GameBoard
+                Board = new Shared.DTOs.Communication.GameBoard
                 {
-                    goalsHeight = 10,
-                    tasksHeight = 10,
-                    width = 10
+                    GoalsHeight = 10,
+                    TasksHeight = 10,
+                    Width = 10
                 },
-                playerId = id,
+                PlayerId = id,
                 PlayerLocation = new Location(),
                 
-                Players = new Shared.Messages.Communication.Player[1]
+                Players = new Shared.DTOs.Communication.Player[1]
             };
             game.Players[0] = GetPlayer(id);
             
@@ -201,15 +201,15 @@ namespace PlayerCoreUnitTests
         private Game GetGameWithLocation(uint id, uint x, uint y)
         {
             Game game = new Game();
-            game.Board = new Shared.Messages.Communication.GameBoard();
-            game.Board.goalsHeight = 10;
-            game.Board.tasksHeight = 10;
-            game.Board.width = 10;
-            game.playerId = id;
+            game.Board = new Shared.DTOs.Communication.GameBoard();
+            game.Board.GoalsHeight = 10;
+            game.Board.TasksHeight = 10;
+            game.Board.Width = 10;
+            game.PlayerId = id;
             game.PlayerLocation = new Location();
-            game.PlayerLocation.x = x;
-            game.PlayerLocation.y = y;
-            game.Players = new Shared.Messages.Communication.Player[1];
+            game.PlayerLocation.X = x;
+            game.PlayerLocation.Y = y;
+            game.Players = new Shared.DTOs.Communication.Player[1];
             game.Players[0] = GetPlayer(id);
             return game;
         }
@@ -219,9 +219,9 @@ namespace PlayerCoreUnitTests
         private Data GetData()
         {
             Data data = new Data();
-            data.TaskFields = new Shared.Messages.Communication.TaskField[0];
-            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
-            data.Pieces = new Shared.Messages.Communication.Piece[0];
+            data.TaskFields = new Shared.DTOs.Communication.TaskField[0];
+            data.GoalFields = new Shared.DTOs.Communication.GoalField[0];
+            data.Pieces = new Shared.DTOs.Communication.Piece[0];
             data.PlayerLocation = new Location();
             return data;
         }
@@ -229,19 +229,19 @@ namespace PlayerCoreUnitTests
         private Data GetDataWithPiece(uint x, uint y)
         {
             Data data = new Data();
-            data.TaskFields = new Shared.Messages.Communication.TaskField[1];
-            data.TaskFields[0] = new Shared.Messages.Communication.TaskField();
-            data.TaskFields[0].pieceIdSpecified = true;
-            data.TaskFields[0].pieceId = 1;
-            data.TaskFields[0].x = x;
-            data.TaskFields[0].y = y;
+            data.TaskFields = new Shared.DTOs.Communication.TaskField[1];
+            data.TaskFields[0] = new Shared.DTOs.Communication.TaskField();
+            data.TaskFields[0].PieceIdSpecified = true;
+            data.TaskFields[0].PieceId = 1;
+            data.TaskFields[0].X = x;
+            data.TaskFields[0].Y = y;
 
-            data.GoalFields = new Shared.Messages.Communication.GoalField[0];
-            data.Pieces = new Shared.Messages.Communication.Piece[1];
+            data.GoalFields = new Shared.DTOs.Communication.GoalField[0];
+            data.Pieces = new Shared.DTOs.Communication.Piece[1];
             data.Pieces[0] = GetPiece();
             data.PlayerLocation = new Location();
-            data.PlayerLocation.x = x;
-            data.PlayerLocation.y = y;
+            data.PlayerLocation.X = x;
+            data.PlayerLocation.Y = y;
 
             return data;
         }
@@ -250,30 +250,30 @@ namespace PlayerCoreUnitTests
         {
             Data data = new Data
             {
-                TaskFields = new Shared.Messages.Communication.TaskField[0],
-                GoalFields = new Shared.Messages.Communication.GoalField[0],
-                Pieces = new Shared.Messages.Communication.Piece[0],
+                TaskFields = new Shared.DTOs.Communication.TaskField[0],
+                GoalFields = new Shared.DTOs.Communication.GoalField[0],
+                Pieces = new Shared.DTOs.Communication.Piece[0],
                 PlayerLocation = new Location()
             };
-            data.PlayerLocation.x = x;
-            data.PlayerLocation.y = y;
+            data.PlayerLocation.X = x;
+            data.PlayerLocation.Y = y;
 
             return data;
         }
 
-        private Shared.Messages.Communication.Player GetPlayer(uint id)
+        private Shared.DTOs.Communication.Player GetPlayer(uint id)
         {
-            Shared.Messages.Communication.Player player = new Shared.Messages.Communication.Player();
-            player.id = id;
+            Shared.DTOs.Communication.Player player = new Shared.DTOs.Communication.Player();
+            player.Id = id;
             return player;
         }
 
-        private Shared.Messages.Communication.Piece GetPiece()
+        private Shared.DTOs.Communication.Piece GetPiece()
         {
-            Shared.Messages.Communication.Piece piece = new Shared.Messages.Communication.Piece();
-            piece.type = PieceType.Unknown;
-            piece.timestamp = new System.DateTime(0);
-            piece.id = 1;
+            Shared.DTOs.Communication.Piece piece = new Shared.DTOs.Communication.Piece();
+            piece.Type = PieceType.Unknown;
+            piece.Timestamp = new System.DateTime(0);
+            piece.Id = 1;
             return piece;
         }
     }

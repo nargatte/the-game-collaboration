@@ -117,7 +117,6 @@
     <Compile Include="DTOs\Communication\Player.cs" />
     <Compile Include="DTOs\Communication\PlayerDisconnected.cs" />
     <Compile Include="DTOs\Communication\PlayerMessage.cs" />
-    <Compile Include="DTOs\Communication\PlayerRole.cs" />
     <Compile Include="DTOs\Communication\RegisteredGames.cs" />
     <Compile Include="DTOs\Communication\RegisterGame.cs" />
     <Compile Include="DTOs\Communication\RejectGameRegistration.cs" />

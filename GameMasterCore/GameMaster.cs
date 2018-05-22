@@ -512,7 +512,7 @@ namespace GameMasterCore
                 {
                     Id = id,
                     Team = joinGame.PreferredTeam,
-                    Type = joinGame.PreferredRole
+                    Role = joinGame.PreferredRole
                 }
             };
         }
@@ -890,7 +890,7 @@ namespace GameMasterCore
             {
                 Id = p.Id,
                 Team = p.Team,
-                Role = p.pl
+                Role = p.Type
             });
 
             return new DTO.Game()
