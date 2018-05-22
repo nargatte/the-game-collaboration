@@ -15,8 +15,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml;
 using System.Collections.Generic;
+	using Shared.Enums;
 
-[System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2612.0")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2612.0")]
 [Serializable]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [XmlTypeAttribute(Namespace="https://se2.mini.pw.edu.pl/17-results/")]
