@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using PlayerCore.Interfaces;
 using Shared.Components.Fields;
+using Shared.DTOs.Communication;
 using Shared.Interfaces;
 using Shared.Messages.Communication;
 
@@ -23,8 +24,8 @@ namespace PlayerCore
         private Rt SetCommunicationData<Rt>(Rt gameMessage)
            where Rt : GameMessage
         {
-            gameMessage.gameId = State.GameId;
-            gameMessage.playerGuid = State.Guid;
+            gameMessage.GameId = State.GameId;
+            gameMessage.PlayerGuid = State.Guid;
             return gameMessage;
         }
 
@@ -36,8 +37,8 @@ namespace PlayerCore
                 LastMoveType = Shared.Enums.MoveType.Down;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Down,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Down,
+                    DirectionSpecified = true
                 }));
             }
             else
@@ -45,8 +46,8 @@ namespace PlayerCore
                 LastMoveType = Shared.Enums.MoveType.Up;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Up,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Up,
+                    DirectionSpecified = true
                 }));
 
             }
@@ -63,15 +64,15 @@ namespace PlayerCore
                     LastMoveType = Shared.Enums.MoveType.Down;
                     return GameMaster.PerformMove(SetCommunicationData(new Move
                     {
-                        direction = Shared.Enums.MoveType.Down,
-                        directionSpecified = true
+                        Direction = Shared.Enums.MoveType.Down,
+                        DirectionSpecified = true
                     }));
                 case Shared.Enums.MoveType.Down:
                     LastMoveType = Shared.Enums.MoveType.Up;
                     return GameMaster.PerformMove(SetCommunicationData(new Move
                     {
-                        direction = Shared.Enums.MoveType.Up,
-                        directionSpecified = true
+                        Direction = Shared.Enums.MoveType.Up,
+                        DirectionSpecified = true
                     }));
                 case Shared.Enums.MoveType.Left:
                     LastMoveType = Shared.Enums.MoveType.Right;

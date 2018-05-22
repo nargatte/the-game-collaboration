@@ -322,7 +322,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
 
-            OnLog("place", DateTime.Now, 1, playerPawn.Id, placeRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("place", DateTime.Now, 1, playerPawn.Id, placeRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
             IPlayerPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
@@ -440,9 +440,9 @@ namespace GameMasterCore
                         {
                             Id = heldPiecePawn.Id,
                             Timestamp = DateTime.Now,
-                            playerId = playerPawn.Id,
-                            playerIdSpecified = true,
-                            type = heldPiecePawn.Type
+                            PlayerId = playerPawn.Id,
+                            PlayerIdSpecified = true,
+                            Type = heldPiecePawn.Type
                         }
                     }
             };
@@ -455,9 +455,9 @@ namespace GameMasterCore
 
         public void DisconnectPlayer(DTO.PlayerDisconnected playerDisconnected)
         {
-            var player = board.GetPlayer(playerDisconnected.playerId);
+            var player = board.GetPlayer(playerDisconnected.PlayerId);
             board.SetPlayer(board.Factory.CreatePlayer(player.Id, player.Team, player.Type, DateTime.Now, null, player.Piece));
-            var guidId = playerGuidToId.First(kvp => kvp.Value == playerDisconnected.playerId);
+            var guidId = playerGuidToId.First(kvp => kvp.Value == playerDisconnected.PlayerId);
             playerGuidToId.Remove(guidId.Key);
         }
 		public DTO.RegisteredGames PerformConfirmGameRegistration() => new DTO.RegisteredGames()
@@ -503,7 +503,7 @@ namespace GameMasterCore
             var fieldToPlacePlayer = GetAvailableFieldByTeam(joinGame.PreferredTeam);
             var generatedPlayer = board.Factory.CreatePlayer(id, joinGame.PreferredTeam, joinGame.PreferredRole, DateTime.Now, fieldToPlacePlayer, null);
             board.SetPlayer(generatedPlayer);
-            return new ConfirmJoiningGame()
+            return new DTO.ConfirmJoiningGame()
             {
                 GameId = gameId,
                 PlayerId = id,
@@ -559,7 +559,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
-            if (CheckWin(placeRequest.playerGuid, out DTO.Data finalMessage))
+            if (CheckWin(placeRequest.PlayerGuid, out DTO.Data finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -650,8 +650,8 @@ namespace GameMasterCore
             }
             if (currentField?.Player != null)
             {
-                fieldToReturn.playerId = currentField.Player.Id;
-                fieldToReturn.playerIdSpecified = true;
+                fieldToReturn.PlayerId = currentField.Player.Id;
+                fieldToReturn.PlayerIdSpecified = true;
                 if (board.GetPlayer(currentField.Player.Id).Piece != null) //check for held piece
                     piecesToReturn.Add(new DTO.Piece
                     {
@@ -664,7 +664,7 @@ namespace GameMasterCore
             }
 
 
-            fieldToReturn.distanceToPiece = (int)board.Pieces.
+            fieldToReturn.DistanceToPiece = (int)board.Pieces.
                 Where(piece => piece is IFieldPiece).
                 Select(piece => piece as IFieldPiece).
                 Where(fieldPiece => fieldPiece.Field != null).
@@ -702,9 +702,9 @@ namespace GameMasterCore
                         {
                             Id = heldPiece.Id,
                             PlayerId = heldPiece.Player.Id,
-                            playerIdSpecified = true,
-                            timestamp = DateTime.Now,
-                            type = PieceType.Unknown
+                            PlayerIdSpecified = true,
+                            Timestamp = DateTime.Now,
+                            Type = PieceType.Unknown
                         }
                     };
                 }

@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Fields;
+using Shared.DTOs.Communication;
 using Shared.Interfaces;
-using Shared.Messages.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace PlayerCore
         private Rt SetCommunicationData<Rt>(Rt gameMessage)
             where Rt: GameMessage
         {
-            gameMessage.gameId = State.GameId;
-            gameMessage.playerGuid = State.Guid;
+            gameMessage.GameId = State.GameId;
+            gameMessage.PlayerGuid = State.Guid;
             return gameMessage;
         }
 
@@ -116,16 +116,16 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Down,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Down,
+                            DirectionSpecified = true
                         }));
                     }
                     else // Must go up
                     {
                         var data = GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Up,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Up,
+                            DirectionSpecified = true
                         }));
                         DiscoveryCount = 0;
                         return data;
@@ -151,8 +151,8 @@ namespace PlayerCore
 
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = DirectionToPiece(),
-                            directionSpecified = true
+                            Direction = DirectionToPiece(),
+                            DirectionSpecified = true
                         }));
                     }
                 }
@@ -180,16 +180,16 @@ namespace PlayerCore
                         }
                         else return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = DirectionToPiece(),
-                            directionSpecified = true
+                            Direction = DirectionToPiece(),
+                            DirectionSpecified = true
                         }));
                     }
                     else if(goalField!=null && (goalField.Type == Shared.Enums.GoalFieldType.NonGoal))
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = DirectionToUnknownGoal(),
-                            directionSpecified = true
+                            Direction = DirectionToUnknownGoal(),
+                            DirectionSpecified = true
                         }));
                     }
                     else if (taskField != null) // Player is standing in task field
@@ -200,8 +200,8 @@ namespace PlayerCore
                             {
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
-                                    direction = Shared.Enums.MoveType.Up,
-                                    directionSpecified = true
+                                    Direction = Shared.Enums.MoveType.Up,
+                                    DirectionSpecified = true
                                 }));
                                 
                             }
@@ -209,8 +209,8 @@ namespace PlayerCore
                             {
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
-                                    direction = DirectionToPiece(),
-                                    directionSpecified = true
+                                    Direction = DirectionToPiece(),
+                                    DirectionSpecified = true
                                 }));
                             }
                         }
@@ -220,16 +220,16 @@ namespace PlayerCore
                             {
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
-                                    direction = Shared.Enums.MoveType.Down,
-                                    directionSpecified = true
+                                    Direction = Shared.Enums.MoveType.Down,
+                                    DirectionSpecified = true
                                 }));
                             }
                             else
                             {
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
-                                    direction = DirectionToPiece(),
-                                    directionSpecified = true
+                                    Direction = DirectionToPiece(),
+                                    DirectionSpecified = true
                                 }));
                             }
                         }
@@ -238,8 +238,8 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = DirectionToUnknownGoal(),
-                            directionSpecified = true
+                            Direction = DirectionToUnknownGoal(),
+                            DirectionSpecified = true
                         }));
                     }
 
