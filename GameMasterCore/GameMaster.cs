@@ -425,7 +425,7 @@ namespace GameMasterCore
         {
             IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
 
-            OnLog("test", DateTime.Now, 1, playerPawn.Id, testPieceRequest.playerGuid, playerPawn.Team, playerPawn.Type);
+            OnLog("test", DateTime.Now, 1, playerPawn.Id, testPieceRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
             IPiece heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
@@ -491,7 +491,7 @@ namespace GameMasterCore
             bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.PreferredTeam && player.Type == Shared.Enums.PlayerRole.Leader).Count() > 0;
 
             // if there is a leader already then modify the request accordingly
-            if ( teamAlreadyHasLeader && joinGame.PreferredRole == Shared.Enums.PlayerRole.Leader)
+            if ( teamAlreadyHasLeader && joinGame.PreferredRole == PlayerRole.Leader)
             {
                 joinGame.PreferredRole = Shared.Enums.PlayerRole.Member;
             }
@@ -570,7 +570,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformTestPiece(DTO.TestPiece testPieceRequest)
         {
-            if (CheckWin(testPieceRequest.playerGuid, out DTO.Data finalMessage))
+            if (CheckWin(testPieceRequest.PlayerGuid, out DTO.Data finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -890,7 +890,7 @@ namespace GameMasterCore
             {
                 Id = p.Id,
                 Team = p.Team,
-                Type = p.Type
+                Role = p.pl
             });
 
             return new DTO.Game()

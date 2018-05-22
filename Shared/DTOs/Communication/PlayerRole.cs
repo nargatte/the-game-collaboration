@@ -22,8 +22,8 @@ using System.Collections.Generic;
 [XmlRootAttribute("PlayerRole")]
 public enum PlayerRole
 {
-    leader,
-    member,
+    Leader,
+    Member,
 }
 }
 #pragma warning restore

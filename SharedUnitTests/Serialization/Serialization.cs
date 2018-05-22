@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Shared.Components.Fields;
 using Shared.Components.Players;
-using Shared.Messages.Communication;
-using Shared.Messages.Serialization;
+using Shared.Components.Serialization;
+using Shared.DTOs.Communication;
 
 namespace SharedUnitTests.Serialization
 {
@@ -15,17 +15,17 @@ namespace SharedUnitTests.Serialization
         [TestMethod]
         public void SerializeTest()
         {
-            var dataToSerialize = new Shared.Messages.Communication.ConfirmJoiningGame()
+            var dataToSerialize = new Shared.DTOs.Communication.ConfirmJoiningGame()
             {
-                gameId = 1234,
-                playerId = 567,
-                privateGuid = "some random GUID"
+                GameId = 1234,
+                PlayerId = 567,
+                PrivateGuid = "some random GUID"
             };
             var resultingXML = XMLSerialization.Serialize(dataToSerialize, new System.Xml.Serialization.XmlSerializerNamespaces());
             var resultingObject = XMLSerialization.Deserialize<ConfirmJoiningGame>(resultingXML);
-            Assert.AreEqual(dataToSerialize.gameId, resultingObject.gameId);
-            Assert.AreEqual(dataToSerialize.playerId, resultingObject.playerId);
-            Assert.AreEqual(dataToSerialize.privateGuid, resultingObject.privateGuid);
+            Assert.AreEqual(dataToSerialize.GameId, resultingObject.gameId);
+            Assert.AreEqual(dataToSerialize.PlayerId, resultingObject.playerId);
+            Assert.AreEqual(dataToSerialize.PrivateGuid, resultingObject.privateGuid);
             Assert.IsNull(resultingObject.PlayerDefinition);
         }
     }

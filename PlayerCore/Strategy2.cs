@@ -6,7 +6,6 @@ using PlayerCore.Interfaces;
 using Shared.Components.Fields;
 using Shared.DTOs.Communication;
 using Shared.Interfaces;
-using Shared.Messages.Communication;
 
 namespace PlayerCore
 {
@@ -78,15 +77,15 @@ namespace PlayerCore
                     LastMoveType = Shared.Enums.MoveType.Right;
                     return GameMaster.PerformMove(SetCommunicationData(new Move
                     {
-                        direction = Shared.Enums.MoveType.Right,
-                        directionSpecified = true
+                        Direction = Shared.Enums.MoveType.Right,
+                        DirectionSpecified = true
                     }));
                 case Shared.Enums.MoveType.Right:
                     LastMoveType = Shared.Enums.MoveType.Left;
                     return GameMaster.PerformMove(SetCommunicationData(new Move
                     {
-                        direction = Shared.Enums.MoveType.Left,
-                        directionSpecified = true
+                        Direction = Shared.Enums.MoveType.Left,
+                        DirectionSpecified = true
                     }));
                 default: return null;
             }
@@ -99,8 +98,8 @@ namespace PlayerCore
             {
                 case Shared.Enums.MoveType.Up:
 
-                    if ((State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.y == State.Board.Height - State.Board.GoalsHeight - 1) ||
-                        (State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.y == State.Board.Height - State.Board.GoalsHeight - 1))
+                    if ((State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.Y == State.Board.Height - State.Board.GoalsHeight - 1) ||
+                        (State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.Y == State.Board.Height - State.Board.GoalsHeight - 1))
                     {
                         LastMoveType = Shared.Enums.MoveType.Left;
                         return MoveToTheSameDirection();
@@ -109,14 +108,14 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Up,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Up,
+                            DirectionSpecified = true
                         }));
                     }
 
                 case Shared.Enums.MoveType.Down:
-                    if ((State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.y == State.Board.GoalsHeight) ||
-                         (State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.y == State.Board.GoalsHeight))
+                    if ((State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.Y == State.Board.GoalsHeight) ||
+                         (State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.Y == State.Board.GoalsHeight))
                     {
                         LastMoveType = Shared.Enums.MoveType.Left;
                         return MoveToTheSameDirection();
@@ -125,12 +124,12 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Down,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Down,
+                            DirectionSpecified = true
                         }));
                     }
                 case Shared.Enums.MoveType.Left:
-                    if (State.Location.x == 0)
+                    if (State.Location.X == 0)
                     {
                         LastMoveType = Shared.Enums.MoveType.Right;
                         return MoveToTheSameDirection();
@@ -139,12 +138,12 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Left,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Left,
+                            DirectionSpecified = true
                         }));
                     }
                 case Shared.Enums.MoveType.Right:
-                    if (State.Location.x == State.Board.Width - 1)
+                    if (State.Location.X == State.Board.Width - 1)
                     {
                         if (State.TeamColour == Shared.Enums.TeamColour.Blue)
                         {
@@ -162,8 +161,8 @@ namespace PlayerCore
                     {
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
-                            direction = Shared.Enums.MoveType.Right,
-                            directionSpecified = true
+                            Direction = Shared.Enums.MoveType.Right,
+                            DirectionSpecified = true
                         }));
                     }
                 default: return null;
@@ -172,14 +171,14 @@ namespace PlayerCore
 
         public Data MoveRight()
         {
-            if (State.Location.x + 1 < State.Board.Width)
+            if (State.Location.X + 1 < State.Board.Width)
             {
                 LastMoveType = Shared.Enums.MoveType.Right;
                 MovedBackwards = false;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Right,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Right,
+                    DirectionSpecified = true
                 }));
             }
             else return MoveLeft();
@@ -187,14 +186,14 @@ namespace PlayerCore
 
         public Data MoveLeft()
         {
-            if (State.Location.x - 1 >= 0)
+            if (State.Location.X - 1 >= 0)
             {
                 LastMoveType = Shared.Enums.MoveType.Left;
                 MovedBackwards = false;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Left,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Left,
+                    DirectionSpecified = true
                 }));
             }
             return MoveRight();
@@ -207,8 +206,8 @@ namespace PlayerCore
                 LastMoveType = Shared.Enums.MoveType.Up;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Up,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Up,
+                    DirectionSpecified = true
                 }));
             }
             else
@@ -216,8 +215,8 @@ namespace PlayerCore
                 LastMoveType = Shared.Enums.MoveType.Down;
                 return GameMaster.PerformMove(SetCommunicationData(new Move
                 {
-                    direction = Shared.Enums.MoveType.Down,
-                    directionSpecified = true
+                    Direction = Shared.Enums.MoveType.Down,
+                    DirectionSpecified = true
                 }));
 
             }
@@ -237,7 +236,7 @@ namespace PlayerCore
             int index = -1;
             for (int i = 0; i < State.PlayersMyTeam.Count(); i++)
             {
-                if (State.PlayersMyTeam[i].id == State.Id)
+                if (State.PlayersMyTeam[i].Id == State.Id)
                 {
                     index = i;
                     break;
@@ -288,7 +287,7 @@ namespace PlayerCore
             {
                 LastDiscover = false;
             }
-            else if (WasLastActionPlace==false && State.HoldingPiece == null && LastLocation != null && LastLocation.x == State.Location.x && LastLocation.y == State.Location.y)
+            else if (WasLastActionPlace==false && State.HoldingPiece == null && LastLocation != null && LastLocation.X == State.Location.X && LastLocation.Y == State.Location.Y)
             {
                 
                 if (LastMoveType != null)
@@ -297,18 +296,18 @@ namespace PlayerCore
                     {
                         
                         case Shared.Enums.MoveType.Left:
-                            if (State.Board.GetField(State.Location.x - 1, State.Location.y).Player != null)
+                            if (State.Board.GetField(State.Location.X - 1, State.Location.Y).Player != null)
                             {  
-                                State.Board.GetField(State.Location.x - 1, State.Location.y).Player = null;
+                                State.Board.GetField(State.Location.X - 1, State.Location.Y).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Up;
                                 return MoveToTheSameDirection();
                             }
                             break;
                         case Shared.Enums.MoveType.Right:
-                            if (State.Board.GetField(State.Location.x + 1, State.Location.y).Player != null)
+                            if (State.Board.GetField(State.Location.X + 1, State.Location.Y).Player != null)
                             {
-                                State.Board.GetField(State.Location.x + 1, State.Location.y).Player = null;
+                                State.Board.GetField(State.Location.X + 1, State.Location.Y).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Down;
                                 return MoveToTheSameDirection();
@@ -316,16 +315,16 @@ namespace PlayerCore
                             break;
 
                         case Shared.Enums.MoveType.Up:
-                            if (State.Board.GetField(State.Location.x, State.Location.y + 1).Player != null)
+                            if (State.Board.GetField(State.Location.X, State.Location.Y + 1).Player != null)
                             {
-                                State.Board.GetField(State.Location.x, State.Location.y + 1).Player = null;
+                                State.Board.GetField(State.Location.X, State.Location.Y + 1).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Right;
                                 return MoveToTheSameDirection();
                             }
                             break;
                         case Shared.Enums.MoveType.Down:
-                            if (State.Board.GetField(State.Location.x, State.Location.y - 1).Player != null)
+                            if (State.Board.GetField(State.Location.X, State.Location.Y - 1).Player != null)
                             {
                                 
                                 LastDistanceToPiece = null;
@@ -350,7 +349,7 @@ namespace PlayerCore
                 //}
                 //else
                 //{
-                //    if (State.Location.x != 0)
+                //    if (State.Location.X != 0)
                 //        return MoveLeft();
                 //    else MoveRight();
                 //}
@@ -359,8 +358,8 @@ namespace PlayerCore
 
 
             LastLocation = new Location();
-            LastLocation.x = State.Location.x;
-            LastLocation.y = State.Location.y;
+            LastLocation.X = State.Location.X;
+            LastLocation.Y = State.Location.Y;
 
             //fake discover
             if (FirstDiscover == true)
@@ -444,17 +443,17 @@ namespace PlayerCore
             }
             else //HoldingPiece
             {
-                if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham)
+                if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham)
                 {
                     //return GameMaster.Destroy();
                 }
                 else
                 {
-                    if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Blue && State.Board.TasksHeight / 2 + State.Board.GoalsHeight < State.Location.y)
+                    if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Blue && State.Board.TasksHeight / 2 + State.Board.GoalsHeight < State.Location.Y)
                     {
                         return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
                     }
-                    else if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Red && State.Board.TasksHeight / 2 + State.Board.GoalsHeight > State.Location.y)
+                    else if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Red && State.Board.TasksHeight / 2 + State.Board.GoalsHeight > State.Location.Y)
                     {
                         return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
                     }
@@ -479,11 +478,11 @@ namespace PlayerCore
                                     var g = State.Board.GetField((uint)j, (uint)i) as IGoalField;
                                     if (g.Type == Shared.Enums.GoalFieldType.Unknown)
                                     {
-                                        if (State.Location.y != i)
+                                        if (State.Location.Y != i)
                                             return MoveDown();
-                                        else if (State.Location.x > j)
+                                        else if (State.Location.X > j)
                                             return MoveLeft();
-                                        else if (State.Location.x < j)
+                                        else if (State.Location.X < j)
                                             return MoveRight();
                                         else
                                         {
@@ -500,11 +499,11 @@ namespace PlayerCore
                         }
                         else
                         {
-                            if ((uint)LeftBoundaryOfMyGoalFieldSection > State.Location.x)
+                            if ((uint)LeftBoundaryOfMyGoalFieldSection > State.Location.X)
                             {
                                 return MoveRight();
                             }
-                            else if ((uint)RigthBoundaryOfMyGoalFieldSection < State.Location.x)
+                            else if ((uint)RigthBoundaryOfMyGoalFieldSection < State.Location.X)
                             {
                                 return MoveLeft();
                             }

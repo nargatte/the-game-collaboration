@@ -47,9 +47,9 @@ namespace PlayerCore
 
             IField field = lastChcekFields.OrderBy(f => f.DistanceToPiece).FirstOrDefault();
 
-            if (max_x == field.X && State.Location.x != State.Board.Width-1)
+            if (max_x == field.X && State.Location.X != State.Board.Width-1)
                 return Shared.Enums.MoveType.Right;
-            if (max_y == field.Y && State.Location.y != State.Board.Height-1)
+            if (max_y == field.Y && State.Location.Y != State.Board.Height-1)
                 return Shared.Enums.MoveType.Up;
             if (min_x == field.X)
                 return Shared.Enums.MoveType.Left;
@@ -80,7 +80,7 @@ namespace PlayerCore
                     if (goalField.Type != Shared.Enums.GoalFieldType.Unknown)
                         continue;
 
-                    uint localDistance = (uint)Math.Abs(x - State.Location.x) + (uint)Math.Abs(y - State.Location.y);
+                    uint localDistance = (uint)Math.Abs(x - State.Location.X) + (uint)Math.Abs(y - State.Location.Y);
                     if(localDistance < distance)
                     {
                         distance = localDistance;
@@ -90,13 +90,13 @@ namespace PlayerCore
                 }
             }
 
-            if (bestGoal.X < State.Location.x)
+            if (bestGoal.X < State.Location.X)
                 return Shared.Enums.MoveType.Left;
-            if (bestGoal.Y < State.Location.y)
+            if (bestGoal.Y < State.Location.Y)
                 return Shared.Enums.MoveType.Down;
-            if (bestGoal.X > State.Location.x)
+            if (bestGoal.X > State.Location.X)
                 return Shared.Enums.MoveType.Right;
-            if (bestGoal.Y > State.Location.y)
+            if (bestGoal.Y > State.Location.Y)
                 return Shared.Enums.MoveType.Up;
 
             throw new Exception("Cannot localize the unknown goal");
@@ -160,11 +160,11 @@ namespace PlayerCore
             }
             else // Player indeed holds a piece
             {
-                if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown) // Piece state is unknown
+                if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown) // Piece state is unknown
                 {
                     return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
                 }
-                else if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham) // Bad piece, put it back
+                else if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham) // Bad piece, put it back
                 {
                     State.HoldingPiece = null;
                     return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));

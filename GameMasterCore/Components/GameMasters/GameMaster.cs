@@ -2,9 +2,9 @@
 using Shared.Components.Factories;
 using Shared.Components.Tasks;
 using Shared.Const;
+using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Enums;
-using Shared.Messages.Communication;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -101,7 +101,7 @@ namespace GameMasterCore.Components.GameMasters
                 else
                     Proxy.Discard();
             }
-            await Proxy.SendAsync(new GameStarted() { gameId = id }, cancellationToken).ConfigureAwait(false);
+            await Proxy.SendAsync(new GameStarted() { GameId = id }, cancellationToken).ConfigureAwait(false);
             foreach (var player in innerGM.playerGuidToId)
             {
                 await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken).ConfigureAwait(false);
