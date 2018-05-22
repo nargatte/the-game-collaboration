@@ -14,7 +14,7 @@ namespace PlayerCore
         private IServerProxy Proxy;
         private readonly string GameName;
         private readonly TeamColour TeamColour;
-        private readonly PlayerType PlayerType;
+        private readonly PlayerRole PlayerType;
         private uint RetryJoinGameInterval;
 
         public event EventHandler<string> Logger = (sender, s) => { };
@@ -23,7 +23,7 @@ namespace PlayerCore
             IServerProxy proxy,
             string gameName,
             TeamColour teamColour,
-            PlayerType playerType,
+            PlayerRole playerType,
             uint retryJoinGameInterval)
         {
             Proxy = proxy;

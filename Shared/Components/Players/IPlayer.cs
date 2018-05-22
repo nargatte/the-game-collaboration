@@ -9,7 +9,7 @@ namespace Shared.Components.Players
 	{
 		ulong Id { get; set; }
 		TeamColour Team { get; set; }
-		PlayerType Type { get; set; }
+		PlayerRole Type { get; set; }
 		DateTime Timestamp { get; set; }
 		IField Field { get; set; }
 		IPlayerPiece Piece { get; set; }

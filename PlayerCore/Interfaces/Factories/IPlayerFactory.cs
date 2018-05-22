@@ -6,6 +6,6 @@ namespace PlayerCore.Interfaces.Factories
 {
 	public interface IPlayerFactory : IProxyFactory
 	{
-		IPlayer CreatePlayer( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerType role );
+		IPlayer CreatePlayer( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerRole role );
 	}
 }

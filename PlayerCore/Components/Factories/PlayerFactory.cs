@@ -9,7 +9,7 @@ namespace PlayerCore.Components.Factories
 	public class PlayerFactory : ProxyFactory, IPlayerFactory
 	{
 		#region IPlayerFactory
-		public virtual IPlayer CreatePlayer( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerType role ) => new Player( retryJoinGameInterval, gameName, team, role );
+		public virtual IPlayer CreatePlayer( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerRole role ) => new Player( retryJoinGameInterval, gameName, team, role );
 		#endregion
 	}
 }

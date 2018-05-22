@@ -11,8 +11,8 @@ namespace Shared.Components.Events
 		public ulong PlayerId { get; }
 		public string PlayerGuid { get; }
 		public TeamColour Colour { get; }
-		public PlayerType Role { get; }
-		public LogArgs( string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role )
+		public PlayerRole Role { get; }
+		public LogArgs( string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerRole role )
 		{
 			Type = type;
 			Timestamp = timestamp;

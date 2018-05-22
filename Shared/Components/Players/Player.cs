@@ -11,7 +11,7 @@ namespace Shared.Components.Players
 		#region IPlayer
 		public virtual ulong Id { get; set; }
 		public virtual TeamColour Team { get; set; }
-		public virtual PlayerType Type { get; set; }
+		public virtual PlayerRole Type { get; set; }
 		public virtual DateTime Timestamp { get; set; }
 		private IField field;
 		public virtual IField Field
@@ -55,7 +55,7 @@ namespace Shared.Components.Players
 		}
 		#endregion
 		#region Player
-		public Player( ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )
+		public Player( ulong id, TeamColour team, PlayerRole type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null )
 		{
 			Id = id;
 			Team = team;

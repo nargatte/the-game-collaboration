@@ -493,12 +493,12 @@ namespace GameMasterCore
                 joinGame.PreferredTeam = joinGame.PreferredTeam == TeamColour.Blue ? TeamColour.Red : TeamColour.Blue;
             }
 
-            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.PreferredTeam && player.Type == PlayerType.Leader).Count() > 0;
+            bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.PreferredTeam && player.Type == Shared.Enums.PlayerRole.Leader).Count() > 0;
 
             // if there is a leader already then modify the request accordingly
-            if (teamAlreadyHasLeader && joinGame.PreferredRole == PlayerType.Leader)
+            if ( teamAlreadyHasLeader && joinGame.PreferredRole == Shared.Enums.PlayerRole.Leader)
             {
-                joinGame.PreferredRole = PlayerType.Member;
+                joinGame.PreferredRole = Shared.Enums.PlayerRole.Member;
             }
 
 
@@ -889,7 +889,7 @@ namespace GameMasterCore
             }
         }
 
-        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, PlayerType role)
+        protected void OnLog(string type, DateTime timestamp, ulong gameId, ulong playerId, string playerGuid, TeamColour colour, Shared.Enums.PlayerRole role)
             => EventHelper.OnEvent(this, Log, new LogArgs(type, timestamp, gameId, playerId, playerGuid, colour, role));
         #endregion
 

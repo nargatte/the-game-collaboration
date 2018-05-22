@@ -25,7 +25,7 @@ namespace PlayerCore.Components.Players
 		}
 		#endregion
 		#region Player
-		public Player( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerType role ) : base( retryJoinGameInterval, gameName, team, role )
+		public Player( uint retryJoinGameInterval, string gameName, TeamColour team, Shared.Enums.PlayerRole role ) : base( retryJoinGameInterval, gameName, team, role )
 		{
 		}
 		#endregion

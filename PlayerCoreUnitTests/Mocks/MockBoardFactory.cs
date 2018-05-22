@@ -18,7 +18,7 @@ namespace PlayerCoreUnitTests
 
             public IGoalField CreateGoalField(uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type) => throw new NotImplementedException();
 
-            public IPlayer CreatePlayer(ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece) => throw new NotImplementedException();
+            public IPlayer CreatePlayer(ulong id, TeamColour team, PlayerRole type, DateTime timestamp, IField field, IPlayerPiece piece) => throw new NotImplementedException();
 
             public IPlayerPiece CreatePlayerPiece(ulong id, PieceType type, DateTime timestamp, IPlayer player) => throw new NotImplementedException();
 

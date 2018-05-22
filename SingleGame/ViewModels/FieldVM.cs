@@ -92,10 +92,10 @@ namespace SingleGame.ViewModels
 				}
 				switch( field.Player.Type )
 				{
-				case PlayerType.Leader:
+				case PlayerRole.Leader:
 					PlayerBorder = 3;
 					break;
-				case PlayerType.Member:
+				case PlayerRole.Member:
 					PlayerBorder = 1;
 					break;
 				}

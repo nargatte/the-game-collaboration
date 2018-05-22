@@ -107,15 +107,12 @@
     <Compile Include="DTOs\Communication\GameStarted.cs" />
     <Compile Include="DTOs\Communication\GetGames.cs" />
     <Compile Include="DTOs\Communication\GoalField.cs" />
-    <Compile Include="DTOs\Communication\GoalFieldType.cs" />
     <Compile Include="DTOs\Communication\JoinGame.cs" />
     <Compile Include="DTOs\Communication\KnowledgeExchangeRequest.cs" />
     <Compile Include="DTOs\Communication\Location.cs" />
     <Compile Include="DTOs\Communication\Move.cs" />
-    <Compile Include="DTOs\Communication\MoveType.cs" />
     <Compile Include="DTOs\Communication\PickUpPiece.cs" />
     <Compile Include="DTOs\Communication\Piece.cs" />
-    <Compile Include="DTOs\Communication\PieceType.cs" />
     <Compile Include="DTOs\Communication\PlacePiece.cs" />
     <Compile Include="DTOs\Communication\Player.cs" />
     <Compile Include="DTOs\Communication\PlayerDisconnected.cs" />
@@ -129,7 +126,6 @@
     <Compile Include="DTOs\Communication\SuggestAction.cs" />
     <Compile Include="DTOs\Communication\SuggestActionResponse.cs" />
     <Compile Include="DTOs\Communication\TaskField.cs" />
-    <Compile Include="DTOs\Communication\TeamColour.cs" />
     <Compile Include="DTOs\Communication\TestPiece.cs" />
     <Compile Include="DTOs\Communication\TheProjectGameCommunication.Designer.cs" />
     <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
@@ -142,10 +138,8 @@
     <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
     <Compile Include="DTOs\Configuration\GameMasterSettingsGameDefinition.cs" />
     <Compile Include="DTOs\Configuration\GoalField.cs" />
-    <Compile Include="DTOs\Configuration\GoalFieldType.cs" />
     <Compile Include="DTOs\Configuration\Location.cs" />
     <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
-    <Compile Include="DTOs\Configuration\TeamColour.cs" />
     <Compile Include="Enums\HostType.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
@@ -164,7 +158,7 @@
     <Compile Include="Components\Serialization\Serializer.cs" />
     <Compile Include="Components\Serialization\StringWriterWithEncoding.cs" />
     <Compile Include="Enums\MoveType.cs" />
-    <Compile Include="Enums\PlayerType.cs" />
+    <Compile Include="Enums\PlayerRole.cs" />
     <Compile Include="Interfaces\Factories\IProxyFactory.cs" />
     <Compile Include="Interfaces\Tasks\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
