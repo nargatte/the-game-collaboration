@@ -359,7 +359,7 @@ namespace CommunicationServerCore.Components.Servers
 			if( players.TryGetValue( playerMessage.PlayerId, out var session ) )//if player exists
 				try
 				{
-					await session.Player.SendAsync( playerMessage, cancellationToken );await session.Player.SendAsync( playerMessage, cancellationToken );
+					await session.Player.SendAsync( playerMessage, cancellationToken );
 				}
 				catch( Exception )//Player fault
 				{
