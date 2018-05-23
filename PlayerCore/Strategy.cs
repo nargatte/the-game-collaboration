@@ -29,9 +29,9 @@ namespace PlayerCore
             return gameMessage;
         }
 
-        const int DiscoveryCountMax = 1;
-        private int DiscoveryCount = 0;
-        bool LatMoveUp = false;
+        const int discoveryCountMax = 1;
+        private int discoveryCount = 0;
+        //bool latMoveUp = false;
 
         private Shared.Enums.MoveType DirectionToPiece()
         {
@@ -104,7 +104,7 @@ namespace PlayerCore
 
         public Data PerformAction()
         {
-            IField field = State.Field;
+            var field = State.Field;
             var goalField = field as IGoalField;
             var taskField = field as ITaskField;
 
@@ -127,7 +127,7 @@ namespace PlayerCore
                             Direction = Shared.Enums.MoveType.Up,
                             DirectionSpecified = true
                         }));
-                        DiscoveryCount = 0;
+                        discoveryCount = 0;
                         return data;
                     }
                 }
@@ -139,13 +139,13 @@ namespace PlayerCore
                     }
                     else
                     {
-                        if(DiscoveryCount == 0) // Discover every 3 movements
+                        if(discoveryCount == 0) // Discover every 3 movements
                         {
                             var data = GameMaster.PerformDiscover(SetCommunicationData(new Discover()));
-                            DiscoveryCount = DiscoveryCountMax;
+                            discoveryCount = discoveryCountMax;
                             return data;
                         }
-                        DiscoveryCount--;
+                        discoveryCount--;
 
                         //Make movement towards piece
 

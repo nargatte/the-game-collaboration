@@ -20,8 +20,8 @@ namespace PlayerCore.Components.Players
 			//	registeredGames = await Proxy.TryReceiveAsync<RegisteredGames>( cancellationToken ).ConfigureAwait( false );
 			//	await Task.Delay( TimeSpan.FromMilliseconds( RetryJoinGameInterval ), cancellationToken ).ConfigureAwait( false );
 			//}
-            RegistrationProcess registrationProcess = new RegistrationProcess(Proxy, GameName, Team, Role, RetryJoinGameInterval);
-		    PlayerInGame playerInGame = await registrationProcess.Registration(cancellationToken).ConfigureAwait(false);
+            var registrationProcess = new RegistrationProcess(Proxy, GameName, Team, Role, RetryJoinGameInterval);
+		    var playerInGame = await registrationProcess.Registration(cancellationToken).ConfigureAwait(false);
             bool endGame = false;
             playerInGame.State.EndGame += (e, s) => endGame = true;
             do
@@ -29,7 +29,7 @@ namespace PlayerCore.Components.Players
                 cancellationToken.ThrowIfCancellationRequested();
 
                 await playerInGame.PerformAction(cancellationToken);
-                Data data = await Proxy.TryReceiveAsync<Data>(cancellationToken);
+                var data = await Proxy.TryReceiveAsync<Data>(cancellationToken);
                 if (data is null) throw new NotImplementedException("Only Data is served now");
                 playerInGame.State.ReceiveData(data);
 
