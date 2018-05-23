@@ -4,221 +4,245 @@ using System.Linq;
 using System.Text;
 using PlayerCore.Interfaces;
 using Shared.Components.Fields;
-using Shared.DTOs.Communication;
 using Shared.Interfaces;
+using Shared.Messages.Communication;
+using Shared.Interfaces.Proxies;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlayerCore
 {
-    class Strategy2 : Shared.Interfaces.IStrategy
+    class Strategy2
     {
-        //private readonly ICommunicationServerProxy _communicationServerProxy;
+        private readonly IServerProxy ServerProxy;
 
         public State State { get; }
-        /*public Strategy2(ICommunicationServerProxy communicationServerProxy, State state)
+        public Strategy2(IServerProxy communicationServerProxy, State state)
         {
-            _communicationServerProxy = communicationServerProxy;
+            ServerProxy = communicationServerProxy;
             State = state;
-        }*/
-
-        private Rt SetCommunicationData<Rt>(Rt gameMessage)
-           where Rt : GameMessage
-        {
-            gameMessage.GameId = State.GameId;
-            gameMessage.PlayerGuid = State.Guid;
-            return gameMessage;
         }
 
-        public Data MoveUp()
+        private async Task SendMessage<Rt>(Rt gameMessage, CancellationToken cancellationToken)
+           where Rt : GameMessage
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            gameMessage.gameId = State.GameId;
+            gameMessage.playerGuid = State.Guid;
+            await ServerProxy.SendAsync(gameMessage, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task MoveUp(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             MovedBackwards = false;
             if (State.TeamColour == Shared.Enums.TeamColour.Red)
             {
                 LastMoveType = Shared.Enums.MoveType.Down;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Down,
-                    DirectionSpecified = true
-                }));
+                    direction = Shared.Enums.MoveType.Down,
+                    directionSpecified = true
+                }, cancellationToken);
             }
             else
             {
                 LastMoveType = Shared.Enums.MoveType.Up;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Up,
-                    DirectionSpecified = true
-                }));
+                    direction = Shared.Enums.MoveType.Up,
+                    directionSpecified = true
+                }, cancellationToken);
 
             }
         }
 
         public bool MovedBackwards = false;
-        public Data MoveBackwards()
+        public async Task MoveBackwards(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             MovedBackwards = true;
 
             switch (LastMoveType)
             {
                 case Shared.Enums.MoveType.Up:
                     LastMoveType = Shared.Enums.MoveType.Down;
-                    return GameMaster.PerformMove(SetCommunicationData(new Move
+                    await SendMessage(new Move
                     {
-                        Direction = Shared.Enums.MoveType.Down,
-                        DirectionSpecified = true
-                    }));
+                        direction = Shared.Enums.MoveType.Down,
+                        directionSpecified = true
+                    }, cancellationToken).ConfigureAwait(false);
+                    return;
                 case Shared.Enums.MoveType.Down:
                     LastMoveType = Shared.Enums.MoveType.Up;
-                    return GameMaster.PerformMove(SetCommunicationData(new Move
+                    await SendMessage(new Move
                     {
-                        Direction = Shared.Enums.MoveType.Up,
-                        DirectionSpecified = true
-                    }));
+                        direction = Shared.Enums.MoveType.Up,
+                        directionSpecified = true
+                    }, cancellationToken).ConfigureAwait(false);
+                    return;
                 case Shared.Enums.MoveType.Left:
                     LastMoveType = Shared.Enums.MoveType.Right;
-                    return GameMaster.PerformMove(SetCommunicationData(new Move
+                    await SendMessage(new Move
                     {
-                        Direction = Shared.Enums.MoveType.Right,
-                        DirectionSpecified = true
-                    }));
+                        direction = Shared.Enums.MoveType.Right,
+                        directionSpecified = true
+                    }, cancellationToken).ConfigureAwait(false);
+                    return;
                 case Shared.Enums.MoveType.Right:
                     LastMoveType = Shared.Enums.MoveType.Left;
-                    return GameMaster.PerformMove(SetCommunicationData(new Move
+                    await SendMessage(new Move
                     {
-                        Direction = Shared.Enums.MoveType.Left,
-                        DirectionSpecified = true
-                    }));
-                default: return null;
+                        direction = Shared.Enums.MoveType.Left,
+                        directionSpecified = true
+                    }, cancellationToken).ConfigureAwait(false);
+                    return;
             }
         }
 
-        public Data MoveToTheSameDirection()
+        public async Task MoveToTheSameDirection(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             MovedBackwards = false;
             switch (LastMoveType)
             {
                 case Shared.Enums.MoveType.Up:
 
-                    if ((State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.Y == State.Board.Height - State.Board.GoalsHeight - 1) ||
-                        (State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.Y == State.Board.Height - State.Board.GoalsHeight - 1))
+                    if ((State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.y == State.Board.Height - State.Board.GoalsHeight - 1) ||
+                        (State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.y == State.Board.Height - State.Board.GoalsHeight - 1))
                     {
                         LastMoveType = Shared.Enums.MoveType.Left;
-                        return MoveToTheSameDirection();
+                        await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     else
                     {
-                        return GameMaster.PerformMove(SetCommunicationData(new Move
+                        await SendMessage(new Move
                         {
-                            Direction = Shared.Enums.MoveType.Up,
-                            DirectionSpecified = true
-                        }));
+                            direction = Shared.Enums.MoveType.Up,
+                            directionSpecified = true
+                        }, cancellationToken).ConfigureAwait(false);
+                        return;
                     }
 
                 case Shared.Enums.MoveType.Down:
-                    if ((State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.Y == State.Board.GoalsHeight) ||
-                         (State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.Y == State.Board.GoalsHeight))
+                    if ((State.TeamColour == Shared.Enums.TeamColour.Red && State.Location.y == State.Board.GoalsHeight) ||
+                         (State.TeamColour == Shared.Enums.TeamColour.Blue && State.Location.y == State.Board.GoalsHeight))
                     {
                         LastMoveType = Shared.Enums.MoveType.Left;
-                        return MoveToTheSameDirection();
+                        await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     else
                     {
-                        return GameMaster.PerformMove(SetCommunicationData(new Move
+                        await SendMessage(new Move
                         {
-                            Direction = Shared.Enums.MoveType.Down,
-                            DirectionSpecified = true
-                        }));
+                            direction = Shared.Enums.MoveType.Down,
+                            directionSpecified = true
+                        }, cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                 case Shared.Enums.MoveType.Left:
-                    if (State.Location.X == 0)
+                    if (State.Location.x == 0)
                     {
                         LastMoveType = Shared.Enums.MoveType.Right;
-                        return MoveToTheSameDirection();
+                        await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     else
                     {
-                        return GameMaster.PerformMove(SetCommunicationData(new Move
+                        await SendMessage(new Move
                         {
-                            Direction = Shared.Enums.MoveType.Left,
-                            DirectionSpecified = true
-                        }));
+                            direction = Shared.Enums.MoveType.Left,
+                            directionSpecified = true
+                        }, cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                 case Shared.Enums.MoveType.Right:
-                    if (State.Location.X == State.Board.Width - 1)
+                    if (State.Location.x == State.Board.Width - 1)
                     {
                         if (State.TeamColour == Shared.Enums.TeamColour.Blue)
                         {
                             LastMoveType = Shared.Enums.MoveType.Down;
-                            return MoveToTheSameDirection();
+                            await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                            return;
                         }
                         else
                         {
                             LastMoveType = Shared.Enums.MoveType.Up;
-                            return MoveToTheSameDirection();
+                            await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                            return;
                         }
 
                     }
                     else
                     {
-                        return GameMaster.PerformMove(SetCommunicationData(new Move
+                        await SendMessage(new Move
                         {
-                            Direction = Shared.Enums.MoveType.Right,
-                            DirectionSpecified = true
-                        }));
+                            direction = Shared.Enums.MoveType.Right,
+                            directionSpecified = true
+                        }, cancellationToken).ConfigureAwait(false);
+                        return;
                     }
-                default: return null;
             }
         }
 
-        public Data MoveRight()
+        public async Task MoveRight(CancellationToken cancellationToken)
         {
-            if (State.Location.X + 1 < State.Board.Width)
+            cancellationToken.ThrowIfCancellationRequested();
+            if (State.Location.x + 1 < State.Board.Width)
             {
                 LastMoveType = Shared.Enums.MoveType.Right;
                 MovedBackwards = false;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Right,
-                    DirectionSpecified = true
-                }));
+                    direction = Shared.Enums.MoveType.Right,
+                    directionSpecified = true
+                }, cancellationToken).ConfigureAwait(false);
+                return;
             }
-            else return MoveLeft();
+            else await MoveLeft(cancellationToken).ConfigureAwait(false);
         }
 
-        public Data MoveLeft()
+        public async Task MoveLeft(CancellationToken cancellationToken)
         {
-            if (State.Location.X - 1 >= 0)
+            cancellationToken.ThrowIfCancellationRequested();
+            if (State.Location.x - 1 >= 0)
             {
                 LastMoveType = Shared.Enums.MoveType.Left;
                 MovedBackwards = false;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Left,
-                    DirectionSpecified = true
-                }));
+                    direction = Shared.Enums.MoveType.Left,
+                    directionSpecified = true
+                }, cancellationToken).ConfigureAwait(false);
+                return;
             }
-            return MoveRight();
+            await MoveRight(cancellationToken).ConfigureAwait(false);
         }
-        public Data MoveDown()
+        public async Task MoveDown(CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             MovedBackwards = false;
             if (State.TeamColour == Shared.Enums.TeamColour.Red)
             {
                 LastMoveType = Shared.Enums.MoveType.Up;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Up,
-                    DirectionSpecified = true
-                }));
+                    direction = Shared.Enums.MoveType.Up,
+                    directionSpecified = true
+                }, cancellationToken).ConfigureAwait(false);
+                return;
             }
             else
             {
                 LastMoveType = Shared.Enums.MoveType.Down;
-                return GameMaster.PerformMove(SetCommunicationData(new Move
+                await SendMessage(new Move
                 {
-                    Direction = Shared.Enums.MoveType.Down,
-                    DirectionSpecified = true
-                }));
-
+                    direction = Shared.Enums.MoveType.Down,
+                    directionSpecified = true
+                }, cancellationToken).ConfigureAwait(false);
+                return;
             }
         }
 
@@ -236,7 +260,7 @@ namespace PlayerCore
             int index = -1;
             for (int i = 0; i < State.PlayersMyTeam.Count(); i++)
             {
-                if (State.PlayersMyTeam[i].Id == State.Id)
+                if (State.PlayersMyTeam[i].id == State.Id)
                 {
                     index = i;
                     break;
@@ -273,9 +297,9 @@ namespace PlayerCore
 
 
 
-        public Data PerformAction()
+        public async Task PerformAction(CancellationToken cancellationToken)
         {
-
+            cancellationToken.ThrowIfCancellationRequested();
 
             IField field = State.Field;
             var goalField = field as IGoalField;
@@ -287,7 +311,7 @@ namespace PlayerCore
             {
                 LastDiscover = false;
             }
-            else if (WasLastActionPlace==false && State.HoldingPiece == null && LastLocation != null && LastLocation.X == State.Location.X && LastLocation.Y == State.Location.Y)
+            else if (WasLastActionPlace==false && State.HoldingPiece == null && LastLocation != null && LastLocation.x == State.Location.x && LastLocation.y == State.Location.y)
             {
                 
                 if (LastMoveType != null)
@@ -296,40 +320,44 @@ namespace PlayerCore
                     {
                         
                         case Shared.Enums.MoveType.Left:
-                            if (State.Board.GetField(State.Location.X - 1, State.Location.Y).Player != null)
+                            if (State.Board.GetField(State.Location.x - 1, State.Location.y).Player != null)
                             {  
-                                State.Board.GetField(State.Location.X - 1, State.Location.Y).Player = null;
+                                State.Board.GetField(State.Location.x - 1, State.Location.y).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Up;
-                                return MoveToTheSameDirection();
+                                await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
                             break;
                         case Shared.Enums.MoveType.Right:
-                            if (State.Board.GetField(State.Location.X + 1, State.Location.Y).Player != null)
+                            if (State.Board.GetField(State.Location.x + 1, State.Location.y).Player != null)
                             {
-                                State.Board.GetField(State.Location.X + 1, State.Location.Y).Player = null;
+                                State.Board.GetField(State.Location.x + 1, State.Location.y).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Down;
-                                return MoveToTheSameDirection();
+                                await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
                             break;
 
                         case Shared.Enums.MoveType.Up:
-                            if (State.Board.GetField(State.Location.X, State.Location.Y + 1).Player != null)
+                            if (State.Board.GetField(State.Location.x, State.Location.y + 1).Player != null)
                             {
-                                State.Board.GetField(State.Location.X, State.Location.Y + 1).Player = null;
+                                State.Board.GetField(State.Location.x, State.Location.y + 1).Player = null;
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Right;
-                                return MoveToTheSameDirection();
+                                await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
                             break;
                         case Shared.Enums.MoveType.Down:
-                            if (State.Board.GetField(State.Location.X, State.Location.Y - 1).Player != null)
+                            if (State.Board.GetField(State.Location.x, State.Location.y - 1).Player != null)
                             {
                                 
                                 LastDistanceToPiece = null;
                                 LastMoveType = Shared.Enums.MoveType.Left;
-                                return MoveToTheSameDirection();
+                                await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
                             break;
 
@@ -349,7 +377,7 @@ namespace PlayerCore
                 //}
                 //else
                 //{
-                //    if (State.Location.X != 0)
+                //    if (State.Location.x != 0)
                 //        return MoveLeft();
                 //    else MoveRight();
                 //}
@@ -358,15 +386,16 @@ namespace PlayerCore
 
 
             LastLocation = new Location();
-            LastLocation.X = State.Location.X;
-            LastLocation.Y = State.Location.Y;
+            LastLocation.x = State.Location.x;
+            LastLocation.y = State.Location.y;
 
             //fake discover
             if (FirstDiscover == true)
             {
                 GetGoalFieldSections();
                 FirstDiscover = false;
-                return GameMaster.PerformDiscover(SetCommunicationData(new Discover()));
+                await SendMessage(new Discover(), cancellationToken).ConfigureAwait(false);
+                return;
             }
 
 
@@ -375,13 +404,15 @@ namespace PlayerCore
                 if (goalField != null) // player in goalfield
                 {
                     WasLastActionPlace = false;
-                    return MoveUp();
+                    await MoveUp(cancellationToken).ConfigureAwait(false);
+                    return;
                 }
                 else
                 {
                     if (taskField.DistanceToPiece == 0)
                     {
-                        return GameMaster.PerformPickUp(SetCommunicationData(new PickUpPiece()));
+                        await SendMessage(new PickUpPiece(), cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     else
                     {
@@ -389,7 +420,8 @@ namespace PlayerCore
                         {
                             LastDistanceToPiece = taskField.DistanceToPiece;
                             //LastMoveType = Shared.Enums.MoveType.Up;
-                            return MoveUp();
+                            await MoveUp(cancellationToken).ConfigureAwait(false);
+                            return;
 
                         }
                         else
@@ -399,19 +431,23 @@ namespace PlayerCore
                                 if ((LastMoveType == Shared.Enums.MoveType.Down && State.TeamColour == Shared.Enums.TeamColour.Blue)
                                     || (LastMoveType == Shared.Enums.MoveType.Up && State.TeamColour == Shared.Enums.TeamColour.Red))
                                 {
-                                    return MoveLeft(); //sprawdzic skraj planszy
+                                    await MoveLeft(cancellationToken).ConfigureAwait(false); //sprawdzic skraj planszy
+                                    return;
                                 }
                                 else if (LastMoveType == Shared.Enums.MoveType.Right)
                                 {
-                                    return MoveRight(); //sprawdzic skraj planszy
+                                    await MoveRight(cancellationToken).ConfigureAwait(false); //sprawdzic skraj planszy
+                                    return;
                                 }
                                 else if (LastMoveType == Shared.Enums.MoveType.Left)
                                 {
-                                    return MoveDown();
+                                    await MoveDown(cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                                 else
                                 {
-                                    return MoveUp();
+                                    await MoveUp(cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                             }
                             else
@@ -420,21 +456,25 @@ namespace PlayerCore
                                 {
                                     LastDistanceToPiece = taskField.DistanceToPiece;
 
-                                    return MoveToTheSameDirection();
+                                    await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                                 else if (taskField.DistanceToPiece == LastDistanceToPiece + 1)
                                 {
-                                    return MoveBackwards();
+                                    await MoveBackwards(cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                                 else if (taskField.DistanceToPiece == LastDistanceToPiece)
                                 {
                                     LastDistanceToPiece = taskField.DistanceToPiece;
-                                    return MoveToTheSameDirection();
+                                    await MoveToTheSameDirection(cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                                 else
                                 {
                                     LastDiscover = true;
-                                    return GameMaster.PerformDiscover(SetCommunicationData(new Discover()));
+                                    await SendMessage(new Discover(), cancellationToken).ConfigureAwait(false);
+                                    return;
                                 }
                             }
                         }
@@ -443,19 +483,21 @@ namespace PlayerCore
             }
             else //HoldingPiece
             {
-                if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham)
+                if (State.HoldingPiece.type == Shared.Enums.PieceType.Sham)
                 {
                     //return GameMaster.Destroy();
                 }
                 else
                 {
-                    if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Blue && State.Board.TasksHeight / 2 + State.Board.GoalsHeight < State.Location.Y)
+                    if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Blue && State.Board.TasksHeight / 2 + State.Board.GoalsHeight < State.Location.y)
                     {
-                        return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
+                        await SendMessage(new TestPiece(), cancellationToken).ConfigureAwait(false);
+                        return;
                     }
-                    else if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Red && State.Board.TasksHeight / 2 + State.Board.GoalsHeight > State.Location.Y)
+                    else if (State.HoldingPiece.type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Red && State.Board.TasksHeight / 2 + State.Board.GoalsHeight > State.Location.y)
                     {
-                        return GameMaster.PerformTestPiece(SetCommunicationData(new TestPiece()));
+                        await SendMessage(new TestPiece(), cancellationToken).ConfigureAwait(false);
+                        return;
                     }
                     else
                     {
@@ -478,20 +520,20 @@ namespace PlayerCore
                                     var g = State.Board.GetField((uint)j, (uint)i) as IGoalField;
                                     if (g.Type == Shared.Enums.GoalFieldType.Unknown)
                                     {
-                                        if (State.Location.Y != i)
-                                            return MoveDown();
-                                        else if (State.Location.X > j)
-                                            return MoveLeft();
-                                        else if (State.Location.X < j)
-                                            return MoveRight();
+                                        if (State.Location.y != i)
+                                            await MoveDown(cancellationToken).ConfigureAwait(false);
+                                        else if (State.Location.x > j)
+                                            await MoveLeft(cancellationToken).ConfigureAwait(false);
+                                        else if (State.Location.x < j)
+                                            await MoveRight(cancellationToken).ConfigureAwait(false);
                                         else
                                         {
                                             State.HoldingPiece = null;
                                             LastDistanceToPiece = null;
                                             WasLastActionPlace = true;
-                                            return GameMaster.PerformPlace(SetCommunicationData(new PlacePiece()));
+                                            await SendMessage(new PlacePiece(), cancellationToken).ConfigureAwait(false);
                                         }
-
+                                        return;
                                     }
                                 }
                             }
@@ -499,17 +541,20 @@ namespace PlayerCore
                         }
                         else
                         {
-                            if ((uint)LeftBoundaryOfMyGoalFieldSection > State.Location.X)
+                            if ((uint)LeftBoundaryOfMyGoalFieldSection > State.Location.x)
                             {
-                                return MoveRight();
+                                await MoveRight(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
-                            else if ((uint)RigthBoundaryOfMyGoalFieldSection < State.Location.X)
+                            else if ((uint)RigthBoundaryOfMyGoalFieldSection < State.Location.x)
                             {
-                                return MoveLeft();
+                                await MoveLeft(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
                             else
                             {
-                                return MoveDown();
+                                await MoveDown(cancellationToken).ConfigureAwait(false);
+                                return;
                             }
 
                         }
@@ -518,9 +563,7 @@ namespace PlayerCore
 
 
             }
-            return null;
         }
 
-        public IGameMaster GameMaster { get; set; }
     }
 }
