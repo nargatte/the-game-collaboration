@@ -12,6 +12,6 @@ namespace Shared.Components.Factories
 		IGoalField CreateGoalField( uint x, uint y, TeamColour team, DateTime timestamp, IPlayer player, GoalFieldType type );
 		IFieldPiece CreateFieldPiece( ulong id, PieceType type, DateTime timestamp, ITaskField field );
 		IPlayerPiece CreatePlayerPiece( ulong id, PieceType type, DateTime timestamp, IPlayer player );
-		IPlayer CreatePlayer( ulong id, TeamColour team, PlayerType type, DateTime timestamp, IField field, IPlayerPiece piece );
+		IPlayer CreatePlayer( ulong id, TeamColour team, PlayerRole type, DateTime timestamp, IField field, IPlayerPiece piece );
 	}
 }

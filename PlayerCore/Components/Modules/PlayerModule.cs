@@ -32,7 +32,7 @@ namespace PlayerCore.Components.Modules
 		}
 		#endregion
 		#region PlayerModule
-		public PlayerModule( string ip, int port, PlayerSettings configuration, string gameName, TeamColour team, PlayerType role, IPlayerFactory factory ) : base( ip, port, configuration, gameName, team, role, factory )
+		public PlayerModule( string ip, int port, PlayerSettings configuration, string gameName, TeamColour team, PlayerRole role, IPlayerFactory factory ) : base( ip, port, configuration, gameName, team, role, factory )
 		{
 		}
 		#endregion

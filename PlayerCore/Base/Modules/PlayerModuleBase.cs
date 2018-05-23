@@ -14,12 +14,12 @@ namespace PlayerCore.Base.Modules
 		public virtual PlayerSettings Configuration { get; }
 		public virtual string GameName { get; }
 		public virtual TeamColour Team { get; }
-		public virtual PlayerType Role { get; }
+		public virtual PlayerRole Role { get; }
 		public virtual IPlayerFactory Factory { get; }
 		public virtual IPlayer Player { get; }
 		#endregion
 		#region PlayerModuleBase
-		public PlayerModuleBase( string ip, int port, PlayerSettings configuration, string gameName, TeamColour team, PlayerType role, IPlayerFactory factory ) : base( ip, port )
+		public PlayerModuleBase( string ip, int port, PlayerSettings configuration, string gameName, TeamColour team, PlayerRole role, IPlayerFactory factory ) : base( ip, port )
 		{
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			GameName = gameName is null ? throw new ArgumentNullException( nameof( gameName ) ) : gameName;

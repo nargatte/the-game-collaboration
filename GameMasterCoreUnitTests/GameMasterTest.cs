@@ -56,7 +56,7 @@
 //            IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
 //            IReadOnlyBoard board = gameMaster.Board;
 
-//            Assert.AreEqual(board.GetPiece(1).Id, (ulong)1);
+//            Assert.AreEqual(board.GetPiece(1).Id,(ulong)1);
 //            Assert.AreEqual(board.GetPiece(1).Type, Shared.Enums.PieceType.Normal);
 //            Assert.IsTrue(board.GetField(0, 0) is IGoalField);
 //            Assert.IsTrue(board.GetField(1, 0) is IGoalField);
@@ -167,7 +167,7 @@
 //            Assert.IsTrue(result is DTO.RejectJoiningGame);
 //            Assert.AreEqual(((DTO.RejectJoiningGame)result).gameName, "easy");
 //        }
-
+        
 //        [TestMethod]
 //        public void GetGame()
 //        {
@@ -204,7 +204,6 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Up,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
@@ -232,7 +231,6 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Right,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
@@ -266,13 +264,11 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Up,
-//                directionSpecified = true,
 //            };
 //            DTO.Move moveMessage2 = new DTO.Move()
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Down,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
@@ -309,7 +305,6 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Left,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
@@ -339,7 +334,6 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Down,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
@@ -369,7 +363,6 @@
 //            {
 //                gameId = 1,
 //                direction = Shared.Enums.MoveType.Up,
-//                directionSpecified = true,
 //            };
 
 //            var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);

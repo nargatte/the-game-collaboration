@@ -11,7 +11,7 @@ namespace PlayerCore.Interfaces.Modules
 		PlayerSettings Configuration { get; }
 		string GameName { get; }
 		TeamColour Team { get; }
-		PlayerType Role { get; }
+		PlayerRole Role { get; }
 		IPlayerFactory Factory { get; }
 		IPlayer Player { get; }
 	}

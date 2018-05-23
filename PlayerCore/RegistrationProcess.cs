@@ -1,11 +1,11 @@
 ﻿using System;
 using PlayerCore.Interfaces;
 using Shared.Enums;
-using Shared.Messages.Communication;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Shared.Interfaces.Proxies;
+using Shared.DTOs.Communication;
 
 namespace PlayerCore
 {
@@ -14,7 +14,7 @@ namespace PlayerCore
         private IServerProxy Proxy;
         private readonly string GameName;
         private readonly TeamColour TeamColour;
-        private readonly PlayerType PlayerType;
+        private readonly Shared.Enums.PlayerRole PlayerType;
         private uint RetryJoinGameInterval;
 
         public event EventHandler<string> Logger = (sender, s) => { };
@@ -23,7 +23,7 @@ namespace PlayerCore
             IServerProxy proxy,
             string gameName,
             TeamColour teamColour,
-            PlayerType playerType,
+            Shared.Enums.PlayerRole playerType,
             uint retryJoinGameInterval)
         {
             Proxy = proxy;
@@ -45,7 +45,7 @@ namespace PlayerCore
                     await SendGetGames(cancellationToken);
                     var registeredGmes = await ReceiveRegisteredGames(cancellationToken);
 
-                    gameInfo = registeredGmes.GameInfo?.FirstOrDefault(g => g.gameName == GameName);
+                    gameInfo = registeredGmes.GameInfo?.FirstOrDefault(g => g.GameName == GameName);
                     if (gameInfo != null)
                         break;
 					await Task.Delay( TimeSpan.FromMilliseconds( RetryJoinGameInterval ) );
@@ -56,14 +56,14 @@ namespace PlayerCore
                 confirmJoiningGame = await ReceiveConfirmJoiningGame(cancellationToken);
                 if (confirmJoiningGame != null)
 				{
-					Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.Player, confirmJoiningGame.playerId ) );
+					Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.Player, confirmJoiningGame.PlayerId ) );
 					break;
 				}
             }
 
             Game game = await ReceiveGame(cancellationToken);
 
-            PlayerInGame playerInGame = new PlayerInGame(Proxy, game, confirmJoiningGame.playerId, confirmJoiningGame.privateGuid, confirmJoiningGame.gameId);
+            PlayerInGame playerInGame = new PlayerInGame(Proxy, game, confirmJoiningGame.PlayerId, confirmJoiningGame.PrivateGuid, confirmJoiningGame.GameId);
             return playerInGame;
         }
 
@@ -100,10 +100,10 @@ namespace PlayerCore
             cancellationToken.ThrowIfCancellationRequested();
             var jg = new JoinGame
             {
-                gameName = GameName,
-                playerIdSpecified = false,
-                preferredRole = PlayerType,
-                preferredTeam = TeamColour
+                GameName = GameName,
+                PlayerIdSpecified = false,
+                PreferredRole = PlayerType,
+                PreferredTeam = TeamColour
             };
             await Proxy.SendAsync(jg, cancellationToken);
             LogSend(jg);

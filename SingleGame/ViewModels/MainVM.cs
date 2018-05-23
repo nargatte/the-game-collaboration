@@ -19,9 +19,9 @@ namespace SingleGame.ViewModels
 		protected override async Task InitializeAsync()
 		{
 			await base.InitializeAsync().ConfigureAwait( false );
-			Model.Initialize();
+			//Model.Initialize();
 			MakeVMs();
-			Model.Run();
+			//Model.Run();
 		}
 		#endregion
 		#region IMainVM
@@ -52,13 +52,13 @@ namespace SingleGame.ViewModels
 		}
 		protected void MakeVMs()
 		{
-			GameMaster = new GameMasterVM( Model.GameMaster );
-			RedPlayerCount = Model.RedPlayerCount;
-			for( int i = 0; i < RedPlayerCount; ++i )
-				RedPlayers.Add( new PlayerVM( Model.GetRedBoard( i ), Model.GetRedId( i ) ) );
-			BluePlayerCount = Model.BluePlayerCount;
-			for( int i = 0; i < BluePlayerCount; ++i )
-				BluePlayers.Add( new PlayerVM( Model.GetBlueBoard( i ), Model.GetBlueId( i ) ) );
+			//GameMaster = new GameMasterVM( Model.GameMaster );
+			//RedPlayerCount = Model.RedPlayerCount;
+			//for( int i = 0; i < RedPlayerCount; ++i )
+			//	RedPlayers.Add( new PlayerVM( Model.GetRedBoard( i ), Model.GetRedId( i ) ) );
+			//BluePlayerCount = Model.BluePlayerCount;
+			//for( int i = 0; i < BluePlayerCount; ++i )
+			//	BluePlayers.Add( new PlayerVM( Model.GetBlueBoard( i ), Model.GetBlueId( i ) ) );
 		}
 		#endregion
 	}

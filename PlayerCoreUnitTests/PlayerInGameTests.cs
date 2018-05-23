@@ -36,7 +36,6 @@
 //                            y = 5,
 //                            distanceToPiece = 4,
 //                            timestamp = DateTime.Now,
-//                            playerIdSpecified = true,
 //                            playerId = 0
 //                        }
 //                    }

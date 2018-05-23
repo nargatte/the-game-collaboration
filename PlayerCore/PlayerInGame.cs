@@ -1,9 +1,9 @@
 ﻿using System;
 using PlayerCore.Interfaces;
 using Shared.Components.Factories;
+using Shared.DTOs.Communication;
 using Shared.Interfaces;
 using Shared.Interfaces.Proxies;
-using Shared.Messages.Communication;
 using System.Threading.Tasks;
 using System.Threading;
 
