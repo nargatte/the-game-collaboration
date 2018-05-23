@@ -30,7 +30,11 @@ namespace PlayerCore.Components.Players
 
                 await playerInGame.PerformAction(cancellationToken);
                 var data = await Proxy.TryReceiveAsync<Data>(cancellationToken);
-                if (data is null) throw new NotImplementedException("Only Data is served now");
+				if( data is null )
+				{
+					Proxy.Discard();
+					throw new NotImplementedException( "Only Data is served now" );
+				}
                 playerInGame.State.ReceiveData(data);
 
             } while (!endGame);
