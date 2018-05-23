@@ -45,8 +45,8 @@ namespace CommunicationSubstitute
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerRole.Leader, new PlayerFactory() );
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerRole.Leader, new PlayerFactory() );
-					//Debug( cs );
-					Debug( gm1 );
+					Debug( cs );
+					//Debug( gm1 );
 					//Debug( p1 );
 					//Debug( p2 );
 					var tasks = new List<Task>
@@ -91,8 +91,8 @@ namespace CommunicationSubstitute
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )
 		{
-			communicationObserver.Sent += OnSent;
-			communicationObserver.Received += OnReceived;
+			//communicationObserver.Sent += OnSent;
+			//communicationObserver.Received += OnReceived;
 			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
 			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;

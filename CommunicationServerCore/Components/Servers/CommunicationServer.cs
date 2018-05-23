@@ -215,6 +215,7 @@ namespace CommunicationServerCore.Components.Servers
 					JoinGame joinGame;
 					Discover discover;
 					Move move;
+					PickUpPiece pickUpPiece;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
@@ -223,6 +224,8 @@ namespace CommunicationServerCore.Components.Servers
 						await PassGameMessageAsync( proxy, discover, cancellationToken );//pass message
 					else if( ( move = await proxy.TryReceiveAsync<Move>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Move
 						await PassGameMessageAsync( proxy, move, cancellationToken );//pass message
+					else if( ( pickUpPiece = await proxy.TryReceiveAsync<PickUpPiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for PickUpPiece
+						await PassGameMessageAsync( proxy, pickUpPiece, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
