@@ -293,7 +293,6 @@ namespace GameMasterCore
                     {
                         Id = piece.Id,
                         PlayerId = playerPawn.Id,
-                        PlayerIdSpecified = true,
                         Timestamp = DateTime.Now,
                         Type = PieceType.Unknown
                     }
@@ -441,7 +440,6 @@ namespace GameMasterCore
                             Id = heldPiecePawn.Id,
                             Timestamp = DateTime.Now,
                             PlayerId = playerPawn.Id,
-                            PlayerIdSpecified = true,
                             Type = heldPiecePawn.Type
                         }
                     }
@@ -640,7 +638,6 @@ namespace GameMasterCore
             if (currentField?.Piece != null) //piece on the board
             {
                 fieldToReturn.PieceId = currentField.Piece.Id;
-                fieldToReturn.PieceIdSpecified = true;
                 piecesToReturn.Add(new DTO.Piece
                 {
                     Id = currentField.Piece.Id,
@@ -651,7 +648,6 @@ namespace GameMasterCore
             if (currentField?.Player != null)
             {
                 fieldToReturn.PlayerId = currentField.Player.Id;
-                fieldToReturn.PlayerIdSpecified = true;
                 if (board.GetPlayer(currentField.Player.Id).Piece != null) //check for held piece
                     piecesToReturn.Add(new DTO.Piece
                     {
@@ -659,7 +655,6 @@ namespace GameMasterCore
                         Type = PieceType.Unknown,
                         Timestamp = DateTime.Now,
                         PlayerId = currentField.Player.Id,
-                        PlayerIdSpecified = true
                     });
             }
 
@@ -693,7 +688,6 @@ namespace GameMasterCore
             if (relevantField.Player != null)
             {
                 goalFieldToReturn.PlayerId = relevantField.Player.Id;
-                goalFieldToReturn.PlayerIdSpecified = true;
                 if (relevantField.Player.Piece != null)
                 {
                     var heldPiece = relevantField.Player.Piece;
@@ -702,7 +696,6 @@ namespace GameMasterCore
                         {
                             Id = heldPiece.Id,
                             PlayerId = heldPiece.Player.Id,
-                            PlayerIdSpecified = true,
                             Timestamp = DateTime.Now,
                             Type = PieceType.Unknown
                         }

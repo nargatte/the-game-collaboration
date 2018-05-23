@@ -67,7 +67,6 @@ namespace PlayerCoreUnitTests
             var piece = GetPiece();
             piece.Id = id;
             piece.PlayerId = id;
-            piece.PlayerIdSpecified = true;
             piece.Timestamp = new DateTime();
             piece.Type = PieceType.Unknown;
             data.Pieces[0] = piece;
@@ -118,7 +117,6 @@ namespace PlayerCoreUnitTests
             Shared.DTOs.Communication.TaskField taskField = new Shared.DTOs.Communication.TaskField();
             taskField.X = x;
             taskField.Y = y;
-            taskField.PlayerIdSpecified = true;
             taskField.PlayerId = 1;
             taskField.DistanceToPiece = 1;
             data.TaskFields = new Shared.DTOs.Communication.TaskField[1];
@@ -143,7 +141,6 @@ namespace PlayerCoreUnitTests
             {
                 X = x,
                 Y = y,
-                PlayerIdSpecified = true,
                 PlayerId = 1
             };
 
@@ -231,7 +228,6 @@ namespace PlayerCoreUnitTests
             Data data = new Data();
             data.TaskFields = new Shared.DTOs.Communication.TaskField[1];
             data.TaskFields[0] = new Shared.DTOs.Communication.TaskField();
-            data.TaskFields[0].PieceIdSpecified = true;
             data.TaskFields[0].PieceId = 1;
             data.TaskFields[0].X = x;
             data.TaskFields[0].Y = y;

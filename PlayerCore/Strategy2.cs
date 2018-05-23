@@ -42,7 +42,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Down,
-                    DirectionSpecified = true
                 }, cancellationToken);
             }
             else
@@ -51,7 +50,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Up,
-                    DirectionSpecified = true
                 }, cancellationToken);
 
             }
@@ -70,7 +68,6 @@ namespace PlayerCore
                     await SendMessage(new Move
                     {
                         Direction = Shared.Enums.MoveType.Down,
-                        DirectionSpecified = true
                     }, cancellationToken).ConfigureAwait(false);
                     return;
                 case Shared.Enums.MoveType.Down:
@@ -78,7 +75,6 @@ namespace PlayerCore
                     await SendMessage(new Move
                     {
                         Direction = Shared.Enums.MoveType.Up,
-                        DirectionSpecified = true
                     }, cancellationToken).ConfigureAwait(false);
                     return;
                 case Shared.Enums.MoveType.Left:
@@ -86,7 +82,6 @@ namespace PlayerCore
                     await SendMessage(new Move
                     {
                         Direction = Shared.Enums.MoveType.Right,
-                        DirectionSpecified = true
                     }, cancellationToken).ConfigureAwait(false);
                     return;
                 case Shared.Enums.MoveType.Right:
@@ -94,7 +89,6 @@ namespace PlayerCore
                     await SendMessage(new Move
                     {
                         Direction = Shared.Enums.MoveType.Left,
-                        DirectionSpecified = true
                     }, cancellationToken).ConfigureAwait(false);
                     return;
             }
@@ -120,7 +114,6 @@ namespace PlayerCore
                         await SendMessage(new Move
                         {
                             Direction = Shared.Enums.MoveType.Up,
-                            DirectionSpecified = true
                         }, cancellationToken).ConfigureAwait(false);
                         return;
                     }
@@ -138,7 +131,6 @@ namespace PlayerCore
                         await SendMessage(new Move
                         {
                             Direction = Shared.Enums.MoveType.Down,
-                            DirectionSpecified = true
                         }, cancellationToken).ConfigureAwait(false);
                         return;
                     }
@@ -154,7 +146,6 @@ namespace PlayerCore
                         await SendMessage(new Move
                         {
                             Direction = Shared.Enums.MoveType.Left,
-                            DirectionSpecified = true
                         }, cancellationToken).ConfigureAwait(false);
                         return;
                     }
@@ -180,7 +171,6 @@ namespace PlayerCore
                         await SendMessage(new Move
                         {
                             Direction = Shared.Enums.MoveType.Right,
-                            DirectionSpecified = true
                         }, cancellationToken).ConfigureAwait(false);
                         return;
                     }
@@ -197,7 +187,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Right,
-                    DirectionSpecified = true
                 }, cancellationToken).ConfigureAwait(false);
                 return;
             }
@@ -214,7 +203,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Left,
-                    DirectionSpecified = true
                 }, cancellationToken).ConfigureAwait(false);
                 return;
             }
@@ -230,7 +218,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Up,
-                    DirectionSpecified = true
                 }, cancellationToken).ConfigureAwait(false);
                 return;
             }
@@ -240,7 +227,6 @@ namespace PlayerCore
                 await SendMessage(new Move
                 {
                     Direction = Shared.Enums.MoveType.Down,
-                    DirectionSpecified = true
                 }, cancellationToken).ConfigureAwait(false);
                 return;
             }

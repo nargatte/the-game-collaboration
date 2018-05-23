@@ -181,7 +181,6 @@ namespace CommunicationServerCore.Components.Servers
 			proxy.UpdateRemote( Factory.CreateIdentity( HostType.Player, id ) );//set Player id
 			players.TryAdd( id, Factory.CreatePlayerSession( proxy ) );//from now Player is visible to others
 			joinGame.PlayerId = proxy.Remote.Id;
-			joinGame.PlayerIdSpecified = true;
 			await JoinGameRegisteredAsync( proxy, joinGame, cancellationToken );//continue registered
 		}
 		protected async Task JoinGameRegisteredAsync( IClientProxy proxy, JoinGame joinGame, CancellationToken cancellationToken )//when JoinGame is pending

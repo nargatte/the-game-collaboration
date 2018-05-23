@@ -117,7 +117,6 @@ namespace PlayerCore
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = Shared.Enums.MoveType.Down,
-                            DirectionSpecified = true
                         }));
                     }
                     else // Must go up
@@ -125,7 +124,6 @@ namespace PlayerCore
                         var data = GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = Shared.Enums.MoveType.Up,
-                            DirectionSpecified = true
                         }));
                         discoveryCount = 0;
                         return data;
@@ -152,7 +150,6 @@ namespace PlayerCore
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = DirectionToPiece(),
-                            DirectionSpecified = true
                         }));
                     }
                 }
@@ -181,7 +178,6 @@ namespace PlayerCore
                         else return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = DirectionToPiece(),
-                            DirectionSpecified = true
                         }));
                     }
                     else if(goalField!=null && (goalField.Type == Shared.Enums.GoalFieldType.NonGoal))
@@ -189,7 +185,6 @@ namespace PlayerCore
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = DirectionToUnknownGoal(),
-                            DirectionSpecified = true
                         }));
                     }
                     else if (taskField != null) // Player is standing in task field
@@ -201,7 +196,6 @@ namespace PlayerCore
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
                                     Direction = Shared.Enums.MoveType.Up,
-                                    DirectionSpecified = true
                                 }));
                                 
                             }
@@ -210,7 +204,6 @@ namespace PlayerCore
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
                                     Direction = DirectionToPiece(),
-                                    DirectionSpecified = true
                                 }));
                             }
                         }
@@ -221,7 +214,6 @@ namespace PlayerCore
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
                                     Direction = Shared.Enums.MoveType.Down,
-                                    DirectionSpecified = true
                                 }));
                             }
                             else
@@ -229,7 +221,6 @@ namespace PlayerCore
                                 return GameMaster.PerformMove(SetCommunicationData(new Move
                                 {
                                     Direction = DirectionToPiece(),
-                                    DirectionSpecified = true
                                 }));
                             }
                         }
@@ -239,7 +230,6 @@ namespace PlayerCore
                         return GameMaster.PerformMove(SetCommunicationData(new Move
                         {
                             Direction = DirectionToUnknownGoal(),
-                            DirectionSpecified = true
                         }));
                     }
 
