@@ -38,7 +38,7 @@ namespace CommunicationSubstitute
                         }
                     }
 				};
-				int timeout = 10000;
+				int timeout = 15000;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
@@ -91,8 +91,8 @@ namespace CommunicationSubstitute
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )
 		{
-			communicationObserver.Sent += OnSent;
-			communicationObserver.Received += OnReceived;
+			//communicationObserver.Sent += OnSent;
+			//communicationObserver.Received += OnReceived;
 			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
 			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;
