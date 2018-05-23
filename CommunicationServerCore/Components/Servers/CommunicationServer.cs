@@ -213,10 +213,13 @@ namespace CommunicationServerCore.Components.Servers
 				{
 					GetGames getGames;
 					JoinGame joinGame;
+					Discover discover;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
 						await JoinGameRegisteredAsync( proxy, joinGame, cancellationToken );//process request
+					else if( ( discover = await proxy.TryReceiveAsync<Discover>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Discover
+						await PassGameMessageAsync( proxy, discover, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -245,6 +248,19 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				throw;
 			}
+		}
+		protected async Task PassGameMessageAsync<T>( IClientProxy proxy, T gameMessage, CancellationToken cancellationToken ) where T : GameMessage//pass to registered GameMaster
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( gamesById.TryGetValue( gameMessage.GameId, out var game ) )//if game exists
+				try
+				{
+					await game.GameMaster.SendAsync( gameMessage, cancellationToken );
+				}
+				catch( Exception )//GameMaster fault
+				{
+				}
+			//else Player fault
 		}
 		protected async Task AsAnonymousGameMasterAsync( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
@@ -353,7 +369,7 @@ namespace CommunicationServerCore.Components.Servers
 				throw;
 			}
 		}
-		protected async Task PassPlayerMessageAsync< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered player
+		protected async Task PassPlayerMessageAsync< T >( IClientProxy proxy, T playerMessage, CancellationToken cancellationToken ) where T : PlayerMessage//pass to registered Player
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( players.TryGetValue( playerMessage.PlayerId, out var session ) )//if player exists
