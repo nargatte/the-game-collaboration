@@ -214,12 +214,15 @@ namespace CommunicationServerCore.Components.Servers
 					GetGames getGames;
 					JoinGame joinGame;
 					Discover discover;
+					Move move;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
 						await JoinGameRegisteredAsync( proxy, joinGame, cancellationToken );//process request
 					else if( ( discover = await proxy.TryReceiveAsync<Discover>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Discover
 						await PassGameMessageAsync( proxy, discover, cancellationToken );//pass message
+					else if( ( move = await proxy.TryReceiveAsync<Move>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Move
+						await PassGameMessageAsync( proxy, move, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
