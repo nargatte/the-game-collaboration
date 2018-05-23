@@ -34,7 +34,7 @@ namespace CommunicationSubstitute
                         Goals = new GoalField[]
                         {
                             new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal },
-                            new GoalField { Team = TeamColour.Red, X = 0, Y = 9, Type = GoalFieldType.Goal }
+                            new GoalField { Team = TeamColour.Red, X = 0, Y = 12, Type = GoalFieldType.Goal }
                         }
                     }
 				};
