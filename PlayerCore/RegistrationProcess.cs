@@ -89,8 +89,11 @@ namespace PlayerCore
         {
             cancellationToken.ThrowIfCancellationRequested();
             RegisteredGames registeredGames = await Proxy.TryReceiveAsync<RegisteredGames>(cancellationToken).ConfigureAwait(false);
-            if(registeredGames is null)
-                throw new Exception("Unexpected message received, should be RegisteredGames");
+            while (registeredGames == null)
+            {
+                Proxy.Discard();
+                registeredGames = await Proxy.TryReceiveAsync<RegisteredGames>(cancellationToken).ConfigureAwait(false);
+            }
             LogReceive(registeredGames);
             return registeredGames;
         }
@@ -114,8 +117,12 @@ namespace PlayerCore
             cancellationToken.ThrowIfCancellationRequested();
             ConfirmJoiningGame confirmJoiningGame = await Proxy.TryReceiveAsync<ConfirmJoiningGame>(cancellationToken).ConfigureAwait(false);
             RejectJoiningGame receiveConfirmJoiningGame = await Proxy.TryReceiveAsync<RejectJoiningGame>(cancellationToken).ConfigureAwait(false);
-            if (confirmJoiningGame is null && receiveConfirmJoiningGame is null)
-                throw new Exception("Unexpected message received, should be ConfirmJoiningGame or RejectJoiningGame");
+            while (confirmJoiningGame == null && receiveConfirmJoiningGame == null)
+            {
+                Proxy.Discard();
+                confirmJoiningGame = await Proxy.TryReceiveAsync<ConfirmJoiningGame>(cancellationToken).ConfigureAwait(false);
+                receiveConfirmJoiningGame = await Proxy.TryReceiveAsync<RejectJoiningGame>(cancellationToken).ConfigureAwait(false);
+            }
             if (confirmJoiningGame is null)
             {
                 LogReceive(receiveConfirmJoiningGame);
@@ -129,6 +136,11 @@ namespace PlayerCore
         {
             cancellationToken.ThrowIfCancellationRequested();
             Game game = await Proxy.TryReceiveAsync<Game>(cancellationToken);
+            while (game == null)
+            {
+                Proxy.Discard();
+                game = await Proxy.TryReceiveAsync<Game>(cancellationToken);
+            }
             if (game is null)
                 throw new Exception("Unexpected message received, should be Game");
             return game;
