@@ -219,10 +219,12 @@ namespace GameMasterCore.Components.GameMasters
             }));
             while (true)
             {
+                while (tasks.Count < 2) ;
                 var task = await Task.WhenAny(tasks);
                 tasks.Remove(task);
                 var message = await task;
-                await Proxy.SendAsync(innerGM.Perform(message), cancellationToken).ConfigureAwait(false);
+                var result = innerGM.Perform(message);
+                await Proxy.SendAsync(result, cancellationToken).ConfigureAwait(false);
                 innerGM.FreePlayer(message);
             }
         }
@@ -246,7 +248,7 @@ namespace GameMasterCore.Components.GameMasters
             if (!innerGM.IsPlayerBusy(message))
             {
                 innerGM.BlockPlayer(message);
-                tasks.Add(DelayMessage(message, ActionCosts.MoveDelay, cancellationToken));
+                tasks.Add(DelayMessage(message, delay, cancellationToken));
             }
         }
     }
