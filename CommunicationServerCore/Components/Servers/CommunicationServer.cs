@@ -343,6 +343,7 @@ namespace CommunicationServerCore.Components.Servers
 					RejectJoiningGame rejectJoiningGame;
 					Game game;
 					GameStarted gameStarted;
+					Data data;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
@@ -351,6 +352,8 @@ namespace CommunicationServerCore.Components.Servers
 						await PassPlayerMessageAsync( proxy, game, cancellationToken );//pass message
 					else if( ( gameStarted = await proxy.TryReceiveAsync<GameStarted>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GameStarted
 						await GameStartedAsync( proxy, gameStarted, cancellationToken );//process request
+					else if( ( data = await proxy.TryReceiveAsync<Data>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Data
+						await PassPlayerMessageAsync( proxy, data, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
