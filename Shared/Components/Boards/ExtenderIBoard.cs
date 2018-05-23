@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Fields;
 using Shared.Components.Pieces;
-using Shared.Messages.Communication;
+using Shared.DTOs.Communication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,13 +12,13 @@ namespace Shared.Components.Boards
 {
     public static class ExtenderIBoard
     {
-        public static IField GetField(this IBoard board, Location location) => board.GetField(location.x, location.y);
+        public static IField GetField(this IBoard board, Location location) => board.GetField(location.X, location.Y);
 
         public static void SetPlayerLocation(this IBoard board, ulong id,  Location location, DateTime dataTime)
         { 
             var player = board.GetPlayer(id);
             var field = board.GetField(location);
-            player.Field = field ?? throw new Exception($"Field in {location.x} {location.y} is null");
+            player.Field = field ?? throw new Exception($"Field in {location.X} {location.Y} is null");
             if(player.Field == null && field != null)
                 throw new Exception("Field in player is null after assinging not-null");
             board.SetPlayer(player);

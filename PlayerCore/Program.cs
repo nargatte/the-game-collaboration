@@ -22,7 +22,7 @@ namespace PlayerCore
 				var playerSettings = new PlayerSettings();
 				string gameName = default;
 				TeamColour team = default;
-				PlayerType role = default;
+				PlayerRole role = default;
 				int timeout = 30000;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
@@ -55,8 +55,9 @@ namespace PlayerCore
 					}
 				}
 			}
-			catch( Exception )
+			catch( Exception e )
 			{
+				Console.WriteLine( e );
 			}
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )

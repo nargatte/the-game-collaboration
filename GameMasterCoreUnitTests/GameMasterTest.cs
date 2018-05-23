@@ -7,6 +7,9 @@ using Shared.Interfaces;
 using Shared.Components.Factories;
 using Shared.Components.Boards;
 using Shared.Components.Fields;
+using Shared.DTOs.Communication;
+using Shared.Enums;
+using System.Collections.Generic;
 
 namespace GameMasterCoreUnitTests
 {
@@ -31,7 +34,7 @@ namespace GameMasterCoreUnitTests
                     GameName = "easy",
                     BoardWidth = 2,
                     GoalAreaLength = 1,
-                    Goals = new Config.GoalField[] {
+                    Goals = new List<Config.GoalField> {
                         new Config.GoalField { Team = Shared.Enums.TeamColour.Blue, X = 0, Y = 0, Type = Shared.Enums.GoalFieldType.Goal},
                         new Config.GoalField { Team = Shared.Enums.TeamColour.Red, X = 0, Y = 3, Type = Shared.Enums.GoalFieldType.Goal}
                     },
@@ -56,7 +59,7 @@ namespace GameMasterCoreUnitTests
             IGameMaster gameMaster = new BlockingGameMaster(CreateEasyConfig(), new BoardComponentFactory());
             IReadOnlyBoard board = gameMaster.Board;
 
-            Assert.AreEqual(board.GetPiece(1).Id,(ulong)1);
+            Assert.AreEqual(board.GetPiece(1).Id, (ulong)1);
             Assert.AreEqual(board.GetPiece(1).Type, Shared.Enums.PieceType.Normal);
             Assert.IsTrue(board.GetField(0, 0) is IGoalField);
             Assert.IsTrue(board.GetField(1, 0) is IGoalField);
@@ -76,7 +79,7 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Red
             };
 
@@ -86,7 +89,7 @@ namespace GameMasterCoreUnitTests
             Assert.IsTrue(result is DTO.ConfirmJoiningGame);
             DTO.Player resultPlayer = ((DTO.ConfirmJoiningGame)result).PlayerDefinition;
             Assert.AreEqual(resultPlayer.Team, joinGameMessage.PreferredTeam);
-            Assert.AreEqual(resultPlayer.Type, joinGameMessage.PreferredRole);
+            Assert.AreEqual(resultPlayer.Role, joinGameMessage.PreferredRole);
         }
 
         [TestMethod]
@@ -96,7 +99,7 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Member,
+                PreferredRole = Shared.Enums.PlayerRole.Member,
                 PreferredTeam = Shared.Enums.TeamColour.Red
             };
 
@@ -106,7 +109,7 @@ namespace GameMasterCoreUnitTests
             Assert.IsTrue(result is DTO.ConfirmJoiningGame);
             DTO.Player resultPlayer = ((DTO.ConfirmJoiningGame)result).PlayerDefinition;
             Assert.AreEqual(resultPlayer.Team, joinGameMessage.PreferredTeam);
-            Assert.AreEqual(resultPlayer.Type, joinGameMessage.PreferredRole);
+            Assert.AreEqual(resultPlayer.Role, joinGameMessage.PreferredRole);
         }
 
         [TestMethod]
@@ -116,7 +119,7 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
 
@@ -126,7 +129,7 @@ namespace GameMasterCoreUnitTests
             Assert.IsTrue(result is DTO.ConfirmJoiningGame);
             DTO.Player resultPlayer = ((DTO.ConfirmJoiningGame)result).PlayerDefinition;
             Assert.AreEqual(resultPlayer.Team, joinGameMessage.PreferredTeam);
-            Assert.AreEqual(resultPlayer.Type, joinGameMessage.PreferredRole);
+            Assert.AreEqual(resultPlayer.Role, joinGameMessage.PreferredRole);
         }
 
         [TestMethod]
@@ -136,7 +139,7 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Member,
+                PreferredRole = Shared.Enums.PlayerRole.Member,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
 
@@ -146,7 +149,7 @@ namespace GameMasterCoreUnitTests
             Assert.IsTrue(result is DTO.ConfirmJoiningGame);
             DTO.Player resultPlayer = ((DTO.ConfirmJoiningGame)result).PlayerDefinition;
             Assert.AreEqual(resultPlayer.Team, joinGameMessage.PreferredTeam);
-            Assert.AreEqual(resultPlayer.Type, joinGameMessage.PreferredRole);
+            Assert.AreEqual(resultPlayer.Role, joinGameMessage.PreferredRole);
         }
 
         [TestMethod]
@@ -156,7 +159,7 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
 
@@ -175,19 +178,19 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
 
-            Assert.AreEqual(game.playerId, playerMessage.PlayerId);
-            Assert.AreEqual(game.Board.goalsHeight, (uint)1);
-            Assert.AreEqual(game.Board.tasksHeight, (uint)2);
-            Assert.AreEqual(game.Board.width, (uint)2);
-            Assert.IsTrue(game.PlayerLocation.x < 2);
-            Assert.IsTrue(game.PlayerLocation.y < 3);
+            Assert.AreEqual(game.PlayerId, playerMessage.PlayerId);
+            Assert.AreEqual(game.Board.GoalsHeight, (uint)1);
+            Assert.AreEqual(game.Board.TasksHeight, (uint)2);
+            Assert.AreEqual(game.Board.Width, (uint)2);
+            Assert.IsTrue(game.PlayerLocation.X < 2);
+            Assert.IsTrue(game.PlayerLocation.Y < 3);
         }
 
         [TestMethod]
@@ -197,25 +200,25 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Up,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = Shared.Enums.MoveType.Up,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
             var data = gameMaster.PerformMove(moveMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
-            Assert.AreEqual(data.PlayerLocation.x, game.PlayerLocation.x);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y + 1);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
+            Assert.AreEqual(data.PlayerLocation.X, game.PlayerLocation.X);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y + 1);
         }
 
         [TestMethod]
@@ -225,25 +228,25 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Right,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Right,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
             var data = gameMaster.PerformMove(moveMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
-            Assert.AreEqual(data.PlayerLocation.x, game.PlayerLocation.x + 1);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
+            Assert.AreEqual(data.PlayerLocation.X, game.PlayerLocation.X + 1);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y);
         }
 
         [TestMethod]
@@ -255,7 +258,7 @@ namespace GameMasterCoreUnitTests
                 PlayerId = 1,
                 PlayerIdSpecified = true,
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
             DTO.JoinGame joinGameMessage2 = new DTO.JoinGame()
@@ -263,28 +266,28 @@ namespace GameMasterCoreUnitTests
                 PlayerId = 2,
                 PlayerIdSpecified = true,
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Red
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Up,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Up,
+                DirectionSpecified = true,
             };
-            Shared.Messages.Communication.Move moveMessage2 = new Shared.Messages.Communication.Move()
+            Move moveMessage2 = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Down,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Down,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var playerMessage2 = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage2);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
             var game2 = gameMaster.GetGame(playerMessage2.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
-            moveMessage2.playerGuid = playerMessage2.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
+            moveMessage2.PlayerGuid = playerMessage2.PrivateGuid;
 
             // for this specific seed player 1 starts at y=1, player 2 starts at y=3
             var data = gameMaster.PerformMove(moveMessage);
@@ -292,11 +295,11 @@ namespace GameMasterCoreUnitTests
             gameMaster.PerformMove(moveMessage2);
             var data2 = gameMaster.PerformMove(moveMessage2);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.AreEqual(data2.playerId, playerMessage2.PlayerId);
-            Assert.IsFalse(data.gameFinished);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y + 1);
-            Assert.AreEqual(data2.PlayerLocation.y, game2.PlayerLocation.y);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.AreEqual(data2.PlayerId, playerMessage2.PlayerId);
+            Assert.IsFalse(data.GameFinished);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y + 1);
+            Assert.AreEqual(data2.PlayerLocation.Y, game2.PlayerLocation.Y);
         }
 
         [TestMethod]
@@ -306,27 +309,27 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Left,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Left,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
             var data = gameMaster.PerformMove(moveMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
             Assert.IsNull(data.TaskFields);
             Assert.IsNull(data.GoalFields);
-            Assert.AreEqual(data.PlayerLocation.x, game.PlayerLocation.x);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y);
+            Assert.AreEqual(data.PlayerLocation.X, game.PlayerLocation.X);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y);
         }
 
         [TestMethod]
@@ -336,27 +339,27 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Down,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Down,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
             var data = gameMaster.PerformMove(moveMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
             Assert.IsNull(data.TaskFields);
             Assert.IsNull(data.GoalFields);
-            Assert.AreEqual(data.PlayerLocation.x, game.PlayerLocation.x);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y);
+            Assert.AreEqual(data.PlayerLocation.X, game.PlayerLocation.X);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y);
         }
 
         [TestMethod]
@@ -366,29 +369,29 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Move moveMessage = new Shared.Messages.Communication.Move()
+            Move moveMessage = new Move()
             {
-                gameId = 1,
-                direction = Shared.Enums.MoveType.Up,
-                directionSpecified = true,
+                GameId = 1,
+                Direction = MoveType.Up,
+                DirectionSpecified = true,
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            moveMessage.playerGuid = playerMessage.PrivateGuid;
+            moveMessage.PlayerGuid = playerMessage.PrivateGuid;
             gameMaster.PerformMove(moveMessage);
             gameMaster.PerformMove(moveMessage);
             var data = gameMaster.PerformMove(moveMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
             Assert.IsNull(data.TaskFields);
             Assert.IsNull(data.GoalFields);
-            Assert.AreEqual(data.PlayerLocation.x, game.PlayerLocation.x);
-            Assert.AreEqual(data.PlayerLocation.y, game.PlayerLocation.y + 2);
+            Assert.AreEqual(data.PlayerLocation.X, game.PlayerLocation.X);
+            Assert.AreEqual(data.PlayerLocation.Y, game.PlayerLocation.Y + 2);
         }
 
         [TestMethod]
@@ -398,22 +401,22 @@ namespace GameMasterCoreUnitTests
             DTO.JoinGame joinGameMessage = new DTO.JoinGame()
             {
                 GameName = "easy",
-                PreferredRole = Shared.Enums.PlayerType.Leader,
+                PreferredRole = Shared.Enums.PlayerRole.Leader,
                 PreferredTeam = Shared.Enums.TeamColour.Blue
             };
-            Shared.Messages.Communication.Discover discoverMessage = new Shared.Messages.Communication.Discover()
+            Discover discoverMessage = new Discover()
             {
-                gameId = 1
+                GameId = 1
             };
 
             var playerMessage = (DTO.ConfirmJoiningGame)gameMaster.PerformJoinGame(joinGameMessage);
             var game = gameMaster.GetGame(playerMessage.PrivateGuid);
-            discoverMessage.playerGuid = playerMessage.PrivateGuid;
+            discoverMessage.PlayerGuid = playerMessage.PrivateGuid;
             var data = gameMaster.PerformDiscover(discoverMessage);
 
-            Assert.AreEqual(data.playerId, playerMessage.PlayerId);
-            Assert.IsFalse(data.gameFinished);
-            Assert.AreEqual(data.TaskFields.Length, 2);
+            Assert.AreEqual(data.PlayerId, playerMessage.PlayerId);
+            Assert.IsFalse(data.GameFinished);
+            Assert.AreEqual(data.TaskFields.Count, 2);
             Assert.IsNull(data.GoalFields);
             Assert.IsNull(data.PlayerLocation);
         }

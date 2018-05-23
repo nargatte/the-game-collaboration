@@ -14,11 +14,11 @@ namespace PlayerCore.Base.Players
 		public virtual uint RetryJoinGameInterval { get; }
 		public virtual string GameName { get; }
 		public virtual TeamColour Team { get; }
-		public virtual PlayerType Role { get; }
+		public virtual PlayerRole Role { get; }
 		public virtual IServerProxy Proxy { get; set; }
 		#endregion
 		#region PlayerBase
-		protected PlayerBase( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerType role )
+		protected PlayerBase( uint retryJoinGameInterval, string gameName, TeamColour team, PlayerRole role )
 		{
 			RetryJoinGameInterval = retryJoinGameInterval;
 			GameName = gameName is null ? throw new ArgumentNullException( nameof( gameName ) ) : gameName;

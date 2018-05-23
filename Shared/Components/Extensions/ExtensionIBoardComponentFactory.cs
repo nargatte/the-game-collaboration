@@ -13,6 +13,6 @@ namespace Shared.Components.Extensions
 		public static IGoalField MakeGoalField( this IBoardComponentFactory factory, uint x, uint y, TeamColour team, DateTime timestamp = default, IPlayer player = null, GoalFieldType type = GoalFieldType.Unknown ) => factory.CreateGoalField( x, y, team, timestamp, player, type );
 		public static IFieldPiece MakeFieldPiece( this IBoardComponentFactory factory, ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, ITaskField field = null ) => factory.CreateFieldPiece( id, type, timestamp, field );
 		public static IPlayerPiece MakePlayerPiece( this IBoardComponentFactory factory, ulong id, PieceType type = PieceType.Unknown, DateTime timestamp = default, IPlayer player = null ) => factory.CreatePlayerPiece( id, type, timestamp, player );
-		public static IPlayer MakePlayer( this IBoardComponentFactory factory, ulong id, TeamColour team, PlayerType type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null ) => factory.CreatePlayer( id, team, type, timestamp, field, piece );
+		public static IPlayer MakePlayer( this IBoardComponentFactory factory, ulong id, TeamColour team, PlayerRole type, DateTime timestamp = default, IField field = null, IPlayerPiece piece = null ) => factory.CreatePlayer( id, team, type, timestamp, field, piece );
 	}
 }

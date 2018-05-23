@@ -9,7 +9,7 @@ namespace PlayerCore.Interfaces.Players
 		uint RetryJoinGameInterval { get; }
 		string GameName { get; }
 		TeamColour Team { get; }
-		PlayerType Role { get; }
+		PlayerRole Role { get; }
 		IServerProxy Proxy { get; set; }
     }
 }

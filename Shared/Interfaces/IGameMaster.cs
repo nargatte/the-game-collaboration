@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Boards;
 using Shared.Components.Events;
-using Shared.Messages.Communication;
+using Shared.DTOs.Communication;
 using System;
 
 namespace Shared.Interfaces
@@ -17,7 +17,6 @@ namespace Shared.Interfaces
         Shared.DTOs.Communication.PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
         event EventHandler<LogArgs> Log;
 		IReadOnlyBoard Board { get; }
-#warning TEMP, to change in future stages
         Game GetGame(string guid);
     }
 }
