@@ -21,6 +21,7 @@ namespace PlayerCore.Components.Players
 			//	await Task.Delay( TimeSpan.FromMilliseconds( RetryJoinGameInterval ), cancellationToken ).ConfigureAwait( false );
 			//}
             var registrationProcess = new RegistrationProcess(Proxy, GameName, Team, Role, RetryJoinGameInterval);
+		    registrationProcess.Logger += (sender, s) => Console.WriteLine(s);
 		    var playerInGame = await registrationProcess.Registration(cancellationToken).ConfigureAwait(false);
             bool endGame = false;
             playerInGame.State.EndGame += (e, s) => endGame = true;
@@ -33,9 +34,9 @@ namespace PlayerCore.Components.Players
 				if( data is null )
 				{
 					Proxy.Discard();
-					throw new NotImplementedException( "Only Data is served now" );
+					//throw new NotImplementedException( "Only Data is served now" );
 				}
-                playerInGame.State.ReceiveData(data);
+                else playerInGame.State.ReceiveData(data);
 
             } while (!endGame);
         }
