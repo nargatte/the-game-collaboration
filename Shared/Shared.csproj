@@ -183,7 +183,6 @@
     <None Include="DTOs\Communication\TheProjectGameCommunication.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="DTOs\Communication\xsd2code.config" />
     <None Include="DTOs\Configuration\Configuration.xsd">
       <SubType>Designer</SubType>
     </None>

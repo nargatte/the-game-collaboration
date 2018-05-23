@@ -55,8 +55,9 @@ namespace PlayerCore
 					}
 				}
 			}
-			catch( Exception )
+			catch( Exception e )
 			{
+				Console.WriteLine( e );
 			}
 		}
 		private static void Debug( ICommunicationObserver communicationObserver )
