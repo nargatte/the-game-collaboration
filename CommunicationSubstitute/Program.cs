@@ -31,7 +31,7 @@ namespace CommunicationSubstitute
 					{
 						GameName = gameName,
 						NumberOfPlayersPerTeam = 1u,
-                        Goals = new GoalField[]
+                        Goals = new List<GoalField>
                         {
                             new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal },
                             new GoalField { Team = TeamColour.Red, X = 0, Y = 12, Type = GoalFieldType.Goal }

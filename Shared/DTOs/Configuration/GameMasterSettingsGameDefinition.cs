@@ -24,7 +24,7 @@ using System.Collections.Generic;
 public class GameMasterSettingsGameDefinition
 {
         [XmlElement("Goals")]
-        public IList<GoalField> Goals { get; set; }
+        public List<GoalField> Goals { get; set; }
         [XmlElement("ShamProbability")]
         [RangeAttribute(0D, 1D)]
         public double ShamProbability { get; set; }
@@ -45,7 +45,7 @@ public class GameMasterSettingsGameDefinition
     
     public GameMasterSettingsGameDefinition()
     {
-        Goals = new System.Collections.Generic.List<GoalField>();
+        Goals = new List<GoalField>();
         ShamProbability = 0.1D;
         PlacingNewPiecesFrequency = ((uint)(1000));
         InitialNumberOfPieces = ((uint)(4));

@@ -94,7 +94,7 @@ namespace GameMasterCore
                     X = location.X,
                     Y = location.Y
                 }
-            )).ToArray();
+            )).ToList();
 
             return result;
         }
