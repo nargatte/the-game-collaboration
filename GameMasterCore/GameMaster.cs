@@ -30,7 +30,7 @@ namespace GameMasterCore
         ulong pieceIDcounter = 0;
         Config.GameMasterSettings config;
         int redGoalsToScore, blueGoalsToScore;
-        public Dictionary<ulong, DTO.Game> game { get; set; } // for process game by communication substitute 
+        public Dictionary<ulong, DTO.Game> Game { get; set; } // for process game by communication substitute 
         public ulong gameId;
 
         public BlockingGameMaster(int seed = 123456)
@@ -138,13 +138,13 @@ namespace GameMasterCore
         #region Synced helper methods for IGameMaster
         private DTO.Data PerformSynchronizedDiscover(DTO.Discover discoverRequest)
         {
-            IPlayer playerPawn = GetPlayerFromGameMessage(discoverRequest);
+            var playerPawn = GetPlayerFromGameMessage(discoverRequest);
 
             OnLog("discover", DateTime.Now, 1, playerPawn.Id, discoverRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
             //Prepare partial result structures
-            List<DTO.TaskField> resultFields = new List<DTO.TaskField>();
-            List<DTO.Piece> resultPieces = new List<DTO.Piece>();
+            var resultFields = new List<DTO.TaskField>();
+            var resultPieces = new List<DTO.Piece>();
             //Perform discover on 3x3 
             for (
                 int y = Math.Max(
@@ -169,28 +169,26 @@ namespace GameMasterCore
                     ++x
                     )
                 {
-                    DTO.TaskField fieldToReturn = GetTaskFieldInfo(x, y, out DTO.Piece[] pieces);
+                    var fieldToReturn = GetTaskFieldInfo(x, y, out var pieces);
                     resultFields.Add(fieldToReturn);
                     resultPieces.AddRange(pieces);
                 }
-            DTO.Data result = new DTO.Data
+            var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
-                Pieces = resultPieces.ToArray(),
-                TaskFields = resultFields.ToArray(),
+                Pieces = resultPieces.ToList(),
+                TaskFields = resultFields.ToList(),
             };
             return result;
         }
 
-        private DTO.Data PerformSynchronizedKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
-        {
-            //TODO: knowledge exchange
-            throw new NotImplementedException();
-        }
+		private DTO.Data PerformSynchronizedKnowledgeExchange( DTO.KnowledgeExchangeRequest knowledgeExchangeRequest ) =>
+			//TODO: knowledge exchange
+			throw new NotImplementedException();
 
-        private DTO.Data PerformSynchronizedMove(DTO.Move moveRequest)
+		private DTO.Data PerformSynchronizedMove(DTO.Move moveRequest)
         {
-            IPlayer playerPawn = GetPlayerFromGameMessage(moveRequest);
+            var playerPawn = GetPlayerFromGameMessage(moveRequest);
 
             OnLog("move", DateTime.Now, 1, playerPawn.Id, moveRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
@@ -213,7 +211,7 @@ namespace GameMasterCore
                     break;
             }
 
-            IField targetField = targetX < 0 || targetX >= board.Width || targetY < 0 || targetY >= board.Height
+            var targetField = targetX < 0 || targetX >= board.Width || targetY < 0 || targetY >= board.Height
                 ? null : board.GetField((uint)targetX, (uint)targetY);
             //check for invalid moves
             if (targetField == null
@@ -229,14 +227,14 @@ namespace GameMasterCore
             if (targetField.Player != null)
             {
                 //field is occupied - do not move the player, return info about the occupied field
-                var occupiedField = GetFieldInfo(targetX, targetY, out DTO.Piece[] pieces);
+                var occupiedField = GetFieldInfo(targetX, targetY, out var pieces);
                 return new DTO.Data
                 {
                     PlayerId = playerPawn.Id,
                     PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
-                    Pieces = pieces,
-                    GoalFields = (occupiedField is DTO.GoalField) ? new DTO.GoalField[] { occupiedField as DTO.GoalField } : null,
-                    TaskFields = (occupiedField is DTO.TaskField) ? new DTO.TaskField[] { occupiedField as DTO.TaskField } : null
+                    Pieces = pieces.ToList(),
+                    GoalFields = (occupiedField is DTO.GoalField) ? new List<DTO.GoalField> { occupiedField as DTO.GoalField } : null,
+                    TaskFields = (occupiedField is DTO.TaskField) ? new List<DTO.TaskField> { occupiedField as DTO.TaskField } : null
                 };
             }
 
@@ -251,26 +249,26 @@ namespace GameMasterCore
                 ));
 
             //return information about current field and new player location
-            var currentField = GetFieldInfo(targetX, targetY, out DTO.Piece[] currentPieces);
+            var currentField = GetFieldInfo(targetX, targetY, out var currentPieces);
 
-            DTO.Data result = new DTO.Data
+            var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
                 PlayerLocation = new DTO.Location { X = (uint)targetX, Y = (uint)targetY },
-                Pieces = currentPieces,
-                GoalFields = (currentField is DTO.GoalField) ? new DTO.GoalField[] { currentField as DTO.GoalField } : null,
-                TaskFields = (currentField is DTO.TaskField) ? new DTO.TaskField[] { currentField as DTO.TaskField } : null
+                Pieces = currentPieces.ToList(),
+                GoalFields = (currentField is DTO.GoalField) ? new List<DTO.GoalField> { currentField as DTO.GoalField } : null,
+                TaskFields = (currentField is DTO.TaskField) ? new List<DTO.TaskField> { currentField as DTO.TaskField } : null
             };
             return result;
         }
 
         private DTO.Data PerformSynchronizedPickUp(DTO.PickUpPiece pickUpRequest)
         {
-            IPlayer playerPawn = GetPlayerFromGameMessage(pickUpRequest);
+            var playerPawn = GetPlayerFromGameMessage(pickUpRequest);
 
             OnLog("pickup", DateTime.Now, 1, playerPawn.Id, pickUpRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
-            ITaskField field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as ITaskField);
+            var field = (board.GetField(playerPawn.GetX().Value, playerPawn.GetY().Value) as ITaskField);
             IPiece piece = field.Piece;
 
             if (piece == null)
@@ -284,10 +282,10 @@ namespace GameMasterCore
             board.SetPiece(board.Factory.CreatePlayerPiece(piece.Id, piece.Type, DateTime.Now, playerPawn));
 
             //prepare result data
-            DTO.Data result = new DTO.Data
+            var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
-                Pieces = new DTO.Piece[]
+                Pieces = new List<DTO.Piece>
                 {
                     new DTO.Piece
                     {
@@ -319,24 +317,24 @@ namespace GameMasterCore
 
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
         {
-            IPlayer playerPawn = GetPlayerFromGameMessage(placeRequest);
+            var playerPawn = GetPlayerFromGameMessage(placeRequest);
 
             OnLog("place", DateTime.Now, 1, playerPawn.Id, placeRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
-            IPlayerPiece heldPiecePawn = playerPawn.Piece;
+            var heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
                 return new DTO.Data { PlayerId = playerPawn.Id }; //player wanted to place inaccessible piece
             }
-            IField targetField = playerPawn.Field;
+            var targetField = playerPawn.Field;
             if (targetField is ITaskField targetTaskField)
             {
                 if (targetTaskField.Piece != null)
                 {
                     //target field has a piece on it already
                     //return field info, piece info and held piece info
-                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
-                    DTO.Piece heldPieceToReturn = new DTO.Piece
+                    var fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out var pieceToReturn);
+                    var heldPieceToReturn = new DTO.Piece
                     {
                         Id = heldPiecePawn.Id,
                         PlayerId = heldPiecePawn.Player.Id
@@ -346,8 +344,8 @@ namespace GameMasterCore
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
-                        TaskFields = new DTO.TaskField[] { fieldToReturn },
-                        Pieces = piecesToReturn.ToArray()
+                        TaskFields = new List<DTO.TaskField> { fieldToReturn },
+                        Pieces = piecesToReturn.ToList()
                     };
                 }
                 else
@@ -356,12 +354,12 @@ namespace GameMasterCore
                     board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, targetTaskField));
 
                     //return new field data
-                    DTO.TaskField fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out DTO.Piece[] pieceToReturn);
+                    var fieldToReturn = GetTaskFieldInfo((int)targetField.X, (int)targetField.Y, out var pieceToReturn);
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
-                        TaskFields = new DTO.TaskField[] { fieldToReturn },
-                        Pieces = pieceToReturn
+                        TaskFields = new List<DTO.TaskField> { fieldToReturn },
+                        Pieces = pieceToReturn.ToList()
                     };
                 }
             }
@@ -371,7 +369,7 @@ namespace GameMasterCore
             {
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                 //get piece-less goal field to return
-                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out var pieces); //pieces is null because there's no held piece anymore
                 GoalToReturn.Type = targetGoalField.Type;
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
@@ -397,7 +395,7 @@ namespace GameMasterCore
                 //remove the piece from the player
                 board.SetPiece(board.Factory.CreateFieldPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
                 //get piece-less goal field to return
-                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out DTO.Piece[] pieces); //pieces is null because there's no held piece anymore
+                var GoalToReturn = GetGoalFieldInfo((int)targetGoalField.X, (int)targetGoalField.Y, out var pieces); //pieces is null because there's no held piece anymore
                 GoalToReturn.Type = targetGoalField.Type;
                 if (targetGoalField.Type == GoalFieldType.Goal)
                 {
@@ -415,14 +413,14 @@ namespace GameMasterCore
                 {
                     GameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
                     PlayerId = playerPawn.Id,
-                    GoalFields = new DTO.GoalField[] { GoalToReturn }
+                    GoalFields = new List<DTO.GoalField> { GoalToReturn }
                 };
             }
         }
 
         private DTO.Data PerformSynchronizedTestPiece(DTO.TestPiece testPieceRequest)
         {
-            IPlayer playerPawn = GetPlayerFromGameMessage(testPieceRequest);
+            var playerPawn = GetPlayerFromGameMessage(testPieceRequest);
 
             OnLog("test", DateTime.Now, 1, playerPawn.Id, testPieceRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
 
@@ -431,10 +429,10 @@ namespace GameMasterCore
             {
                 return new DTO.Data { PlayerId = playerPawn.Id }; //player wanted to test inaccessible piece
             }
-            DTO.Data result = new DTO.Data
+            var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
-                Pieces = new DTO.Piece[] {
+                Pieces = new List<DTO.Piece> {
                         new DTO.Piece
                         {
                             Id = heldPiecePawn.Id,
@@ -460,7 +458,7 @@ namespace GameMasterCore
         }
 		public DTO.RegisteredGames PerformConfirmGameRegistration() => new DTO.RegisteredGames()
 		{
-			GameInfo = new DTO.GameInfo[]
+			GameInfo = new List<DTO.GameInfo>
 				{
 					new DTO.GameInfo{
 						BlueTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
@@ -519,23 +517,21 @@ namespace GameMasterCore
         public DTO.Data PerformDiscover(DTO.Discover discoverRequest)
         {
             if (CheckWin(discoverRequest.PlayerGuid, out var finalMessage)) return finalMessage;
-            DTO.Data result = PerformSynchronizedDiscover(discoverRequest);
+            var result = PerformSynchronizedDiscover(discoverRequest);
             Thread.Sleep((int)config.ActionCosts.DiscoverDelay);
             return result;
         }
 
-        public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest)
-        {
-            // TODO: DTO.Data czy raczej DTO.PlayerMessage?
-            return DelaySynchronizedAction(
-            () => PerformSynchronizedKnowledgeExchange(knowledgeExchangeRequest),
-            config.ActionCosts.KnowledgeExchangeDelay
-            );
-        }
+		public DTO.Data PerformKnowledgeExchange( DTO.KnowledgeExchangeRequest knowledgeExchangeRequest ) =>
+			// TODO: DTO.Data czy raczej DTO.PlayerMessage?
+			DelaySynchronizedAction(
+			() => PerformSynchronizedKnowledgeExchange( knowledgeExchangeRequest ),
+			config.ActionCosts.KnowledgeExchangeDelay
+			);
 
-        public DTO.Data PerformMove(DTO.Move moveRequest)
+		public DTO.Data PerformMove(DTO.Move moveRequest)
         {
-            if (CheckWin(moveRequest.PlayerGuid, out DTO.Data finalMessage))
+            if (CheckWin(moveRequest.PlayerGuid, out var finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -546,7 +542,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformPickUp(DTO.PickUpPiece pickUpRequest)
         {
-            if (CheckWin(pickUpRequest.PlayerGuid, out DTO.Data finalMessage))
+            if (CheckWin(pickUpRequest.PlayerGuid, out var finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -557,7 +553,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformPlace(DTO.PlacePiece placeRequest)
         {
-            if (CheckWin(placeRequest.PlayerGuid, out DTO.Data finalMessage))
+            if (CheckWin(placeRequest.PlayerGuid, out var finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -568,7 +564,7 @@ namespace GameMasterCore
 
         public DTO.Data PerformTestPiece(DTO.TestPiece testPieceRequest)
         {
-            if (CheckWin(testPieceRequest.PlayerGuid, out DTO.Data finalMessage))
+            if (CheckWin(testPieceRequest.PlayerGuid, out var finalMessage))
                 return finalMessage;
             else
                 return DelaySynchronizedAction(
@@ -720,7 +716,7 @@ namespace GameMasterCore
             {
                 result = function();
             }
-            var milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
+			int milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
             if (milisecondsToSleep > 0)
                 Task.Delay(milisecondsToSleep);
             return result;
@@ -809,14 +805,14 @@ namespace GameMasterCore
 
             for (int i = 0; i < totalFieldCount - 1; i++)
             {
-                var randomTargetPlace = random.Next(i, totalFieldCount);
+				int randomTargetPlace = random.Next(i, totalFieldCount);
 
                 if (placeToPieceId.Keys.Contains(i))
                 {
                     if (placeToPieceId.Keys.Contains(randomTargetPlace))
                     {
 
-                        var tmpId = placeToPieceId[randomTargetPlace];
+						int tmpId = placeToPieceId[randomTargetPlace];
                         placeToPieceId[randomTargetPlace] = placeToPieceId[i];
                         placeToPieceId[i] = tmpId;
                     }
@@ -854,7 +850,7 @@ namespace GameMasterCore
         {
             if (redGoalsToScore == 0 || blueGoalsToScore == 0)
             {
-                IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
+                var player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
                 OnLog(win ? "Victory" : "Defeat", DateTime.Now, 1, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
@@ -878,7 +874,7 @@ namespace GameMasterCore
         #region TEMPORARY METHOD to be changed in future stages
         public DTO.Game GetGame(string guid)
         {
-            IPlayer player = board.GetPlayer(GetPlayerIdFromGuid(guid));
+            var player = board.GetPlayer(GetPlayerIdFromGuid(guid));
             var players = board.Players.Select(p => new DTO.Player()
             {
                 Id = p.Id,
@@ -889,7 +885,7 @@ namespace GameMasterCore
             return new DTO.Game()
             {
                 PlayerId = player.Id,
-                Players = players.ToArray(),
+                Players = players.ToList(),
                 Board = new DTO.GameBoard() { GoalsHeight = board.GoalsHeight, TasksHeight = board.TasksHeight, Width = board.Width },
                 PlayerLocation = new DTO.Location() { X = player.GetX().Value, Y = player.GetY().Value }
             };

@@ -24,9 +24,9 @@ using System.Collections.Generic;
 public class SuggestAction : BetweenPlayersMessage
 {
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<TaskField> TaskFields { get; set; }
+        public List<TaskField> TaskFields { get; set; }
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<GoalField> GoalFields { get; set; }
+        public List<GoalField> GoalFields { get; set; }
     /// <summary>
     /// Signature of the player for confirming identity on GameMaster during messages exchange
     /// </summary>
@@ -38,8 +38,8 @@ public class SuggestAction : BetweenPlayersMessage
     
     public SuggestAction()
     {
-        GoalFields = new System.Collections.Generic.List<GoalField>();
-        TaskFields = new System.Collections.Generic.List<TaskField>();
+        GoalFields = new List<GoalField>();
+        TaskFields = new List<TaskField>();
     }
 }
 }

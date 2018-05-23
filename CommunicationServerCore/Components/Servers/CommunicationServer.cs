@@ -170,7 +170,7 @@ namespace CommunicationServerCore.Components.Servers
 			cancellationToken.ThrowIfCancellationRequested();
 			var registeredGames = new RegisteredGames
 			{
-				GameInfo = ( from game in gamesById where game.Value.GameInfo != null select game.Value.GameInfo ).ToArray() 
+				GameInfo = ( from game in gamesById where game.Value.GameInfo != null select game.Value.GameInfo ).ToList()
 			};
 			await proxy.SendAsync( registeredGames, cancellationToken );
 		}

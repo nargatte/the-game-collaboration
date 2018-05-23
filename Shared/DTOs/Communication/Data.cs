@@ -24,11 +24,11 @@ using System.Collections.Generic;
 public class Data : PlayerMessage
 {
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<TaskField> TaskFields { get; set; }
+        public List<TaskField> TaskFields { get; set; }
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<GoalField> GoalFields { get; set; }
+        public List<GoalField> GoalFields { get; set; }
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<Piece> Pieces { get; set; }
+        public List<Piece> Pieces { get; set; }
         [XmlElement("PlayerLocation")]
         public Location PlayerLocation { get; set; }
         [XmlAttribute(AttributeName="gameFinished")]
@@ -43,9 +43,9 @@ public class Data : PlayerMessage
     public Data()
     {
         PlayerLocation = new Location();
-        Pieces = new System.Collections.Generic.List<Piece>();
-        GoalFields = new System.Collections.Generic.List<GoalField>();
-        TaskFields = new System.Collections.Generic.List<TaskField>();
+        Pieces = new List<Piece>();
+        GoalFields = new List<GoalField>();
+        TaskFields = new List<TaskField>();
     }
 }
 }

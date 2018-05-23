@@ -24,7 +24,7 @@ using System.Collections.Generic;
 public class Game : PlayerMessage
 {
         [XmlArrayItemAttribute(IsNullable=false)]
-        public IList<Player> Players { get; set; }
+        public List<Player> Players { get; set; }
         [XmlElement("Board")]
         public GameBoard Board { get; set; }
         [XmlElement("PlayerLocation")]
@@ -34,7 +34,7 @@ public class Game : PlayerMessage
     {
         PlayerLocation = new Location();
         Board = new GameBoard();
-        Players = new System.Collections.Generic.List<Player>();
+        Players = new List<Player>();
     }
 }
 }

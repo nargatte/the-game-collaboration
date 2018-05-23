@@ -24,11 +24,11 @@ using System.Collections.Generic;
 public class RegisteredGames
 {
         [XmlElement("GameInfo")]
-        public IList<GameInfo> GameInfo { get; set; }
+        public List<GameInfo> GameInfo { get; set; }
     
     public RegisteredGames()
     {
-        GameInfo = new System.Collections.Generic.List<GameInfo>();
+        GameInfo = new List<GameInfo>();
     }
 }
 }
