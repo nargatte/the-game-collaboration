@@ -218,6 +218,7 @@ namespace CommunicationServerCore.Components.Servers
 					PickUpPiece pickUpPiece;
 					TestPiece testPiece;
 					PlacePiece placePiece;
+					AuthorizeKnowledgeExchange authorizeKnowledgeExchange;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
@@ -232,6 +233,8 @@ namespace CommunicationServerCore.Components.Servers
 						await PassGameMessageAsync( proxy, testPiece, cancellationToken );//pass message
 					else if( ( placePiece = await proxy.TryReceiveAsync<PlacePiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for PlacePiece
 						await PassGameMessageAsync( proxy, placePiece, cancellationToken );//pass message
+					else if( ( authorizeKnowledgeExchange = await proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for AuthorizeKnowledgeExchange
+						await PassGameMessageAsync( proxy, authorizeKnowledgeExchange, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -344,6 +347,7 @@ namespace CommunicationServerCore.Components.Servers
 					Game game;
 					GameStarted gameStarted;
 					Data data;
+					KnowledgeExchangeRequest knowledgeExchangeRequest;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
@@ -354,6 +358,8 @@ namespace CommunicationServerCore.Components.Servers
 						await GameStartedAsync( proxy, gameStarted, cancellationToken );//process request
 					else if( ( data = await proxy.TryReceiveAsync<Data>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Data
 						await PassPlayerMessageAsync( proxy, data, cancellationToken );//pass message
+					else if( ( knowledgeExchangeRequest = await proxy.TryReceiveAsync<KnowledgeExchangeRequest>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for KnowledgeExchangeRequest
+						await PassPlayerMessageAsync( proxy, knowledgeExchangeRequest, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
