@@ -38,7 +38,7 @@ namespace CommunicationSubstitute
                         }
                     }
 				};
-				int timeout = -1;
+				int timeout = 30000;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );

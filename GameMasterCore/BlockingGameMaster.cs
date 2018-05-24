@@ -672,7 +672,7 @@ namespace GameMasterCore
 
         private DTO.GoalField GetGoalFieldInfo(int x, int y, out DTO.Piece[] pieces)
         {
-            pieces = null;
+			pieces = null;
             var relevantField = board.GetField((uint)x, (uint)y) as IGoalField;
             var goalFieldToReturn = new DTO.GoalField
             {
@@ -699,6 +699,8 @@ namespace GameMasterCore
                     };
                 }
             }
+			if( pieces is null )
+				pieces = new DTO.Piece[] { };
             return goalFieldToReturn;
         }
         #endregion
