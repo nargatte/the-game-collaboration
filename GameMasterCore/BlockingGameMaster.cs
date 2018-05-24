@@ -772,7 +772,7 @@ namespace GameMasterCore
 
         private IPlayer GetPlayerFromGameMessage(DTO.GameMessage message)
         {
-            if (!playerGuidToId.ContainsKey(message.PlayerGuid) || playerBusy.ContainsKey(GetPlayerIdFromGuid(message.PlayerGuid)))
+            if (!playerGuidToId.ContainsKey(message.PlayerGuid))
                 return null;
             return board.GetPlayer(GetPlayerIdFromGuid(message.PlayerGuid));
         }
