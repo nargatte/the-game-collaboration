@@ -71,7 +71,7 @@ namespace GameMasterCore.Components.GameMasters
 
 		void InitTmpInnerGM( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts ) => innerGM = new BlockingGameMaster( new GameMasterSettings()
 		{
-			ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0 },
+			ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0, DestroyDelay = 0, SuggestActionDelay = 0 },
 			GameDefinition = gameDefinition
 		}, new BoardComponentFactory() );
 

@@ -189,7 +189,7 @@ namespace CommunicationServerCore.Components.Servers
 			if( gamesByName.TryGetValue( joinGame.GameName, out var game ) )//if game exists
 				try
 				{
-                    if (!joinGame.PlayerIdSpecified)
+                    if( !joinGame.PlayerIdSpecified )
                         joinGame.PlayerId = proxy.Remote.Id;
 					await game.GameMaster.SendAsync( joinGame, cancellationToken );
 				}
@@ -220,7 +220,9 @@ namespace CommunicationServerCore.Components.Servers
 					PickUpPiece pickUpPiece;
 					TestPiece testPiece;
 					PlacePiece placePiece;
+					DestroyPiece destroyPiece;
 					AuthorizeKnowledgeExchange authorizeKnowledgeExchange;
+					RejectKnowledgeExchange rejectKnowledgeExchange;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
@@ -235,8 +237,12 @@ namespace CommunicationServerCore.Components.Servers
 						await PassGameMessageAsync( proxy, testPiece, cancellationToken );//pass message
 					else if( ( placePiece = await proxy.TryReceiveAsync<PlacePiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for PlacePiece
 						await PassGameMessageAsync( proxy, placePiece, cancellationToken );//pass message
+					else if( ( destroyPiece = await proxy.TryReceiveAsync<DestroyPiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for DestroyPiece
+						await PassGameMessageAsync( proxy, destroyPiece, cancellationToken );//pass message
 					else if( ( authorizeKnowledgeExchange = await proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for AuthorizeKnowledgeExchange
 						await PassGameMessageAsync( proxy, authorizeKnowledgeExchange, cancellationToken );//pass message
+					else if( ( rejectKnowledgeExchange = await proxy.TryReceiveAsync<RejectKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectKnowledgeExchange
+						await RejectKnowledgeExchangeAsync( proxy, rejectKnowledgeExchange, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -266,7 +272,7 @@ namespace CommunicationServerCore.Components.Servers
 				throw;
 			}
 		}
-		protected async Task PassGameMessageAsync<T>( IClientProxy proxy, T gameMessage, CancellationToken cancellationToken ) where T : GameMessage//pass to registered GameMaster
+		protected async Task PassGameMessageAsync< T >( IClientProxy proxy, T gameMessage, CancellationToken cancellationToken ) where T : GameMessage//pass to registered GameMaster
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			if( gamesById.TryGetValue( gameMessage.GameId, out var game ) )//if game exists
@@ -278,6 +284,25 @@ namespace CommunicationServerCore.Components.Servers
 				{
 				}
 			//else Player fault
+		}
+		protected async Task RejectKnowledgeExchangeAsync( IClientProxy proxy, RejectKnowledgeExchange rejectKnowledgeExchange, CancellationToken cancellationToken )//when RejectKnowlegdeExchange is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			players.TryGetValue( proxy.Remote.Id, out var session );
+			if( session.GameId != Constants.AnonymousId )
+			{
+				if( gamesById.TryGetValue( session.GameId, out var game ) )
+				{
+					try
+					{
+						await game.GameMaster.SendAsync( rejectKnowledgeExchange, cancellationToken );
+					}
+					catch( Exception )//GameMaster fault
+					{
+					}
+				}
+				//else Player fault
+			}
 		}
 		protected async Task AsAnonymousGameMasterAsync( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
@@ -350,6 +375,7 @@ namespace CommunicationServerCore.Components.Servers
 					GameStarted gameStarted;
 					Data data;
 					KnowledgeExchangeRequest knowledgeExchangeRequest;
+					RejectKnowledgeExchange rejectKnowledgeExchange;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
@@ -362,6 +388,8 @@ namespace CommunicationServerCore.Components.Servers
 						await PassPlayerMessageAsync( proxy, data, cancellationToken );//pass message
 					else if( ( knowledgeExchangeRequest = await proxy.TryReceiveAsync<KnowledgeExchangeRequest>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for KnowledgeExchangeRequest
 						await PassPlayerMessageAsync( proxy, knowledgeExchangeRequest, cancellationToken );//pass message
+					else if( ( rejectKnowledgeExchange = await proxy.TryReceiveAsync<RejectKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectKnowledgeExchange
+						await PassPlayerMessageAsync( proxy, rejectKnowledgeExchange, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
