@@ -12,6 +12,7 @@ namespace Shared.Interfaces
         Data PerformPickUp(PickUpPiece pickUpRequest);
         Data PerformTestPiece(TestPiece testPieceRequest);
         Data PerformPlace(PlacePiece placeRequest);
+        Data PerformDestroy(DestroyPiece destroyRequest);
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
         Shared.DTOs.Communication.PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
