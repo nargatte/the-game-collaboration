@@ -317,6 +317,25 @@ namespace GameMasterCore
             }
         }
 
+        private DTO.Data PerformSynchronizedDestroy(DTO.DestroyPiece destroyRequest)
+        {
+            var playerPawn = GetPlayerFromGameMessage(destroyRequest);
+
+            OnLog("destroy", DateTime.Now, gameId, playerPawn.Id, destroyRequest.PlayerGuid, playerPawn.Team, playerPawn.Type);
+
+            var heldPiecePawn = playerPawn.Piece;
+            if (heldPiecePawn == null)
+            {
+                return new DTO.Data { PlayerId = playerPawn.Id }; //player wanted to destroy inaccessible piece
+            }
+
+            board.SetPiece(board.Factory.CreatePlayerPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
+            return new DTO.Data {
+                PlayerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value }
+            };
+        }
+
         private DTO.Data PerformSynchronizedPlace(DTO.PlacePiece placeRequest)
         {
             var playerPawn = GetPlayerFromGameMessage(placeRequest);
@@ -551,6 +570,17 @@ namespace GameMasterCore
                 return DelaySynchronizedAction(
                     () => PerformSynchronizedPickUp(pickUpRequest),
                     config.ActionCosts.PickUpDelay
+                    );
+        }
+
+        public DTO.Data PerformDestroy(DTO.DestroyPiece destroyRequest)
+        {
+            if (CheckWin(destroyRequest.PlayerGuid, out var finalMessage))
+                return finalMessage;
+            else
+                return DelaySynchronizedAction(
+                    () => PerformSynchronizedDestroy(destroyRequest),
+                    config.ActionCosts.DestroyDelay
                     );
         }
 
