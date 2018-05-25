@@ -218,6 +218,7 @@ namespace CommunicationServerCore.Components.Servers
 					PickUpPiece pickUpPiece;
 					TestPiece testPiece;
 					PlacePiece placePiece;
+					DestroyPiece destroyPiece;
 					AuthorizeKnowledgeExchange authorizeKnowledgeExchange;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
@@ -233,6 +234,8 @@ namespace CommunicationServerCore.Components.Servers
 						await PassGameMessageAsync( proxy, testPiece, cancellationToken );//pass message
 					else if( ( placePiece = await proxy.TryReceiveAsync<PlacePiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for PlacePiece
 						await PassGameMessageAsync( proxy, placePiece, cancellationToken );//pass message
+					else if( ( destroyPiece = await proxy.TryReceiveAsync<DestroyPiece>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for DestroyPiece
+						await PassGameMessageAsync( proxy, destroyPiece, cancellationToken );//pass message
 					else if( ( authorizeKnowledgeExchange = await proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for AuthorizeKnowledgeExchange
 						await PassGameMessageAsync( proxy, authorizeKnowledgeExchange, cancellationToken );//pass message
 					else//doesn't matter
