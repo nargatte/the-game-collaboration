@@ -1,4 +1,5 @@
 ﻿using Shared.Components.Exceptions;
+using Shared.Const;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Factories;
 using System;
@@ -24,7 +25,7 @@ namespace Shared.Components.Extensions
 		}
 		public static INetworkServer MakeNetworkServer( this INetworkFactory factory, string ip, int port )
 		{
-			var server = factory.CreateNetworkServer( new TcpListener( IPAddress.Parse( ip ), port ) );
+			var server = factory.CreateNetworkServer( new TcpListener( Constants.Cooperation ? IPAddress.Any : IPAddress.Parse( ip ), port ) );
 			return server is null ? throw new NotImplementedException( nameof( factory ) ) : server;
 		}
 	}
