@@ -89,7 +89,7 @@ namespace CommunicationSubstitute
 			{
 				Console.WriteLine( e );
 			}
-		}
+        }
 		private static void Debug( ICommunicationObserver communicationObserver )
 		{
 			communicationObserver.Sent += OnSent;

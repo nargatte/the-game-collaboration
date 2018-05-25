@@ -189,6 +189,8 @@ namespace CommunicationServerCore.Components.Servers
 			if( gamesByName.TryGetValue( joinGame.GameName, out var game ) )//if game exists
 				try
 				{
+                    if (!joinGame.PlayerIdSpecified)
+                        joinGame.PlayerId = proxy.Remote.Id;
 					await game.GameMaster.SendAsync( joinGame, cancellationToken );
 				}
 				catch( Exception )//GameMaster fault
