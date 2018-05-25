@@ -38,7 +38,7 @@ namespace CommunicationSubstitute
                         }
                     }
 				};
-				int timeout = 30000;
+				int timeout = -1;
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var cs = new CommunicationServerModule( ip, port, new CommunicationServerSettings(), new CommunicationServerFactory() );
@@ -47,8 +47,9 @@ namespace CommunicationSubstitute
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerRole.Leader, new PlayerFactory() );
 					Debug( cs );
 					Debug( gm1 );
-					//Debug( p1 );
-					//Debug( p2 );
+					Debug( p1 );
+					Debug( p2 );
+					CancelOnCtrlC( cts );
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
@@ -104,5 +105,13 @@ namespace CommunicationSubstitute
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
+		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
+		{
+			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
+			{
+				e.Cancel = true;
+				cts.Cancel();
+			}
+		};
 	}
 }
