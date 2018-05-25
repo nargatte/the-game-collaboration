@@ -703,6 +703,8 @@ namespace GameMasterCore
                     };
                 }
             }
+			if( pieces is null )
+				pieces = new DTO.Piece[] { };
             return goalFieldToReturn;
         }
         #endregion

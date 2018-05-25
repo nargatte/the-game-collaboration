@@ -19,12 +19,13 @@ namespace CommunicationServerCore
 				string ip = "127.0.0.1";
 				int port = 65535;
 				var communicationServerSettings = new CommunicationServerSettings();
-				int timeout = 30000;
+				int timeout = -1;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var module = new CommunicationServerModule( ip, port, communicationServerSettings, new CommunicationServerFactory() );
 					Debug( module );
+					CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
 					{
@@ -71,5 +72,13 @@ namespace CommunicationServerCore
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
+		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
+		{
+			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
+			{
+				e.Cancel = true;
+				cts.Cancel();
+			}
+		};
 	}
 }
