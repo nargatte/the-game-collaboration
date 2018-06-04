@@ -8,8 +8,8 @@ namespace Shared.Enums
 	[XmlRoot( Namespace = "https://se2.mini.pw.edu.pl/17-results/", IsNullable = false )]
 	public enum GoalFieldType
     {
-		[XmlIgnore]
-		Unknown,
+        [XmlEnum( "unknown" )]
+        Unknown,
 		[XmlEnum( "goal" )]
 		Goal,
 		[XmlEnum( "non-goal" )]

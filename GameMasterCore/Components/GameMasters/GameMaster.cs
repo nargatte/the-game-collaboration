@@ -71,7 +71,7 @@ namespace GameMasterCore.Components.GameMasters
 
 		void InitTmpInnerGM( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts ) => innerGM = new BlockingGameMaster( new GameMasterSettings()
 		{
-			ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0 },
+			ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0, DestroyDelay = 0, SuggestActionDelay = 0 },
 			GameDefinition = gameDefinition
 		}, new BoardComponentFactory() );
 
@@ -140,10 +140,10 @@ namespace GameMasterCore.Components.GameMasters
                     }
                     else if ((authorizeKnowledgeExchange = await Proxy.TryReceiveAsync<AuthorizeKnowledgeExchange>(cancellationToken).ConfigureAwait(false)) != null)
                     {
-                        if (!innerGM.IsPlayerBusy(authorizeKnowledgeExchange))
-                        {
-                            innerGM.BlockPlayer(authorizeKnowledgeExchange);
-                        }
+                        //if (!innerGM.IsPlayerBusy(authorizeKnowledgeExchange))
+                        //{
+                        //    innerGM.BlockPlayer(authorizeKnowledgeExchange);
+                        //}
                     }
                     else if ((playerDisconnected = await Proxy.TryReceiveAsync<PlayerDisconnected>(cancellationToken).ConfigureAwait(false)) != null)
                     {
@@ -205,7 +205,7 @@ namespace GameMasterCore.Components.GameMasters
                 }
 
             }
-            
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         async Task TaskPerformer(CancellationToken cancellationToken)
@@ -219,10 +219,12 @@ namespace GameMasterCore.Components.GameMasters
             }));
             while (true)
             {
+                while (tasks.Count < 2) ;
                 var task = await Task.WhenAny(tasks);
                 tasks.Remove(task);
                 var message = await task;
-                await Proxy.SendAsync(innerGM.Perform(message), cancellationToken).ConfigureAwait(false);
+                var result = innerGM.Perform(message);
+                await Proxy.SendAsync(result, cancellationToken).ConfigureAwait(false);
                 innerGM.FreePlayer(message);
             }
         }
@@ -246,7 +248,7 @@ namespace GameMasterCore.Components.GameMasters
             if (!innerGM.IsPlayerBusy(message))
             {
                 innerGM.BlockPlayer(message);
-                tasks.Add(DelayMessage(message, ActionCosts.MoveDelay, cancellationToken));
+                tasks.Add(DelayMessage(message, delay, cancellationToken));
             }
         }
     }

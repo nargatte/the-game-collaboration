@@ -23,12 +23,13 @@ namespace PlayerCore
 				string gameName = default;
 				TeamColour team = default;
 				PlayerRole role = default;
-				int timeout = 30000;
+				int timeout = -1;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
 					var module = new PlayerModule( ip, port, playerSettings, gameName, team, role, new PlayerFactory() );
 					Debug( module );
+					CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
 					{
@@ -75,5 +76,13 @@ namespace PlayerCore
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
+		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
+		{
+			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
+			{
+				e.Cancel = true;
+				cts.Cancel();
+			}
+		};
 	}
 }

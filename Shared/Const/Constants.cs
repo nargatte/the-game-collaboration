@@ -8,5 +8,6 @@ namespace Shared.Const
 		public static readonly Encoding Encoding = Encoding.UTF8;
 		public static readonly double KeepAliveFrequency = 2.0;
 		public const ulong AnonymousId = 0uL;
+		public const bool Cooperation = true;
 	}
 }
