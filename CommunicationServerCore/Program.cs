@@ -7,6 +7,7 @@ using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Shared.Components.ArgumentOptions;
 
 namespace CommunicationServerCore
 {
@@ -16,14 +17,14 @@ namespace CommunicationServerCore
         {
 			try
 			{
-				string ip = "127.0.0.1";
-				int port = 65535;
-				var communicationServerSettings = new CommunicationServerSettings();
+			    CommunicationServerOptions cso = new CommunicationServerOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    CommunicationServerSettings communicationServerSettings = ArgumentOptionsHelper.GetConfigFile<CommunicationServerSettings>(cso.Conf);
+
 				int timeout = -1;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
-					var module = new CommunicationServerModule( ip, port, communicationServerSettings, new CommunicationServerFactory() );
+					var module = new CommunicationServerModule( "localhost", cso.Port, communicationServerSettings, new CommunicationServerFactory() );
 					Debug( module );
 					CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
