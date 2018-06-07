@@ -1,14 +1,13 @@
 ﻿using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
+using PlayerCore.Components.Options;
 using Shared.Components.Events;
 using Shared.Components.Exceptions;
-using Shared.DTOs.Configuration;
-using Shared.Enums;
+using Shared.Components.Options;
 using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared.Components.ArgumentOptions;
 
 namespace PlayerCore
 {
@@ -18,13 +17,12 @@ namespace PlayerCore
 		{
 			try
 			{
-                var po = new PlayerOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    var playerSettings = ArgumentOptionsHelper.GetConfigFile<PlayerSettings>(po.Conf);
+				var options = new PlayerOptions( args );
 				using( var cts = new CancellationTokenSource() )
 				{
-					var module = new PlayerModule( po.Address, po.Port, playerSettings, po.Game, po.Team, po.Role, new PlayerFactory() );
+					var module = new PlayerModule( options.Address, options.Port, options.Conf, options.Game, options.Team, options.Role, new PlayerFactory() );
 					Debug( module );
-					CancelOnCtrlC( cts );
+					CommandLineOptions.CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
 					{
@@ -71,13 +69,5 @@ namespace PlayerCore
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
-		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
-		{
-			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
-			{
-				e.Cancel = true;
-				cts.Cancel();
-			}
-		};
 	}
 }
