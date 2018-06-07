@@ -52,9 +52,11 @@
     <Compile Include="Components\GameMasters\GameMaster.cs" />
     <Compile Include="Components\Modules\GameMasterModule.cs" />
     <Compile Include="BlockingGameMaster.cs" />
+    <Compile Include="Components\Options\GameMasterOptions.cs" />
     <Compile Include="Interfaces\Factories\IGameMasterFactory.cs" />
     <Compile Include="Interfaces\Modules\IGameMasterModule.cs" />
     <Compile Include="Interfaces\GameMasters\IGameMaster.cs" />
+    <Compile Include="Interfaces\Options\IGameMasterOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

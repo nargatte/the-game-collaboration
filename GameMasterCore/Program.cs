@@ -1,13 +1,13 @@
 ﻿using GameMasterCore.Components.Factories;
 using GameMasterCore.Components.Modules;
+using GameMasterCore.Components.Options;
 using Shared.Components.Events;
 using Shared.Components.Exceptions;
-using Shared.DTOs.Configuration;
+using Shared.Components.Options;
 using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared.Components.ArgumentOptions;
 
 namespace GameMasterCore
 {
@@ -17,13 +17,12 @@ namespace GameMasterCore
 		{
 			try
 			{
-			    var gmo = new GameMasterOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    var gameMasterSettings = ArgumentOptionsHelper.GetConfigFile<GameMasterSettings>(gmo.Conf);
+				var options = new GameMasterOptions( args );
 				using( var cts = new CancellationTokenSource() )
 				{
-					var module = new GameMasterModule( gmo.Address, gmo.Port, gameMasterSettings, new GameMasterFactory() );
+					var module = new GameMasterModule( options.Address, options.Port, options.Conf, new GameMasterFactory() );
 					Debug( module );
-					CancelOnCtrlC( cts );
+					CommandLineOptions.CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
 					{
@@ -70,13 +69,5 @@ namespace GameMasterCore
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
-		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
-		{
-			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
-			{
-				e.Cancel = true;
-				cts.Cancel();
-			}
-		};
 	}
 }
