@@ -6,7 +6,9 @@ using Shared.DTOs.Communication;
 using Shared.DTOs.Configuration;
 using Shared.Enums;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,7 +52,7 @@ namespace GameMasterCore.Components.GameMasters
                             Proxy.Discard();
                     }
                 }
-                await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false)); 
+                await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
             }
         }
         #endregion
@@ -71,6 +73,7 @@ namespace GameMasterCore.Components.GameMasters
         BlockingGameMaster innerGM;
         List<Task<GameMessage>> tasks = new List<Task<GameMessage>>();
         Dictionary<uint, GameMessage> playerBusy = new Dictionary<uint, GameMessage>();
+
 
         void InitTmpInnerGM(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts) => innerGM = new BlockingGameMaster(new GameMasterSettings()
         {
@@ -111,6 +114,8 @@ namespace GameMasterCore.Components.GameMasters
             Exception ex = null;
             try
             {
+                //var logPlayerResponseTime
+
                 while (!innerGM.win)
                 {
                     //GameMessage gameMessage;
@@ -154,6 +159,11 @@ namespace GameMasterCore.Components.GameMasters
                     }
                     else
                         Proxy.Discard();
+                }
+                foreach (var kvp in innerGM.playerStats)
+                {
+                    var winLoseMessage = kvp.Value.hasWon ? "won!" : "lost";
+                    Console.WriteLine($"{kvp.Value.playerFriendlyName} has {winLoseMessage}. Its average response time: {kvp.Value.responseTimes.Average(time => time.TotalMilliseconds) : F2} ms.");
                 }
             }
             catch (OperationCanceledException)

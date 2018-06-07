@@ -20,6 +20,12 @@ using System.IO;
 
 namespace GameMasterCore
 {
+    public class PlayerStats
+    {
+        public string playerFriendlyName;
+        public bool hasWon;
+        public List<TimeSpan> responseTimes;
+    }
     public class BlockingGameMaster : IGameMaster
     {
         Random random;
@@ -34,6 +40,8 @@ namespace GameMasterCore
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> Game { get; set; } // for process game by communication substitute 
         public ulong gameId;
+        public Dictionary<string, PlayerStats> playerStats = new Dictionary<string, PlayerStats>();
+        public Dictionary<string, DateTime> playerAwaitingTimes = new Dictionary<string, DateTime>();
 
         #region Logging constants
         private string logFilePrefix = @"gamemaster";
@@ -625,24 +633,60 @@ namespace GameMasterCore
                     config.ActionCosts.TestDelay
                     );
         }
+        private void InitializePlayerStatsIfNecessary(DTO.GameMessage gameMessage)
+        {
+            if (!playerStats.ContainsKey(gameMessage.PlayerGuid))
+            {
+                var player = GetPlayerFromGameMessage(gameMessage);
+                playerStats.Add(gameMessage.PlayerGuid, new PlayerStats()
+                {
+                    hasWon = false,
+                    playerFriendlyName = $"player {player.Id} from team {player.Team}",
+                    responseTimes = new List<TimeSpan>()
+                });
+            }
+        }
 
         public DTO.Data Perform(DTO.GameMessage gameMessage)
         {
+            #region handle player stats
+            InitializePlayerStatsIfNecessary(gameMessage);
+
+            if (playerAwaitingTimes.ContainsKey(gameMessage.PlayerGuid))
+            {
+                playerStats[gameMessage.PlayerGuid].responseTimes.Add(DateTime.Now - playerAwaitingTimes[gameMessage.PlayerGuid]);
+                playerAwaitingTimes.Remove(gameMessage.PlayerGuid);
+            }
+            #endregion
+
+            DTO.Data dataToReturn = null;
             switch (gameMessage)
             {
                 case DTO.Move move:
-                    return PerformMove(move);
+                    dataToReturn = PerformMove(move);
+                    break;
                 case DTO.Discover discover:
-                    return PerformDiscover(discover);
+                    dataToReturn = PerformDiscover(discover);
+                    break;
                 case DTO.TestPiece test:
-                    return PerformTestPiece(test);
+                    dataToReturn = PerformTestPiece(test);
+                    break;
                 case DTO.PlacePiece place:
-                    return PerformPlace(place);
+                    dataToReturn = PerformPlace(place);
+                    break;
                 case DTO.PickUpPiece pick:
-                    return PerformPickUp(pick);
+                    dataToReturn = PerformPickUp(pick);
+                    break;
                 default:
-                    return new DTO.Data() { PlayerId = GetPlayerIdFromGuid(gameMessage.PlayerGuid) };
+                    dataToReturn = new DTO.Data() { PlayerId = GetPlayerIdFromGuid(gameMessage.PlayerGuid) };
+                    break;
             }
+
+            #region handle player stats
+            playerAwaitingTimes.Add(gameMessage.PlayerGuid, DateTime.Now);
+            #endregion
+
+            return dataToReturn;
         }
 
         public bool IsPlayerBusy(DTO.GameMessage message)
@@ -918,6 +962,7 @@ namespace GameMasterCore
             {
                 var player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
+                playerStats[guid].hasWon = win;
                 OnLog(win ? "Victory" : "Defeat", DateTime.Now, gameId, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
                 {
