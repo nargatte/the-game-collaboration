@@ -47,6 +47,7 @@
     <Compile Include="Base\Communication\NetworkServerBase.cs" />
     <Compile Include="Base\Events\CommunicationObserverBase.cs" />
     <Compile Include="Base\Modules\ModuleBase.cs" />
+    <Compile Include="Base\Options\OptionsBase.cs" />
     <Compile Include="Base\Proxies\ClientProxyBase.cs" />
     <Compile Include="Base\Proxies\ProxyBase.cs" />
     <Compile Include="Base\Proxies\ServerProxyBase.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Components\Communication\NetworkClient.cs" />
     <Compile Include="Components\Communication\NetworkServer.cs" />
     <Compile Include="Components\Events\DisconnectedArgs.cs" />
+    <Compile Include="Components\Options\CommandLineOptions.cs" />
     <Compile Include="Const\Constants.cs" />
     <Compile Include="Components\Events\EventHelper.cs" />
     <Compile Include="Components\Events\ReceivedArgs.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Enums\MoveType.cs" />
     <Compile Include="Enums\PlayerRole.cs" />
     <Compile Include="Interfaces\Factories\IProxyFactory.cs" />
+    <Compile Include="Interfaces\Options\IOptions.cs" />
     <Compile Include="Interfaces\Tasks\IRunnable.cs" />
     <Compile Include="Interfaces\Modules\IModule.cs" />
     <Compile Include="Interfaces\IGameMaster.cs" />

@@ -15,7 +15,7 @@ namespace CommunicationServerCore.Base.Modules
 		public virtual ICommunicationServer CommunicationServer { get; }
 		#endregion
 		#region CommunicationServerModuleBase
-		public CommunicationServerModuleBase( string ip, int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( ip, port )
+		protected CommunicationServerModuleBase( string ip, int port, CommunicationServerSettings configuration, ICommunicationServerFactory factory ) : base( ip, port )
 		{
 			Configuration = configuration is null ? throw new ArgumentNullException( nameof( configuration ) ) : configuration;
 			Factory = factory is null ? throw new ArgumentNullException( nameof( factory ) ) : factory;

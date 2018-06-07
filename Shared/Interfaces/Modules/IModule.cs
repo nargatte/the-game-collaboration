@@ -5,6 +5,7 @@ namespace Shared.Interfaces.Modules
 {
 	public interface IModule : IRunnable, ICommunicationObserver
 	{
+		string Ip { get; }
 		int Port { get; }
 	}
 }

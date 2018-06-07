@@ -13,7 +13,7 @@ namespace Shared.Base.Modules
 		public virtual int Port { get; }
 		#endregion
 		#region ModuleBase
-		public ModuleBase( string ip, int port )
+		protected ModuleBase( string ip, int port )
 		{
 			Ip = ip;
 			Port = port;

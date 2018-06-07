@@ -1,13 +1,13 @@
 ﻿using CommunicationServerCore.Components.Factories;
 using CommunicationServerCore.Components.Modules;
+using CommunicationServerCore.Components.Options;
 using Shared.Components.Events;
 using Shared.Components.Exceptions;
-using Shared.DTOs.Configuration;
+using Shared.Components.Options;
 using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared.Components.ArgumentOptions;
 
 namespace CommunicationServerCore
 {
@@ -17,13 +17,12 @@ namespace CommunicationServerCore
         {
 			try
 			{
-			    var cso = new CommunicationServerOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    var communicationServerSettings = ArgumentOptionsHelper.GetConfigFile<CommunicationServerSettings>(cso.Conf);
+				var options = new CommunicationServerOptions( args );
 				using( var cts = new CancellationTokenSource() )
 				{
-					var module = new CommunicationServerModule( "localhost", cso.Port, communicationServerSettings, new CommunicationServerFactory() );
+					var module = new CommunicationServerModule( "localhost", options.Port, options.Conf, new CommunicationServerFactory() );
 					Debug( module );
-					CancelOnCtrlC( cts );
+					CommandLineOptions.CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
 					try
 					{
@@ -59,8 +58,8 @@ namespace CommunicationServerCore
 		{
 			communicationObserver.Sent += OnSent;
 			communicationObserver.Received += OnReceived;
-			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
-			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
+			communicationObserver.SentKeepAlive += OnSentKeepAlive;
+			communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;
 			communicationObserver.Disconnected += OnDisconnected;
 		}
@@ -70,13 +69,5 @@ namespace CommunicationServerCore
 		private static void OnReceivedKeepAlive( object s, ReceivedKeepAliveArgs e ) => Console.WriteLine( $"{ e.Local } received keep alive from { e.Remote }.\n" );
 		private static void OnDiscarded( object s, DiscardedArgs e ) => Console.WriteLine( $"{ e.Local } discarded message from { e.Remote }:\n{ e.SerializedMessage }\n" );
 		private static void OnDisconnected( object s, DisconnectedArgs e ) => Console.WriteLine( $"{ e.Local } lost connection with { e.Remote }.\n" );
-		private static void CancelOnCtrlC( CancellationTokenSource cts ) => Console.CancelKeyPress += ( s, e ) =>
-		{
-			if( e.SpecialKey == ConsoleSpecialKey.ControlC )
-			{
-				e.Cancel = true;
-				cts.Cancel();
-			}
-		};
 	}
 }
