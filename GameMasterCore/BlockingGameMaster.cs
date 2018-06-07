@@ -36,7 +36,8 @@ namespace GameMasterCore
         public ulong gameId;
 
         #region Logging constants
-        private const string logFileName = @"./gamemaster.csv";
+        private string logFilePrefix = @"gamemaster";
+        private string logFileExtension = @".csv";
         private const string delimeter = ",";
         private readonly Encoding logEncoding = Encoding.UTF8;
         #endregion
@@ -66,12 +67,13 @@ namespace GameMasterCore
         #region Preparation
         private void PrepareCSVLogs()
         {
-            using (var file = new StreamWriter(logFileName, true, logEncoding))
+            using (var file = new StreamWriter(GetLogCompleteFileName(), true, logEncoding))
             {
                 file.WriteLine($"Type{delimeter}Timestamp{delimeter}Game ID{delimeter}Player ID{delimeter}Player GUID{delimeter}Colour{delimeter}Role");
             }
             Log += (s, args) => AppendLogsToFile(args);
         }
+
         private Config.GameMasterSettings GenerateDefaultConfig()
         {
             var result = new Config.GameMasterSettings
@@ -758,11 +760,12 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
+        private string GetLogCompleteFileName() => $"{logFilePrefix}_{config.GameDefinition.GameName}{logFileExtension}";
 
         private void AppendLogsToFile(LogArgs args)
         {
             var delim = ",";
-            using (var file = new StreamWriter(logFileName, true, logEncoding))
+            using (var file = new StreamWriter(GetLogCompleteFileName(), true, logEncoding))
             {
                 file.WriteLine(args.Type + delim + args.Timestamp.ToUniversalTime() + delim + args.GameId + delim + args.PlayerId + delim + args.PlayerGuid + delim + args.Colour + delim + args.Role);
             }
