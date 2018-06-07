@@ -12,70 +12,73 @@ using System.Threading.Tasks;
 
 namespace GameMasterCore.Components.GameMasters
 {
-	public class GameMaster : GameMasterBase
+    public class GameMaster : GameMasterBase
     {
         #region GameMasterBase
         public override async Task RunAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-			while( Proxy.Local.Id == Constants.AnonymousId )
-			{
-				var registerGame = new Shared.DTOs.Communication.RegisterGame
+            while (true)
+            {
+                while (Proxy.Local.Id == Constants.AnonymousId)
                 {
-					NewGameInfo = new Shared.DTOs.Communication.GameInfo
+                    var registerGame = new Shared.DTOs.Communication.RegisterGame
                     {
-						GameName = GameDefinition.GameName,
-						RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
-						BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam
-					}
-				};
-				await Proxy.SendAsync( registerGame, cancellationToken ).ConfigureAwait( false );
-				while( true )
-				{
-                    Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration;
-                    Shared.DTOs.Communication.RejectGameRegistration rejectGameRegistration;
-					if( ( confirmGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.ConfirmGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
-						PerformConfirmGameRegistration( confirmGameRegistration, cancellationToken );
-						break;
-					}
-					else if( ( rejectGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.RejectGameRegistration>( cancellationToken ).ConfigureAwait( false ) ) != null )
-					{
-						await Task.Delay( TimeSpan.FromMilliseconds( RetryRegisterGameInterval ), cancellationToken ).ConfigureAwait( false );
-						break;
-					}
-					else
-						Proxy.Discard();
-				}
-			}
-            await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false));
+                        NewGameInfo = new Shared.DTOs.Communication.GameInfo
+                        {
+                            GameName = GameDefinition.GameName,
+                            RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
+                            BlueTeamPlayers = GameDefinition.NumberOfPlayersPerTeam
+                        }
+                    };
+                    await Proxy.SendAsync(registerGame, cancellationToken).ConfigureAwait(false);
+                    while (true)
+                    {
+                        Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration;
+                        Shared.DTOs.Communication.RejectGameRegistration rejectGameRegistration;
+                        if ((confirmGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.ConfirmGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                        {
+                            PerformConfirmGameRegistration(confirmGameRegistration, cancellationToken);
+                            break;
+                        }
+                        else if ((rejectGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.RejectGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                        {
+                            await Task.Delay(TimeSpan.FromMilliseconds(RetryRegisterGameInterval), cancellationToken).ConfigureAwait(false);
+                            break;
+                        }
+                        else
+                            Proxy.Discard();
+                    }
+                }
+                await Task.Run(async () => await Listener(cancellationToken).ConfigureAwait(false)); 
+            }
         }
-		#endregion
-		private ulong id;
-		#region GameMaster
-		public GameMaster( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval ) : base( gameDefinition, actionCosts, retryRegisterGameInterval ) => InitTmpInnerGM( gameDefinition, actionCosts );
-		protected void PerformConfirmGameRegistration(Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken )
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			id = confirmGameRegistration.GameId;
-            Proxy.UpdateLocal( Proxy.Factory.CreateIdentity( HostType.GameMaster, id ) );
+        #endregion
+        private ulong id;
+        #region GameMaster
+        public GameMaster(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval) : base(gameDefinition, actionCosts, retryRegisterGameInterval) => InitTmpInnerGM(gameDefinition, actionCosts);
+        protected void PerformConfirmGameRegistration(Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            id = confirmGameRegistration.GameId;
+            Proxy.UpdateLocal(Proxy.Factory.CreateIdentity(HostType.GameMaster, id));
 
             //temp
             innerGM.gameId = confirmGameRegistration.GameId;
         }
-		#endregion
+        #endregion
 
         BlockingGameMaster innerGM;
         List<Task<GameMessage>> tasks = new List<Task<GameMessage>>();
         Dictionary<uint, GameMessage> playerBusy = new Dictionary<uint, GameMessage>();
 
-		void InitTmpInnerGM( GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts ) => innerGM = new BlockingGameMaster( new GameMasterSettings()
-		{
-			ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0, DestroyDelay = 0, SuggestActionDelay = 0 },
-			GameDefinition = gameDefinition
-		}, new BoardComponentFactory() );
+        void InitTmpInnerGM(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts) => innerGM = new BlockingGameMaster(new GameMasterSettings()
+        {
+            ActionCosts = new GameMasterSettingsActionCosts() { DiscoverDelay = 0, KnowledgeExchangeDelay = 0, MoveDelay = 0, PickUpDelay = 0, PlacingDelay = 0, TestDelay = 0, DestroyDelay = 0, SuggestActionDelay = 0 },
+            GameDefinition = gameDefinition
+        }, new BoardComponentFactory());
 
-		async Task Listener(CancellationToken cancellationToken)
+        async Task Listener(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             while (innerGM.playerGuidToId.Keys.Count != GameDefinition.NumberOfPlayersPerTeam * 2)
@@ -86,7 +89,7 @@ namespace GameMasterCore.Components.GameMasters
                 {
                     //Console.WriteLine($"GM receives: { Shared.Components.Serialization.Serializer.Serialize(joinGame) }.");
                     var message = innerGM.PerformJoinGame(joinGame);
-                    if(message is Shared.DTOs.Communication.RejectJoiningGame)
+                    if (message is Shared.DTOs.Communication.RejectJoiningGame)
                         await Proxy.SendAsync(message as Shared.DTOs.Communication.RejectJoiningGame, cancellationToken).ConfigureAwait(false);
                     else
                         await Proxy.SendAsync(message as Shared.DTOs.Communication.ConfirmJoiningGame, cancellationToken).ConfigureAwait(false);
@@ -100,7 +103,7 @@ namespace GameMasterCore.Components.GameMasters
             {
                 await Proxy.SendAsync(innerGM.GetGame(player.Key), cancellationToken).ConfigureAwait(false);
             }
-            var taskPlacer = new TaskManager(async(ct) => await PiecePlacer(ct).ConfigureAwait(false), GameDefinition.PlacingNewPiecesFrequency, true, cancellationToken);
+            var taskPlacer = new TaskManager(async (ct) => await PiecePlacer(ct).ConfigureAwait(false), GameDefinition.PlacingNewPiecesFrequency, true, cancellationToken);
             taskPlacer.Start();
             //var taskPlacer = Task.Run(async () => await PiecePlacer(cancellationToken).ConfigureAwait(false));
             var taskPerformer = Task.Run(async () => await TaskPerformer(cancellationToken).ConfigureAwait(false));
@@ -108,7 +111,7 @@ namespace GameMasterCore.Components.GameMasters
             Exception ex = null;
             try
             {
-                while (true)
+                while (!innerGM.win)
                 {
                     //GameMessage gameMessage;
                     Move moveRequest;
@@ -211,12 +214,12 @@ namespace GameMasterCore.Components.GameMasters
         async Task TaskPerformer(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            tasks.Add(Task.Run( () =>
-            {
-                cancellationToken.WaitHandle.WaitOne(Timeout.Infinite);
-                cancellationToken.ThrowIfCancellationRequested();
-                return (GameMessage)null;
-            }));
+            tasks.Add(Task.Run(() =>
+           {
+               cancellationToken.WaitHandle.WaitOne(Timeout.Infinite);
+               cancellationToken.ThrowIfCancellationRequested();
+               return (GameMessage)null;
+           }));
             while (true)
             {
                 while (tasks.Count < 2) ;
