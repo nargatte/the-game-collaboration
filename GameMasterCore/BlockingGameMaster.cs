@@ -709,7 +709,7 @@ namespace GameMasterCore
             var goalFieldToReturn = new DTO.GoalField
             {
                 Timestamp = DateTime.Now,
-                Type = GoalFieldType.NonGoal,//GoalFieldType.Unknown,
+                Type = GoalFieldType.Unknown,
                 Team = relevantField.Team,
                 X = (uint)x,
                 Y = (uint)y
