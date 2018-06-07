@@ -223,6 +223,8 @@ namespace CommunicationServerCore.Components.Servers
 					DestroyPiece destroyPiece;
 					AuthorizeKnowledgeExchange authorizeKnowledgeExchange;
 					RejectKnowledgeExchange rejectKnowledgeExchange;
+					SuggestAction suggestAction;
+					SuggestActionResponse suggestActionResponse;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
@@ -243,6 +245,10 @@ namespace CommunicationServerCore.Components.Servers
 						await PassGameMessageAsync( proxy, authorizeKnowledgeExchange, cancellationToken );//pass message
 					else if( ( rejectKnowledgeExchange = await proxy.TryReceiveAsync<RejectKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectKnowledgeExchange
 						await RejectKnowledgeExchangeAsync( proxy, rejectKnowledgeExchange, cancellationToken );//pass message
+					else if( ( suggestAction = await proxy.TryReceiveAsync<SuggestAction>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for SuggestAction
+						await SuggestActionAsync( proxy, suggestAction, cancellationToken );//pass message
+					else if( ( suggestActionResponse = await proxy.TryReceiveAsync<SuggestActionResponse>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for SuggestActionResponse
+						await SuggestActionResponseAsync( proxy, suggestActionResponse, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -303,6 +309,32 @@ namespace CommunicationServerCore.Components.Servers
 				}
 				//else Player fault
 			}
+		}
+		protected async Task SuggestActionAsync( IClientProxy proxy, SuggestAction suggestAction, CancellationToken cancellationToken )//when SuggestAction is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( gamesById.TryGetValue( suggestAction.GameId, out var game ) )//if game exists
+				try
+				{
+					await game.GameMaster.SendAsync( suggestAction, cancellationToken );
+				}
+				catch( Exception )//GameMaster fault
+				{
+				}
+			//else Player fault
+		}
+		protected async Task SuggestActionResponseAsync( IClientProxy proxy, SuggestActionResponse suggestActionResponse, CancellationToken cancellationToken )//when SuggestActionResponse is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			if( gamesById.TryGetValue( suggestActionResponse.GameId, out var game ) )//if game exists
+				try
+				{
+					await game.GameMaster.SendAsync( suggestActionResponse, cancellationToken );
+				}
+				catch( Exception )//GameMaster fault
+				{
+				}
+			//else Player fault
 		}
 		protected async Task AsAnonymousGameMasterAsync( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
@@ -376,6 +408,8 @@ namespace CommunicationServerCore.Components.Servers
 					Data data;
 					KnowledgeExchangeRequest knowledgeExchangeRequest;
 					RejectKnowledgeExchange rejectKnowledgeExchange;
+					SuggestAction suggestAction;
+					SuggestActionResponse suggestActionResponse;
 					if( ( confirmJoiningGame = await proxy.TryReceiveAsync<ConfirmJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for ConfirmJoiningGame
 						await ConfirmJoiningGameAsync( proxy, confirmJoiningGame, cancellationToken );//process request
 					else if( ( rejectJoiningGame = await proxy.TryReceiveAsync<RejectJoiningGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectJoiningGame
@@ -390,6 +424,10 @@ namespace CommunicationServerCore.Components.Servers
 						await PassPlayerMessageAsync( proxy, knowledgeExchangeRequest, cancellationToken );//pass message
 					else if( ( rejectKnowledgeExchange = await proxy.TryReceiveAsync<RejectKnowledgeExchange>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for RejectKnowledgeExchange
 						await PassPlayerMessageAsync( proxy, rejectKnowledgeExchange, cancellationToken );//pass message
+					else if( ( suggestAction = await proxy.TryReceiveAsync<SuggestAction>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for SuggestAction
+						await PassPlayerMessageAsync( proxy, suggestAction, cancellationToken );//pass message
+					else if( ( suggestActionResponse = await proxy.TryReceiveAsync<SuggestActionResponse>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for SuggestActionResponse
+						await PassPlayerMessageAsync( proxy, suggestActionResponse, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}

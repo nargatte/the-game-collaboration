@@ -18,11 +18,9 @@ namespace PlayerCore
 		{
 			try
 			{
-                PlayerOptions po = new PlayerOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    PlayerSettings playerSettings = ArgumentOptionsHelper.GetConfigFile<PlayerSettings>(po.Conf);
-				int timeout = -1;
-				//using( var cts = new CancellationTokenSource() )
-				using( var cts = new CancellationTokenSource( timeout ) )
+                var po = new PlayerOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    var playerSettings = ArgumentOptionsHelper.GetConfigFile<PlayerSettings>(po.Conf);
+				using( var cts = new CancellationTokenSource() )
 				{
 					var module = new PlayerModule( po.Address, po.Port, playerSettings, po.Game, po.Team, po.Role, new PlayerFactory() );
 					Debug( module );

@@ -17,12 +17,9 @@ namespace CommunicationServerCore
         {
 			try
 			{
-			    CommunicationServerOptions cso = new CommunicationServerOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    CommunicationServerSettings communicationServerSettings = ArgumentOptionsHelper.GetConfigFile<CommunicationServerSettings>(cso.Conf);
-
-				int timeout = -1;
-				//using( var cts = new CancellationTokenSource() )
-				using( var cts = new CancellationTokenSource( timeout ) )
+			    var cso = new CommunicationServerOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    var communicationServerSettings = ArgumentOptionsHelper.GetConfigFile<CommunicationServerSettings>(cso.Conf);
+				using( var cts = new CancellationTokenSource() )
 				{
 					var module = new CommunicationServerModule( "localhost", cso.Port, communicationServerSettings, new CommunicationServerFactory() );
 					Debug( module );

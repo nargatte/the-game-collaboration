@@ -17,12 +17,9 @@ namespace GameMasterCore
 		{
 			try
 			{
-			    GameMasterOptions gmo = new GameMasterOptions(ArgumentOptionsHelper.GetDictonary(args));
-			    GameMasterSettings gameMasterSettings = ArgumentOptionsHelper.GetConfigFile<GameMasterSettings>(gmo.Conf);
-
-				int timeout = -1;
-				//using( var cts = new CancellationTokenSource() )
-				using( var cts = new CancellationTokenSource( timeout ) )
+			    var gmo = new GameMasterOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    var gameMasterSettings = ArgumentOptionsHelper.GetConfigFile<GameMasterSettings>(gmo.Conf);
+				using( var cts = new CancellationTokenSource() )
 				{
 					var module = new GameMasterModule( gmo.Address, gmo.Port, gameMasterSettings, new GameMasterFactory() );
 					Debug( module );
