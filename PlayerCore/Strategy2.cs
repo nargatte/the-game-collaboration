@@ -473,7 +473,8 @@ namespace PlayerCore
             {
                 if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham)
                 {
-                    //return GameMaster.Destroy();
+                    await SendMessage(new DestroyPiece(), cancellationToken).ConfigureAwait(false);
+                    return;
                 }
                 else
                 {

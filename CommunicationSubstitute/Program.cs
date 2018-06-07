@@ -30,9 +30,11 @@ namespace CommunicationSubstitute
 					GameDefinition = new GameMasterSettingsGameDefinition
 					{
 						GameName = gameName,
-						NumberOfPlayersPerTeam = 1u,
+						NumberOfPlayersPerTeam = 3u,
                         Goals = new List<GoalField>
                         {
+                            new GoalField { Team = TeamColour.Blue, X = 3, Y = 0, Type = GoalFieldType.Goal },
+                            new GoalField { Team = TeamColour.Red, X = 3, Y = 12, Type = GoalFieldType.Goal },
                             new GoalField { Team = TeamColour.Blue, X = 0, Y = 0, Type = GoalFieldType.Goal },
                             new GoalField { Team = TeamColour.Red, X = 0, Y = 12, Type = GoalFieldType.Goal }
                         }
@@ -45,18 +47,30 @@ namespace CommunicationSubstitute
 					var gm1 = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
 					var p1 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerRole.Leader, new PlayerFactory() );
 					var p2 = new PlayerModule( ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerRole.Leader, new PlayerFactory() );
-					Debug( cs );
+				    var p3 = new PlayerModule(ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerRole.Member, new PlayerFactory());
+				    var p4 = new PlayerModule(ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerRole.Member, new PlayerFactory());
+				    var p5 = new PlayerModule(ip, port, new PlayerSettings(), gameName, TeamColour.Blue, PlayerRole.Member, new PlayerFactory());
+				    var p6 = new PlayerModule(ip, port, new PlayerSettings(), gameName, TeamColour.Red, PlayerRole.Member, new PlayerFactory());
+                    Debug( cs );
 					Debug( gm1 );
 					Debug( p1 );
 					Debug( p2 );
+                    Debug(p3);
+                    Debug(p4);
+                    Debug(p5);
+                    Debug(p6);
 					CancelOnCtrlC( cts );
 					var tasks = new List<Task>
 					{
 						Task.Run( async () => await cs.RunAsync( cts.Token ).ConfigureAwait( false ) ),
 						Task.Run( async () => await gm1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
 						Task.Run( async () => await p1.RunAsync( cts.Token ).ConfigureAwait( false ) ),
-						Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) )
-					};
+						Task.Run( async () => await p2.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					    Task.Run( async () => await p3.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					    Task.Run( async () => await p4.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					    Task.Run( async () => await p5.RunAsync( cts.Token ).ConfigureAwait( false ) ),
+					    Task.Run( async () => await p6.RunAsync( cts.Token ).ConfigureAwait( false ) )
+                    };
 					try
 					{
 						await Task.WhenAll( tasks );
