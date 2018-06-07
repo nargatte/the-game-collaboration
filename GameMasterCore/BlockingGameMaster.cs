@@ -16,6 +16,7 @@ using DTO = Shared.DTOs.Communication;
 using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
+using System.IO;
 
 namespace GameMasterCore
 {
@@ -34,10 +35,17 @@ namespace GameMasterCore
         public Dictionary<ulong, DTO.Game> Game { get; set; } // for process game by communication substitute 
         public ulong gameId;
 
+        #region Logging constants
+        private const string logFileName = @"./gamemaster.csv";
+        private const string delimeter = ",";
+        private readonly Encoding logEncoding = Encoding.UTF8;
+        #endregion
+
         public BlockingGameMaster(int seed = 123456)
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
+            PrepareCSVLogs();
 
             // prepare default config
             config = GenerateDefaultConfig();
@@ -50,11 +58,27 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
+            PrepareCSVLogs();
 
             config = _config;
             board = PrepareBoard(_boardComponentFactory);
         }
-
+        private void PrepareCSVLogs()
+        {
+            using (var file = new StreamWriter(logFileName, true, logEncoding))
+            {
+                file.WriteLine($"Type{delimeter}Timestamp{delimeter}Game ID{delimeter}Player ID{delimeter}Player GUID{delimeter}Colour{delimeter}Role");
+            }
+            Log += (s, args) => AppendLogsToFile(args);
+        }
+        private void AppendLogsToFile(LogArgs args)
+        {
+            var delim = ",";
+            using (var file = new StreamWriter(logFileName, true, logEncoding))
+            {
+                file.WriteLine(args.Type + delim + args.Timestamp.ToUniversalTime() + delim + args.GameId + delim + args.PlayerId + delim + args.PlayerGuid + delim + args.Colour + delim + args.Role);
+            }
+        }
         #region Preparation
         private Config.GameMasterSettings GenerateDefaultConfig()
         {
