@@ -17,15 +17,10 @@ using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
 using System.IO;
+using GameMasterCore.Components.PlayerStatistics;
 
 namespace GameMasterCore
 {
-    public class PlayerStats
-    {
-        public string playerFriendlyName;
-        public bool hasWon;
-        public List<TimeSpan> responseTimes;
-    }
     public class BlockingGameMaster : IGameMaster
     {
         Random random;
@@ -41,7 +36,7 @@ namespace GameMasterCore
         public Dictionary<ulong, DTO.Game> Game { get; set; } // for process game by communication substitute 
         public ulong gameId;
         public Dictionary<string, PlayerStats> playerStats = new Dictionary<string, PlayerStats>();
-        public Dictionary<string, DateTime> playerAwaitingTimes = new Dictionary<string, DateTime>();
+        private Dictionary<string, DateTime> playerAwaitingTimes = new Dictionary<string, DateTime>();
 
         #region Logging constants
         private string logFilePrefix = @"gamemaster";

@@ -1,4 +1,5 @@
 ﻿using GameMasterCore.Base.GameMasters;
+using GameMasterCore.Components.PlayerStatistics;
 using Shared.Components.Factories;
 using Shared.Components.Tasks;
 using Shared.Const;
@@ -160,11 +161,7 @@ namespace GameMasterCore.Components.GameMasters
                     else
                         Proxy.Discard();
                 }
-                foreach (var kvp in innerGM.playerStats)
-                {
-                    var winLoseMessage = kvp.Value.hasWon ? "won!" : "lost";
-                    Console.WriteLine($"{kvp.Value.playerFriendlyName} has {winLoseMessage}. Its average response time: {kvp.Value.responseTimes.Average(time => time.TotalMilliseconds) : F2} ms.");
-                }
+                DisplayPlayerStatistics(innerGM.playerStats);
             }
             catch (OperationCanceledException)
             {
@@ -219,6 +216,15 @@ namespace GameMasterCore.Components.GameMasters
 
             }
             cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        private void DisplayPlayerStatistics(Dictionary<string, PlayerStats> playerStats)
+        {
+            foreach (var kvp in innerGM.playerStats)
+            {
+                var winLoseMessage = kvp.Value.hasWon ? "won!" : "lost";
+                Console.WriteLine($"{kvp.Value.playerFriendlyName} has {winLoseMessage}. Its average response time: {kvp.Value.responseTimes.Average(time => time.TotalMilliseconds): F2} ms.");
+            }
         }
 
         async Task TaskPerformer(CancellationToken cancellationToken)
