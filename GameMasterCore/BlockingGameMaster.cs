@@ -63,6 +63,7 @@ namespace GameMasterCore
             config = _config;
             board = PrepareBoard(_boardComponentFactory);
         }
+        #region Preparation
         private void PrepareCSVLogs()
         {
             using (var file = new StreamWriter(logFileName, true, logEncoding))
@@ -71,15 +72,6 @@ namespace GameMasterCore
             }
             Log += (s, args) => AppendLogsToFile(args);
         }
-        private void AppendLogsToFile(LogArgs args)
-        {
-            var delim = ",";
-            using (var file = new StreamWriter(logFileName, true, logEncoding))
-            {
-                file.WriteLine(args.Type + delim + args.Timestamp.ToUniversalTime() + delim + args.GameId + delim + args.PlayerId + delim + args.PlayerGuid + delim + args.Colour + delim + args.Role);
-            }
-        }
-        #region Preparation
         private Config.GameMasterSettings GenerateDefaultConfig()
         {
             var result = new Config.GameMasterSettings
@@ -767,6 +759,14 @@ namespace GameMasterCore
 
         #region HelperMethods
 
+        private void AppendLogsToFile(LogArgs args)
+        {
+            var delim = ",";
+            using (var file = new StreamWriter(logFileName, true, logEncoding))
+            {
+                file.WriteLine(args.Type + delim + args.Timestamp.ToUniversalTime() + delim + args.GameId + delim + args.PlayerId + delim + args.PlayerGuid + delim + args.Colour + delim + args.Role);
+            }
+        }
         private T DelaySynchronizedAction<T>(Func<T> function, long milisecondDelay, int maximumExpectedExecutionTime)
             => DelaySynchronizedAction(function, milisecondDelay, (double)(milisecondDelay - maximumExpectedExecutionTime) / milisecondDelay);
         private T DelaySynchronizedAction<T>(Func<T> function, long milisecondDelay, double fraction = 0.85)
