@@ -50,6 +50,10 @@
     <Compile Include="Base\Proxies\ClientProxyBase.cs" />
     <Compile Include="Base\Proxies\ProxyBase.cs" />
     <Compile Include="Base\Proxies\ServerProxyBase.cs" />
+    <Compile Include="Components\ArgumentOptions\ArgumentOptionsHelper.cs" />
+    <Compile Include="Components\ArgumentOptions\CommunicationServerOptions.cs" />
+    <Compile Include="Components\ArgumentOptions\GameMasterOptions.cs" />
+    <Compile Include="Components\ArgumentOptions\PlayerOptions.cs" />
     <Compile Include="Components\Boards\ExtenderIBoard.cs" />
     <Compile Include="Components\Boards\BoardBase.cs" />
     <Compile Include="Components\Boards\IReadOnlyBoard.cs" />
@@ -187,5 +191,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

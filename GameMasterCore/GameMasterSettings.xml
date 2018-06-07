@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GameMasterSettings xmlns="https://se2.mini.pw.edu.pl/17-pl-19/17-pl-19/"
+                    KeepAliveInterval="500"
+                    RetryRegisterGameInterval="60000">
+  <GameDefinition>
+    <Goals team="red" x="0" y ="17" type="goal" />
+    <Goals team="red" x="5" y ="17" type="goal" />
+    <Goals team="red" x="0" y ="12" type="goal" />
+    <Goals team="red" x="5" y ="12" type="goal" />
+    <Goals team="blue" x="0" y="0" type="goal" />
+    <Goals team="blue" x="5" y="0" type="goal" />
+    <Goals team="blue" x="0" y="5" type="goal" />
+    <Goals team="blue" x="5" y="5" type="goal" />
+    <ShamProbability>0.2</ShamProbability>
+    <PlacingNewPiecesFrequency>300</PlacingNewPiecesFrequency>
+    <InitialNumberOfPieces>8</InitialNumberOfPieces>
+    <BoardWidth>6</BoardWidth>
+    <TaskAreaLength>6</TaskAreaLength>
+    <GoalAreaLength>6</GoalAreaLength>
+    <NumberOfPlayersPerTeam>4</NumberOfPlayersPerTeam>
+    <GameName>Last</GameName>
+  </GameDefinition>
+  <ActionCosts>
+    <MoveDelay>20</MoveDelay>
+    <DiscoverDelay>100</DiscoverDelay>
+    <TestDelay>200</TestDelay>
+    <DestroyDelay>20</DestroyDelay>
+    <PickUpDelay>20</PickUpDelay>
+    <PlacingDelay>20</PlacingDelay>
+    <KnowledgeExchangeDelay>300</KnowledgeExchangeDelay>
+    <SuggestActionDelay>200</SuggestActionDelay>
+  </ActionCosts>
+</GameMasterSettings>

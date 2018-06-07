@@ -23,6 +23,7 @@ namespace GameMasterCore
     {
         Random random;
         public virtual IReadOnlyBoard Board => board;
+        public bool win { get; private set; }
         public IBoard board;
         public Dictionary<string, ulong> playerGuidToId;
         public Dictionary<ulong, DTO.GameMessage> playerBusy = new Dictionary<ulong, DTO.GameMessage>();
@@ -183,11 +184,11 @@ namespace GameMasterCore
             return result;
         }
 
-		private DTO.Data PerformSynchronizedKnowledgeExchange( DTO.KnowledgeExchangeRequest knowledgeExchangeRequest ) =>
-			//TODO: knowledge exchange
-			throw new NotImplementedException();
+        private DTO.Data PerformSynchronizedKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest) =>
+            //TODO: knowledge exchange
+            throw new NotImplementedException();
 
-		private DTO.Data PerformSynchronizedMove(DTO.Move moveRequest)
+        private DTO.Data PerformSynchronizedMove(DTO.Move moveRequest)
         {
             var playerPawn = GetPlayerFromGameMessage(moveRequest);
 
@@ -330,7 +331,8 @@ namespace GameMasterCore
             }
 
             board.SetPiece(board.Factory.CreatePlayerPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
-            return new DTO.Data {
+            return new DTO.Data
+            {
                 PlayerId = playerPawn.Id,
                 PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value }
             };
@@ -478,18 +480,18 @@ namespace GameMasterCore
             playerGuidToId.Remove(guidId.Key);
             OnLog("Disconnected", DateTime.Now, gameId, guidId.Value, guidId.Key, player.Team, player.Type);
         }
-		public DTO.RegisteredGames PerformConfirmGameRegistration() => new DTO.RegisteredGames()
-		{
-			GameInfo = new List<DTO.GameInfo>
-				{
-					new DTO.GameInfo{
-						BlueTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
-						RedTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
-						GameName = config.GameDefinition.GameName
-					}
-				}
-		};
-		public DTO.PlayerMessage PerformJoinGame( DTO.JoinGame joinGame )
+        public DTO.RegisteredGames PerformConfirmGameRegistration() => new DTO.RegisteredGames()
+        {
+            GameInfo = new List<DTO.GameInfo>
+                {
+                    new DTO.GameInfo{
+                        BlueTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
+                        RedTeamPlayers = config.GameDefinition.NumberOfPlayersPerTeam,
+                        GameName = config.GameDefinition.GameName
+                    }
+                }
+        };
+        public DTO.PlayerMessage PerformJoinGame(DTO.JoinGame joinGame)
         {
             if (joinGame.GameName != config.GameDefinition.GameName
                 || playerGuidToId.Keys.Count == config.GameDefinition.NumberOfPlayersPerTeam * 2)
@@ -509,7 +511,7 @@ namespace GameMasterCore
             bool teamAlreadyHasLeader = board.Players.Where(player => player.Team == joinGame.PreferredTeam && player.Type == Shared.Enums.PlayerRole.Leader).Count() > 0;
 
             // if there is a leader already then modify the request accordingly
-            if ( teamAlreadyHasLeader && joinGame.PreferredRole == PlayerRole.Leader)
+            if (teamAlreadyHasLeader && joinGame.PreferredRole == PlayerRole.Leader)
             {
                 joinGame.PreferredRole = Shared.Enums.PlayerRole.Member;
             }
@@ -544,14 +546,14 @@ namespace GameMasterCore
             return result;
         }
 
-		public DTO.Data PerformKnowledgeExchange( DTO.KnowledgeExchangeRequest knowledgeExchangeRequest ) =>
-			// TODO: DTO.Data czy raczej DTO.PlayerMessage?
-			DelaySynchronizedAction(
-			() => PerformSynchronizedKnowledgeExchange( knowledgeExchangeRequest ),
-			config.ActionCosts.KnowledgeExchangeDelay
-			);
+        public DTO.Data PerformKnowledgeExchange(DTO.KnowledgeExchangeRequest knowledgeExchangeRequest) =>
+            // TODO: DTO.Data czy raczej DTO.PlayerMessage?
+            DelaySynchronizedAction(
+            () => PerformSynchronizedKnowledgeExchange(knowledgeExchangeRequest),
+            config.ActionCosts.KnowledgeExchangeDelay
+            );
 
-		public DTO.Data PerformMove(DTO.Move moveRequest)
+        public DTO.Data PerformMove(DTO.Move moveRequest)
         {
             if (CheckWin(moveRequest.PlayerGuid, out var finalMessage))
                 return finalMessage;
@@ -632,11 +634,11 @@ namespace GameMasterCore
             return false;
         }
 
-		public void FreePlayer( DTO.GameMessage message ) => playerBusy.Remove( GetPlayerIdFromGuid( message.PlayerGuid ) );
+        public void FreePlayer(DTO.GameMessage message) => playerBusy.Remove(GetPlayerIdFromGuid(message.PlayerGuid));
 
-		public void BlockPlayer( DTO.GameMessage message ) => playerBusy.Add( GetPlayerIdFromGuid( message.PlayerGuid ), message );
+        public void BlockPlayer(DTO.GameMessage message) => playerBusy.Add(GetPlayerIdFromGuid(message.PlayerGuid), message);
 
-		public virtual event EventHandler<LogArgs> Log = delegate { };
+        public virtual event EventHandler<LogArgs> Log = delegate { };
         #endregion
 
         #region IBoard to DTO converters
@@ -733,8 +735,8 @@ namespace GameMasterCore
                     };
                 }
             }
-			if( pieces is null )
-				pieces = new DTO.Piece[] { };
+            if (pieces is null)
+                pieces = new DTO.Piece[] { };
             return goalFieldToReturn;
         }
         #endregion
@@ -753,7 +755,7 @@ namespace GameMasterCore
             {
                 result = function();
             }
-			int milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
+            int milisecondsToSleep = (int)(Math.Floor(milisecondDelay - (DateTime.Now - then).TotalMilliseconds));
             if (milisecondsToSleep > 0)
                 Task.Delay(milisecondsToSleep);
             return result;
@@ -842,14 +844,14 @@ namespace GameMasterCore
 
             for (int i = 0; i < totalFieldCount - 1; i++)
             {
-				int randomTargetPlace = random.Next(i, totalFieldCount);
+                int randomTargetPlace = random.Next(i, totalFieldCount);
 
                 if (placeToPieceId.Keys.Contains(i))
                 {
                     if (placeToPieceId.Keys.Contains(randomTargetPlace))
                     {
 
-						int tmpId = placeToPieceId[randomTargetPlace];
+                        int tmpId = placeToPieceId[randomTargetPlace];
                         placeToPieceId[randomTargetPlace] = placeToPieceId[i];
                         placeToPieceId[i] = tmpId;
                     }
@@ -888,7 +890,7 @@ namespace GameMasterCore
             if (redGoalsToScore == 0 || blueGoalsToScore == 0)
             {
                 var player = board.GetPlayer(GetPlayerIdFromGuid(guid));
-                bool win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
+                win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
                 OnLog(win ? "Victory" : "Defeat", DateTime.Now, gameId, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
                 {

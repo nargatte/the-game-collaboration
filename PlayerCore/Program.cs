@@ -8,6 +8,7 @@ using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Shared.Components.ArgumentOptions;
 
 namespace PlayerCore
 {
@@ -17,17 +18,13 @@ namespace PlayerCore
 		{
 			try
 			{
-				string ip = "127.0.0.1";
-				int port = 65535;
-				var playerSettings = new PlayerSettings();
-				string gameName = default;
-				TeamColour team = default;
-				PlayerRole role = default;
+                PlayerOptions po = new PlayerOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    PlayerSettings playerSettings = ArgumentOptionsHelper.GetConfigFile<PlayerSettings>(po.Conf);
 				int timeout = -1;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
-					var module = new PlayerModule( ip, port, playerSettings, gameName, team, role, new PlayerFactory() );
+					var module = new PlayerModule( po.Address, po.Port, playerSettings, po.Game, po.Team, po.Role, new PlayerFactory() );
 					Debug( module );
 					CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );

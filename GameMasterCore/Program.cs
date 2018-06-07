@@ -7,6 +7,7 @@ using Shared.Interfaces.Events;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Shared.Components.ArgumentOptions;
 
 namespace GameMasterCore
 {
@@ -16,14 +17,14 @@ namespace GameMasterCore
 		{
 			try
 			{
-				string ip = "127.0.0.1";
-				int port = 65535;
-				var gameMasterSettings = new GameMasterSettings();
+			    GameMasterOptions gmo = new GameMasterOptions(ArgumentOptionsHelper.GetDictonary(args));
+			    GameMasterSettings gameMasterSettings = ArgumentOptionsHelper.GetConfigFile<GameMasterSettings>(gmo.Conf);
+
 				int timeout = -1;
 				//using( var cts = new CancellationTokenSource() )
 				using( var cts = new CancellationTokenSource( timeout ) )
 				{
-					var module = new GameMasterModule( ip, port, gameMasterSettings, new GameMasterFactory() );
+					var module = new GameMasterModule( gmo.Address, gmo.Port, gameMasterSettings, new GameMasterFactory() );
 					Debug( module );
 					CancelOnCtrlC( cts );
 					var task = Task.Run( async () => await module.RunAsync( cts.Token ).ConfigureAwait( false ) );
