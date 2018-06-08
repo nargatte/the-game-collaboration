@@ -118,6 +118,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CommunicationServerCore\CommunicationServerCore.csproj">
+      <Project>{A9D54FAE-158A-4CBE-B3D0-A3DCE4F2A898}</Project>
+      <Name>CommunicationServerCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{20D54140-CCFE-4767-90A4-F5F093A296F3}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

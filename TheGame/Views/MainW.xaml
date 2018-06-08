@@ -20,29 +20,53 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Dictionaries/StyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Border}" BasedOn="{StaticResource BorderStyle}"/>
+            <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource TabControlStyle}"/>
+            <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource TabItemStyle}"/>
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyle}"/>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxStyle}"/>
         </ResourceDictionary>
     </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding InitializeAsyncCommand}"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding KillAsyncCommand}"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
         <TabControl>
+            <TabItem Visibility="Collapsed"/>
             <TabItem Header="CommunicationServer">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TabControl ItemsSource="{Binding CommunicationServers}">
+                    <TabControl Grid.Column="0" ItemsSource="{Binding CommunicationServers}">
                         <TabControl.Resources>
                             <DataTemplate DataType="{x:Type VM:CommunicationServerVM}">
                                 <V:CommunicationServerV/>
                             </DataTemplate>
                         </TabControl.Resources>
+                        <TabControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Header}"/>
+                            </DataTemplate>
+                        </TabControl.ItemTemplate>
                     </TabControl>
+                    <Border Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock Text="--port"/>
+                            <TextBox Text="{Binding CommunicationServerPort}"/>
+                            <TextBlock Text="--conf"/>
+                            <TextBox Text="{Binding CommunicationServerConf}"/>
+                            <Button Command="{Binding RunCommunicationServerAsyncCommand}">
+                                <TextBlock Text="Run"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
             <TabItem Header="GameMaster">

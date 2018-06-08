@@ -17,7 +17,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Dictionaries/VVMDictionary.xaml"/>
                 <ResourceDictionary Source="Dictionaries/StyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyle}"/>
