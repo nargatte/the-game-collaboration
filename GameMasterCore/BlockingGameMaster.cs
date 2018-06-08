@@ -16,6 +16,8 @@ using DTO = Shared.DTOs.Communication;
 using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
+using System.IO;
+using GameMasterCore.Components.PlayerStatistics;
 
 namespace GameMasterCore
 {
@@ -33,11 +35,21 @@ namespace GameMasterCore
         int redGoalsToScore, blueGoalsToScore;
         public Dictionary<ulong, DTO.Game> Game { get; set; } // for process game by communication substitute 
         public ulong gameId;
+        public Dictionary<string, PlayerStats> playerStats = new Dictionary<string, PlayerStats>();
+        private Dictionary<string, DateTime> playerAwaitingTimes = new Dictionary<string, DateTime>();
+
+        #region Logging constants
+        private string logFilePrefix = @"gamemaster";
+        private string logFileExtension = @".csv";
+        private const string delimeter = ",";
+        private readonly Encoding logEncoding = Encoding.UTF8;
+        #endregion
 
         public BlockingGameMaster(int seed = 123456)
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
+            PrepareCSVLogs();
 
             // prepare default config
             config = GenerateDefaultConfig();
@@ -50,12 +62,21 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
+            PrepareCSVLogs();
 
             config = _config;
             board = PrepareBoard(_boardComponentFactory);
         }
-
         #region Preparation
+        private void PrepareCSVLogs()
+        {
+            using (var file = new StreamWriter(GetLogCompleteFileName(), true, logEncoding))
+            {
+                file.WriteLine($"Type{delimeter}Timestamp{delimeter}Game ID{delimeter}Player ID{delimeter}Player GUID{delimeter}Colour{delimeter}Role");
+            }
+            Log += (s, args) => AppendLogsToFile(args);
+        }
+
         private Config.GameMasterSettings GenerateDefaultConfig()
         {
             var result = new Config.GameMasterSettings
@@ -607,24 +628,60 @@ namespace GameMasterCore
                     config.ActionCosts.TestDelay
                     );
         }
+        private void InitializePlayerStatsIfNecessary(DTO.GameMessage gameMessage)
+        {
+            if (!playerStats.ContainsKey(gameMessage.PlayerGuid))
+            {
+                var player = GetPlayerFromGameMessage(gameMessage);
+                playerStats.Add(gameMessage.PlayerGuid, new PlayerStats()
+                {
+                    hasWon = false,
+                    playerFriendlyName = $"player {player.Id} from team {player.Team}",
+                    responseTimes = new List<TimeSpan>()
+                });
+            }
+        }
 
         public DTO.Data Perform(DTO.GameMessage gameMessage)
         {
+            #region handle player stats
+            InitializePlayerStatsIfNecessary(gameMessage);
+
+            if (playerAwaitingTimes.ContainsKey(gameMessage.PlayerGuid))
+            {
+                playerStats[gameMessage.PlayerGuid].responseTimes.Add(DateTime.Now - playerAwaitingTimes[gameMessage.PlayerGuid]);
+                playerAwaitingTimes.Remove(gameMessage.PlayerGuid);
+            }
+            #endregion
+
+            DTO.Data dataToReturn = null;
             switch (gameMessage)
             {
                 case DTO.Move move:
-                    return PerformMove(move);
+                    dataToReturn = PerformMove(move);
+                    break;
                 case DTO.Discover discover:
-                    return PerformDiscover(discover);
+                    dataToReturn = PerformDiscover(discover);
+                    break;
                 case DTO.TestPiece test:
-                    return PerformTestPiece(test);
+                    dataToReturn = PerformTestPiece(test);
+                    break;
                 case DTO.PlacePiece place:
-                    return PerformPlace(place);
+                    dataToReturn = PerformPlace(place);
+                    break;
                 case DTO.PickUpPiece pick:
-                    return PerformPickUp(pick);
+                    dataToReturn = PerformPickUp(pick);
+                    break;
                 default:
-                    return new DTO.Data() { PlayerId = GetPlayerIdFromGuid(gameMessage.PlayerGuid) };
+                    dataToReturn = new DTO.Data() { PlayerId = GetPlayerIdFromGuid(gameMessage.PlayerGuid) };
+                    break;
             }
+
+            #region handle player stats
+            playerAwaitingTimes.Add(gameMessage.PlayerGuid, DateTime.Now);
+            #endregion
+
+            return dataToReturn;
         }
 
         public bool IsPlayerBusy(DTO.GameMessage message)
@@ -742,7 +799,16 @@ namespace GameMasterCore
         #endregion
 
         #region HelperMethods
+        private string GetLogCompleteFileName() => $"{logFilePrefix}_{config.GameDefinition.GameName}{logFileExtension}";
 
+        private void AppendLogsToFile(LogArgs args)
+        {
+            var delim = ",";
+            using (var file = new StreamWriter(GetLogCompleteFileName(), true, logEncoding))
+            {
+                file.WriteLine(args.Type + delim + args.Timestamp.ToUniversalTime() + delim + args.GameId + delim + args.PlayerId + delim + args.PlayerGuid + delim + args.Colour + delim + args.Role);
+            }
+        }
         private T DelaySynchronizedAction<T>(Func<T> function, long milisecondDelay, int maximumExpectedExecutionTime)
             => DelaySynchronizedAction(function, milisecondDelay, (double)(milisecondDelay - maximumExpectedExecutionTime) / milisecondDelay);
         private T DelaySynchronizedAction<T>(Func<T> function, long milisecondDelay, double fraction = 0.85)
@@ -891,6 +957,7 @@ namespace GameMasterCore
             {
                 var player = board.GetPlayer(GetPlayerIdFromGuid(guid));
                 win = (redGoalsToScore == 0 && player.Team == TeamColour.Red) || (blueGoalsToScore == 0 && player.Team == TeamColour.Blue);
+                playerStats[guid].hasWon = win;
                 OnLog(win ? "Victory" : "Defeat", DateTime.Now, gameId, player.Id, guid, player.Team, player.Type);
                 message = new DTO.Data
                 {

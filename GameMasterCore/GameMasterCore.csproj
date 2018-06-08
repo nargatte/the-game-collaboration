@@ -52,6 +52,7 @@
     <Compile Include="Components\GameMasters\GameMaster.cs" />
     <Compile Include="Components\Modules\GameMasterModule.cs" />
     <Compile Include="BlockingGameMaster.cs" />
+    <Compile Include="Components\PlayerStatistics\PlayerStats.cs" />
     <Compile Include="Components\Options\GameMasterOptions.cs" />
     <Compile Include="Interfaces\Factories\IGameMasterFactory.cs" />
     <Compile Include="Interfaces\Modules\IGameMasterModule.cs" />
