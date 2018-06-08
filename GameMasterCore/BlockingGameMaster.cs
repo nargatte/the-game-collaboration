@@ -330,7 +330,12 @@ namespace GameMasterCore
                 DTO.Location place;
                 do
                 {
-                    place = GenerateRandomPlaces(1, 0, board.Width, board.GoalsHeight, board.Height - board.GoalsHeight - 1).First();
+                    place = new DTO.Location()
+                    {
+                        X = (uint)random.Next(0, (int)board.Width),
+                        Y = (uint)random.Next((int)board.GoalsHeight, (int)(board.Height - board.GoalsHeight - 1)),
+                    };
+                    //place = GenerateRandomPlaces(1, 0, board.Width, board.GoalsHeight, board.Height - board.GoalsHeight - 1).First();
                 } while (board.GetField(place.X, place.Y).Player != null);
 
                 var field = board.GetField(place.X, place.Y);
