@@ -60,12 +60,7 @@ namespace TheGame.ViewModels
 			}
 		}
 		public virtual int Id { get; }
-		private string header;
-		public virtual string Header
-		{
-			get => header;
-			protected set => SetProperty( ref header, value );
-		}
+		public virtual string Header { get; }
 		public virtual ICommunicationServerModule Module { get; }
 		private string error;
 		public virtual string Error
@@ -79,7 +74,7 @@ namespace TheGame.ViewModels
 		public CommunicationServerVM( int id, ICommunicationServerModule module )
 		{
 			Id = id;
-			Header = $"Player #{ id } - anonymous";
+			Header = $"Server #{ id }";
 			Module = module;
 		}
 		#endregion

@@ -32,7 +32,7 @@ namespace TheGame.ViewModels
 			get => communicationServerPort;
 			set => SetProperty( ref communicationServerPort, value );
 		}
-		private string communicationServerConf;
+		private string communicationServerConf = "../../CommunicationServerSettings.xml";
 		public virtual string CommunicationServerConf
 		{
 			get => communicationServerConf;

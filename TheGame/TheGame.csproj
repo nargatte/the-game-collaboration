@@ -128,5 +128,14 @@
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="CommunicationServerSettings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="GameMasterSettings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PlayerSettings.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
