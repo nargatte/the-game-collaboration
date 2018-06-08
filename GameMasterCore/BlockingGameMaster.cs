@@ -330,12 +330,12 @@ namespace GameMasterCore
                 DTO.Location place;
                 do
                 {
-                    place = new DTO.Location()
-                    {
-                        X = (uint)random.Next(0, (int)board.Width),
-                        Y = (uint)random.Next((int)board.GoalsHeight, (int)(board.Height - board.GoalsHeight)),
-                    };
-                    //place = GenerateRandomPlaces(1, 0, board.Width, board.GoalsHeight, board.Height - board.GoalsHeight - 1).First();
+                    //place = new DTO.Location()
+                    //{
+                    //    X = (uint)random.Next(0, (int)board.Width),
+                    //    Y = (uint)random.Next((int)board.GoalsHeight, (int)(board.Height - board.GoalsHeight)),
+                    //};
+                    place = GenerateRandomPlaces(1, 0, board.Width, board.GoalsHeight, board.Height - board.GoalsHeight - 1).First();
                 } while (board.GetField(place.X, place.Y).Player != null);
 
                 var field = board.GetField(place.X, place.Y);
@@ -852,23 +852,23 @@ namespace GameMasterCore
                 case TeamColour.Red:
                     do
                     {
-                        position = new DTO.Location()
-                        {
-                            X = (uint)random.Next(0, (int)board.Width),
-                            Y = (uint)random.Next((int)(board.Height - config.GameDefinition.TaskAreaLength), (int)(board.Height)),
-                        };
-                        //position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
+                        //position = new DTO.Location()
+                        //{
+                        //    X = (uint)random.Next(0, (int)board.Width),
+                        //    Y = (uint)random.Next((int)(board.Height - config.GameDefinition.TaskAreaLength), (int)(board.Height)),
+                        //};
+                        position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
                     } while (board.GetField(position).Player != null);
                     return board.GetField(position);
                 case TeamColour.Blue:
                     do
                     {
-                        position = new DTO.Location()
-                        {
-                            X = (uint)random.Next(0, (int)board.Width),
-                            Y = (uint)random.Next((int)(0), (int)(config.GameDefinition.TaskAreaLength)),
-                        };
-                        //position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
+                        //position = new DTO.Location()
+                        //{
+                        //    X = (uint)random.Next(0, (int)board.Width),
+                        //    Y = (uint)random.Next((int)(0), (int)(config.GameDefinition.TaskAreaLength)),
+                        //};
+                        position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
                     } while (board.GetField(position).Player != null);
                     return board.GetField(position);
             }
