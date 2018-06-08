@@ -7,8 +7,6 @@ namespace Shared.Components.Events
 	{
 		public IIdentity Local { get; }
 		public IIdentity Remote { get; }
-		public object Message { get; }
-		public string SerializedMessage { get; }
 		public ReceivedKeepAliveArgs( IIdentity local, IIdentity remote )
 		{
 			Local = local;

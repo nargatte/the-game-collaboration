@@ -3,6 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" >
-    <Grid/>
+             mc:Ignorable="d"
+             xmlns:V="clr-namespace:TheGame.Views"
+             xmlns:VM="clr-namespace:TheGame.ViewModels">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionaries/StyleDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Border}" BasedOn="{StaticResource BorderStyle}"/>
+            <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ScrollViewerStyle}"/>
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyle}"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <ContentControl Content="{Binding Communication}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type VM:CommunicationVM}">
+                        <V:CommunicationV/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </Grid>
+        <Border Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0">
+                    <StackPanel Grid.Row="0">
+                        <Button Command="{Binding CancelAsyncCommand}">
+                            <TextBlock Text="Cancel"/>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer Grid.Row="1">
+                    <TextBlock Height="Auto" Text="{Binding Error}" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

@@ -5,6 +5,7 @@ using CommunicationServerCore.Interfaces.Modules;
 using Shared.Components.Exceptions;
 using Shared.Interfaces.Tasks;
 using TheGame.ViewModels.Base;
+using TheGame.ViewModels.Commands;
 
 namespace TheGame.ViewModels
 {
@@ -13,12 +14,12 @@ namespace TheGame.ViewModels
 		int Id { get; }
 		string Header { get; }
 		ICommunicationServerModule Module { get; }
+		IAsyncCommand CancelAsyncCommand { get; }
 		string Error { get; }
+		ICommunicationVM Communication { get; }
 	}
 	class CommunicationServerVM : ViewModel, ICommunicationServerVM
 	{
-		#region ViewModel
-		#endregion
 		#region ICommunicationServerVM
 		public virtual async Task RunAsync( CancellationToken cancellationToken )
 		{
@@ -58,16 +59,22 @@ namespace TheGame.ViewModels
 			{
 				Error += $"{ e.ToString() }\n";
 			}
+			finally
+			{
+				cancellationTokenSource = null;
+			}
 		}
 		public virtual int Id { get; }
 		public virtual string Header { get; }
 		public virtual ICommunicationServerModule Module { get; }
-		private string error;
+		public virtual IAsyncCommand CancelAsyncCommand { get; }
+		private string error = string.Empty;
 		public virtual string Error
 		{
 			get => error;
 			protected set => SetProperty( ref error, value );
 		}
+		public virtual ICommunicationVM Communication { get; }
 		#endregion
 		#region CommunicationServerVM
 		private CancellationTokenSource cancellationTokenSource;
@@ -76,6 +83,13 @@ namespace TheGame.ViewModels
 			Id = id;
 			Header = $"Server #{ id }";
 			Module = module;
+			CancelAsyncCommand = new AsyncCommand( Cancel );
+			Communication = new CommunicationVM( Module );
+		}
+		protected Task Cancel()
+		{
+			cancellationTokenSource?.Cancel();
+			return Task.CompletedTask;
 		}
 		#endregion
 	}
