@@ -49,10 +49,10 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
-            PrepareCSVLogs();
 
             // prepare default config
             config = GenerateDefaultConfig();
+            PrepareCSVLogs();
 
             // generate board itself from config
             board = PrepareBoard(new BoardComponentFactory());
@@ -62,9 +62,9 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
-            PrepareCSVLogs();
 
             config = _config;
+            PrepareCSVLogs();
             board = PrepareBoard(_boardComponentFactory);
         }
         #region Preparation
