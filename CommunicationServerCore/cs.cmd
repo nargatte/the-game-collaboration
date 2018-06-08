@@ -1,2 +1,2 @@
-.\CommunicationServerCore.exe --port 65535 --conf ..\..\CommunicationServerSettings.xml
+.\bin\Debug\CommunicationServerCore.exe --port 65535 --conf CommunicationServerSettings.xml
 pause

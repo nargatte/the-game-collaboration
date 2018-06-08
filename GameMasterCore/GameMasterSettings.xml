@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <GameMasterSettings xmlns="https://se2.mini.pw.edu.pl/17-pl-19/17-pl-19/"
-                    KeepAliveInterval="500"
+                    KeepAliveInterval="30000"
                     RetryRegisterGameInterval="60000">
   <GameDefinition>
     <Goals team="red" x="0" y ="17" type="goal" />
