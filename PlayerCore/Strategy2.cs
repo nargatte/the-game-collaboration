@@ -279,7 +279,12 @@ namespace PlayerCore
         Location lastLocation = null;
 
 
-
+        public bool IsFieldOnBoard(uint X, uint Y)
+        {
+            if (State.Board.Width > X && State.Board.Height > Y)
+                return true;
+            else return false;
+        }
 
 
 
@@ -306,7 +311,7 @@ namespace PlayerCore
                     {
                         
                         case Shared.Enums.MoveType.Left:
-                            if (State.Board.GetField(State.Location.X - 1, State.Location.Y).Player != null)
+                            if (IsFieldOnBoard(State.Location.X - 1, State.Location.Y) && State.Board.GetField(State.Location.X - 1, State.Location.Y).Player != null)
                             {  
                                 State.Board.GetField(State.Location.X - 1, State.Location.Y).Player = null;
                                 LastDistanceToPiece = null;
@@ -316,7 +321,7 @@ namespace PlayerCore
                             }
                             break;
                         case Shared.Enums.MoveType.Right:
-                            if (State.Board.GetField(State.Location.X + 1, State.Location.Y).Player != null)
+                            if (IsFieldOnBoard(State.Location.X + 1, State.Location.Y) && State.Board.GetField(State.Location.X + 1, State.Location.Y).Player != null)
                             {
                                 State.Board.GetField(State.Location.X + 1, State.Location.Y).Player = null;
                                 LastDistanceToPiece = null;
@@ -327,7 +332,7 @@ namespace PlayerCore
                             break;
 
                         case Shared.Enums.MoveType.Up:
-                            if (State.Board.GetField(State.Location.X, State.Location.Y + 1).Player != null)
+                            if (IsFieldOnBoard(State.Location.X, State.Location.Y+1) && State.Board.GetField(State.Location.X, State.Location.Y + 1).Player != null)
                             {
                                 State.Board.GetField(State.Location.X, State.Location.Y + 1).Player = null;
                                 LastDistanceToPiece = null;
@@ -337,7 +342,7 @@ namespace PlayerCore
                             }
                             break;
                         case Shared.Enums.MoveType.Down:
-                            if (State.Board.GetField(State.Location.X, State.Location.Y - 1).Player != null)
+                            if (IsFieldOnBoard(State.Location.X, State.Location.Y-1) && State.Board.GetField(State.Location.X, State.Location.Y - 1).Player != null)
                             {
                                 
                                 LastDistanceToPiece = null;
