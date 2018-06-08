@@ -906,7 +906,7 @@ namespace GameMasterCore
         /// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         /// </summary>
         private List<DTO.Location> GenerateRandomPlaces(
-            int n, int minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
+            int n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
         => GenerateRandomPlaces(
             n, (int) minXInclusive, (int) maxXExclusive, (int) minYInclusive, (int) maxYExclusive);
 
@@ -922,7 +922,7 @@ namespace GameMasterCore
                     place = new DTO.Location()
                     {
                         X = (uint)random.Next(minXInclusive, maxXExclusive),
-                        Y = (uint)random.Next(minXInclusive, maxYExclusive),
+                        Y = (uint)random.Next(minYInclusive, maxYExclusive),
                     };
                 } while (locationLists.Any(location => location.X == place.X && location.Y == place.Y));
             } while (locationLists.Count < n);
