@@ -925,6 +925,7 @@ namespace GameMasterCore
                         Y = (uint)random.Next(minYInclusive, maxYExclusive),
                     };
                 } while (locationLists.Any(location => location.X == place.X && location.Y == place.Y));
+                locationLists.Add(place);
             } while (locationLists.Count < n);
             return locationLists;
         }
