@@ -8,7 +8,7 @@ using Shared.Interfaces;
 using Shared.Interfaces.Proxies;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 
 namespace PlayerCore
 {

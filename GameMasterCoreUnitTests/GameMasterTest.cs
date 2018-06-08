@@ -1,13 +1,13 @@
 ﻿using GameMasterCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using DTO = Shared.DTOs.Communication;
-using Config = Shared.DTOs.Configuration;
+using DTO = Shared.DTO.Communication;
+using Config = Shared.DTO.Configuration;
 using Shared.Interfaces;
 using Shared.Components.Factories;
 using Shared.Components.Boards;
 using Shared.Components.Fields;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Enums;
 using System.Collections.Generic;
 

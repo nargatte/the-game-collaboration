@@ -91,56 +91,56 @@
     <Compile Include="Components\Factories\IBoardFactory.cs" />
     <Compile Include="Components\Factories\NetworkFactory.cs" />
     <Compile Include="Components\Tasks\TaskManager.cs" />
-    <Compile Include="DTOs\Communication\AcceptExchangeRequest.cs" />
-    <Compile Include="DTOs\Communication\AuthorizeKnowledgeExchange.cs" />
-    <Compile Include="DTOs\Communication\BetweenPlayersMessage.cs" />
-    <Compile Include="DTOs\Communication\ConfirmGameRegistration.cs" />
-    <Compile Include="DTOs\Communication\ConfirmJoiningGame.cs" />
-    <Compile Include="DTOs\Communication\Data.cs" />
-    <Compile Include="DTOs\Communication\DestroyPiece.cs" />
-    <Compile Include="DTOs\Communication\Discover.cs" />
-    <Compile Include="DTOs\Communication\ErrorMessage.cs" />
-    <Compile Include="DTOs\Communication\Field.cs" />
-    <Compile Include="DTOs\Communication\Game.cs" />
-    <Compile Include="DTOs\Communication\GameBoard.cs" />
-    <Compile Include="DTOs\Communication\GameInfo.cs" />
-    <Compile Include="DTOs\Communication\GameMasterDisconnected.cs" />
-    <Compile Include="DTOs\Communication\GameMessage.cs" />
-    <Compile Include="DTOs\Communication\GameStarted.cs" />
-    <Compile Include="DTOs\Communication\GetGames.cs" />
-    <Compile Include="DTOs\Communication\GoalField.cs" />
-    <Compile Include="DTOs\Communication\JoinGame.cs" />
-    <Compile Include="DTOs\Communication\KnowledgeExchangeRequest.cs" />
-    <Compile Include="DTOs\Communication\Location.cs" />
-    <Compile Include="DTOs\Communication\Move.cs" />
-    <Compile Include="DTOs\Communication\PickUpPiece.cs" />
-    <Compile Include="DTOs\Communication\Piece.cs" />
-    <Compile Include="DTOs\Communication\PlacePiece.cs" />
-    <Compile Include="DTOs\Communication\Player.cs" />
-    <Compile Include="DTOs\Communication\PlayerDisconnected.cs" />
-    <Compile Include="DTOs\Communication\PlayerMessage.cs" />
-    <Compile Include="DTOs\Communication\RegisteredGames.cs" />
-    <Compile Include="DTOs\Communication\RegisterGame.cs" />
-    <Compile Include="DTOs\Communication\RejectGameRegistration.cs" />
-    <Compile Include="DTOs\Communication\RejectJoiningGame.cs" />
-    <Compile Include="DTOs\Communication\RejectKnowledgeExchange.cs" />
-    <Compile Include="DTOs\Communication\SuggestAction.cs" />
-    <Compile Include="DTOs\Communication\SuggestActionResponse.cs" />
-    <Compile Include="DTOs\Communication\TaskField.cs" />
-    <Compile Include="DTOs\Communication\TestPiece.cs" />
-    <Compile Include="DTOs\Communication\TheProjectGameCommunication.Designer.cs" />
-    <Compile Include="DTOs\Configuration\CommunicationServerSettings.cs" />
-    <Compile Include="DTOs\Configuration\Configuration.cs">
+    <Compile Include="DTO\Communication\AcceptExchangeRequest.cs" />
+    <Compile Include="DTO\Communication\AuthorizeKnowledgeExchange.cs" />
+    <Compile Include="DTO\Communication\BetweenPlayersMessage.cs" />
+    <Compile Include="DTO\Communication\ConfirmGameRegistration.cs" />
+    <Compile Include="DTO\Communication\ConfirmJoiningGame.cs" />
+    <Compile Include="DTO\Communication\Data.cs" />
+    <Compile Include="DTO\Communication\DestroyPiece.cs" />
+    <Compile Include="DTO\Communication\Discover.cs" />
+    <Compile Include="DTO\Communication\ErrorMessage.cs" />
+    <Compile Include="DTO\Communication\Field.cs" />
+    <Compile Include="DTO\Communication\Game.cs" />
+    <Compile Include="DTO\Communication\GameBoard.cs" />
+    <Compile Include="DTO\Communication\GameInfo.cs" />
+    <Compile Include="DTO\Communication\GameMasterDisconnected.cs" />
+    <Compile Include="DTO\Communication\GameMessage.cs" />
+    <Compile Include="DTO\Communication\GameStarted.cs" />
+    <Compile Include="DTO\Communication\GetGames.cs" />
+    <Compile Include="DTO\Communication\GoalField.cs" />
+    <Compile Include="DTO\Communication\JoinGame.cs" />
+    <Compile Include="DTO\Communication\KnowledgeExchangeRequest.cs" />
+    <Compile Include="DTO\Communication\Location.cs" />
+    <Compile Include="DTO\Communication\Move.cs" />
+    <Compile Include="DTO\Communication\PickUpPiece.cs" />
+    <Compile Include="DTO\Communication\Piece.cs" />
+    <Compile Include="DTO\Communication\PlacePiece.cs" />
+    <Compile Include="DTO\Communication\Player.cs" />
+    <Compile Include="DTO\Communication\PlayerDisconnected.cs" />
+    <Compile Include="DTO\Communication\PlayerMessage.cs" />
+    <Compile Include="DTO\Communication\RegisteredGames.cs" />
+    <Compile Include="DTO\Communication\RegisterGame.cs" />
+    <Compile Include="DTO\Communication\RejectGameRegistration.cs" />
+    <Compile Include="DTO\Communication\RejectJoiningGame.cs" />
+    <Compile Include="DTO\Communication\RejectKnowledgeExchange.cs" />
+    <Compile Include="DTO\Communication\SuggestAction.cs" />
+    <Compile Include="DTO\Communication\SuggestActionResponse.cs" />
+    <Compile Include="DTO\Communication\TaskField.cs" />
+    <Compile Include="DTO\Communication\TestPiece.cs" />
+    <Compile Include="DTO\Communication\TheProjectGameCommunication.Designer.cs" />
+    <Compile Include="DTO\Configuration\CommunicationServerSettings.cs" />
+    <Compile Include="DTO\Configuration\Configuration.cs">
       <DependentUpon>Configuration.xsd</DependentUpon>
     </Compile>
-    <Compile Include="DTOs\Configuration\Configuration.Designer.cs" />
-    <Compile Include="DTOs\Configuration\Field.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettings.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettingsActionCosts.cs" />
-    <Compile Include="DTOs\Configuration\GameMasterSettingsGameDefinition.cs" />
-    <Compile Include="DTOs\Configuration\GoalField.cs" />
-    <Compile Include="DTOs\Configuration\Location.cs" />
-    <Compile Include="DTOs\Configuration\PlayerSettings.cs" />
+    <Compile Include="DTO\Configuration\Configuration.Designer.cs" />
+    <Compile Include="DTO\Configuration\Field.cs" />
+    <Compile Include="DTO\Configuration\GameMasterSettings.cs" />
+    <Compile Include="DTO\Configuration\GameMasterSettingsActionCosts.cs" />
+    <Compile Include="DTO\Configuration\GameMasterSettingsGameDefinition.cs" />
+    <Compile Include="DTO\Configuration\GoalField.cs" />
+    <Compile Include="DTO\Configuration\Location.cs" />
+    <Compile Include="DTO\Configuration\PlayerSettings.cs" />
     <Compile Include="Enums\HostType.cs" />
     <Compile Include="Interfaces\Communication\INetworkClient.cs" />
     <Compile Include="Interfaces\Communication\INetworkServer.cs" />
@@ -183,10 +183,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DTOs\Communication\TheProjectGameCommunication.xsd">
+    <None Include="DTO\Communication\TheProjectGameCommunication.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="DTOs\Configuration\Configuration.xsd">
+    <None Include="DTO\Configuration\Configuration.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using GameMasterCore.Interfaces.Factories;
 using GameMasterCore.Interfaces.GameMasters;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Interfaces.Modules;
 
 namespace GameMasterCore.Interfaces.Modules

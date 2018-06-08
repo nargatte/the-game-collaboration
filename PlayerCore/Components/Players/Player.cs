@@ -1,5 +1,5 @@
 ﻿using PlayerCore.Base.Players;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Enums;
 using System;
 using System.Threading;

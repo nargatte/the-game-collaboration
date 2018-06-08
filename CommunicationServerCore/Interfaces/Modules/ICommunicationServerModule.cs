@@ -1,6 +1,6 @@
 ﻿using CommunicationServerCore.Interfaces.Factories;
 using CommunicationServerCore.Interfaces.Servers;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Interfaces.Modules;
 
 namespace CommunicationServerCore.Interfaces.Modules

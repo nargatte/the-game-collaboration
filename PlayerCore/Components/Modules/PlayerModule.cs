@@ -1,7 +1,7 @@
 ﻿using PlayerCore.Base.Modules;
 using PlayerCore.Interfaces.Factories;
 using Shared.Components.Extensions;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Enums;
 using System;
 using System.Threading;

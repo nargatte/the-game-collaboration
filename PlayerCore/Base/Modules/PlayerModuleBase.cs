@@ -2,7 +2,7 @@
 using PlayerCore.Interfaces.Modules;
 using PlayerCore.Interfaces.Players;
 using Shared.Base.Modules;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Enums;
 using System;
 

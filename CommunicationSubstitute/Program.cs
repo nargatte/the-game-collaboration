@@ -6,7 +6,7 @@ using PlayerCore.Components.Factories;
 using PlayerCore.Components.Modules;
 using Shared.Components.Events;
 using Shared.Components.Exceptions;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Enums;
 using Shared.Interfaces.Events;
 using System;

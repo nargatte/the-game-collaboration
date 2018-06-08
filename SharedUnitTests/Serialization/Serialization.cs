@@ -4,7 +4,7 @@ using Moq;
 using Shared.Components.Fields;
 using Shared.Components.Players;
 using Shared.Components.Serialization;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 
 namespace SharedUnitTests.Serialization
 {
@@ -15,7 +15,7 @@ namespace SharedUnitTests.Serialization
         [TestMethod]
         public void SerializeTest()
         {
-            var dataToSerialize = new Shared.DTOs.Communication.ConfirmJoiningGame()
+            var dataToSerialize = new Shared.DTO.Communication.ConfirmJoiningGame()
             {
                 GameId = 1234,
                 PlayerId = 567,

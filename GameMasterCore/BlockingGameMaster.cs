@@ -11,8 +11,8 @@ using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
 using Shared.Enums;
-using Config = Shared.DTOs.Configuration;
-using DTO = Shared.DTOs.Communication;
+using Config = Shared.DTO.Configuration;
+using DTO = Shared.DTO.Communication;
 using System.Threading;
 using Shared.Components.Events;
 using Shared.Interfaces;
@@ -549,7 +549,7 @@ namespace GameMasterCore
                 GameId = gameId,
                 PlayerId = id,
                 PrivateGuid = guid,
-                PlayerDefinition = new Shared.DTOs.Communication.Player()
+                PlayerDefinition = new Shared.DTO.Communication.Player()
                 {
                     Id = id,
                     Team = joinGame.PreferredTeam,

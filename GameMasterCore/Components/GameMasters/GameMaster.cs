@@ -3,8 +3,8 @@ using GameMasterCore.Components.PlayerStatistics;
 using Shared.Components.Factories;
 using Shared.Components.Tasks;
 using Shared.Const;
-using Shared.DTOs.Communication;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Communication;
+using Shared.DTO.Configuration;
 using Shared.Enums;
 using System;
 using System.Collections.Concurrent;
@@ -25,9 +25,9 @@ namespace GameMasterCore.Components.GameMasters
             {
                 while (Proxy.Local.Id == Constants.AnonymousId)
                 {
-                    var registerGame = new Shared.DTOs.Communication.RegisterGame
+                    var registerGame = new Shared.DTO.Communication.RegisterGame
                     {
-                        NewGameInfo = new Shared.DTOs.Communication.GameInfo
+                        NewGameInfo = new Shared.DTO.Communication.GameInfo
                         {
                             GameName = GameDefinition.GameName,
                             RedTeamPlayers = GameDefinition.NumberOfPlayersPerTeam,
@@ -37,14 +37,14 @@ namespace GameMasterCore.Components.GameMasters
                     await Proxy.SendAsync(registerGame, cancellationToken).ConfigureAwait(false);
                     while (true)
                     {
-                        Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration;
-                        Shared.DTOs.Communication.RejectGameRegistration rejectGameRegistration;
-                        if ((confirmGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.ConfirmGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                        Shared.DTO.Communication.ConfirmGameRegistration confirmGameRegistration;
+                        Shared.DTO.Communication.RejectGameRegistration rejectGameRegistration;
+                        if ((confirmGameRegistration = await Proxy.TryReceiveAsync<Shared.DTO.Communication.ConfirmGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
                         {
                             PerformConfirmGameRegistration(confirmGameRegistration, cancellationToken);
                             break;
                         }
-                        else if ((rejectGameRegistration = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.RejectGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
+                        else if ((rejectGameRegistration = await Proxy.TryReceiveAsync<Shared.DTO.Communication.RejectGameRegistration>(cancellationToken).ConfigureAwait(false)) != null)
                         {
                             await Task.Delay(TimeSpan.FromMilliseconds(RetryRegisterGameInterval), cancellationToken).ConfigureAwait(false);
                             break;
@@ -60,7 +60,7 @@ namespace GameMasterCore.Components.GameMasters
         private ulong id;
         #region GameMaster
         public GameMaster(GameMasterSettingsGameDefinition gameDefinition, GameMasterSettingsActionCosts actionCosts, uint retryRegisterGameInterval) : base(gameDefinition, actionCosts, retryRegisterGameInterval) => InitTmpInnerGM(gameDefinition, actionCosts);
-        protected void PerformConfirmGameRegistration(Shared.DTOs.Communication.ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken)
+        protected void PerformConfirmGameRegistration(Shared.DTO.Communication.ConfirmGameRegistration confirmGameRegistration, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             id = confirmGameRegistration.GameId;
@@ -88,15 +88,15 @@ namespace GameMasterCore.Components.GameMasters
             while (innerGM.playerGuidToId.Keys.Count != GameDefinition.NumberOfPlayersPerTeam * 2)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Shared.DTOs.Communication.JoinGame joinGame;
-                if ((joinGame = await Proxy.TryReceiveAsync<Shared.DTOs.Communication.JoinGame>(cancellationToken).ConfigureAwait(false)) != null)
+                Shared.DTO.Communication.JoinGame joinGame;
+                if ((joinGame = await Proxy.TryReceiveAsync<Shared.DTO.Communication.JoinGame>(cancellationToken).ConfigureAwait(false)) != null)
                 {
                     //Console.WriteLine($"GM receives: { Shared.Components.Serialization.Serializer.Serialize(joinGame) }.");
                     var message = innerGM.PerformJoinGame(joinGame);
-                    if (message is Shared.DTOs.Communication.RejectJoiningGame)
-                        await Proxy.SendAsync(message as Shared.DTOs.Communication.RejectJoiningGame, cancellationToken).ConfigureAwait(false);
+                    if (message is Shared.DTO.Communication.RejectJoiningGame)
+                        await Proxy.SendAsync(message as Shared.DTO.Communication.RejectJoiningGame, cancellationToken).ConfigureAwait(false);
                     else
-                        await Proxy.SendAsync(message as Shared.DTOs.Communication.ConfirmJoiningGame, cancellationToken).ConfigureAwait(false);
+                        await Proxy.SendAsync(message as Shared.DTO.Communication.ConfirmJoiningGame, cancellationToken).ConfigureAwait(false);
 
                 }
                 else

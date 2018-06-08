@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Configuration;
+﻿using Shared.DTO.Configuration;
 using Shared.Enums;
 using Shared.Interfaces.Options;
 

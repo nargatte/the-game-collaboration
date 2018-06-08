@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Boards;
 using Shared.Components.Events;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using System;
 
 namespace Shared.Interfaces
@@ -15,7 +15,7 @@ namespace Shared.Interfaces
         Data PerformDestroy(DestroyPiece destroyRequest);
         Data PerformKnowledgeExchange(KnowledgeExchangeRequest knowledgeExchangeRequest);
         RegisteredGames PerformConfirmGameRegistration();
-        Shared.DTOs.Communication.PlayerMessage PerformJoinGame(Shared.DTOs.Communication.JoinGame joinGame);
+        Shared.DTO.Communication.PlayerMessage PerformJoinGame(Shared.DTO.Communication.JoinGame joinGame);
         event EventHandler<LogArgs> Log;
 		IReadOnlyBoard Board { get; }
         Game GetGame(string guid);

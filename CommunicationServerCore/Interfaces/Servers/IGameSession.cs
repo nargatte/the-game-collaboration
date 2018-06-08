@@ -1,4 +1,4 @@
-﻿using Shared.DTOs.Communication;
+﻿using Shared.DTO.Communication;
 using Shared.Interfaces.Proxies;
 using System.Collections.Concurrent;
 

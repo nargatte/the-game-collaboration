@@ -1,7 +1,7 @@
 ﻿using CommunicationServerCore.Interfaces.Options;
 using Shared.Base.Options;
 using Shared.Components.Options;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using System.Collections.Generic;
 
 namespace CommunicationServerCore.Components.Options

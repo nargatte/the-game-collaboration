@@ -2,7 +2,7 @@
 using GameMasterCore.Interfaces.Factories;
 using GameMasterCore.Interfaces.GameMasters;
 using Shared.Components.Factories;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 
 namespace GameMasterCore.Components.Factories
 {

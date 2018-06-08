@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Shared.Interfaces.Proxies;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 
 namespace PlayerCore
 {

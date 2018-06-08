@@ -2,7 +2,7 @@
 using GameMasterCore.Interfaces.GameMasters;
 using GameMasterCore.Interfaces.Modules;
 using Shared.Base.Modules;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using System;
 
 namespace GameMasterCore.Base.Modules

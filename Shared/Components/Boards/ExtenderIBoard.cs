@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Fields;
 using Shared.Components.Pieces;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

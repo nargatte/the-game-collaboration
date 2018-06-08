@@ -7,7 +7,7 @@ using Shared.Components.Factories;
 using Shared.Components.Fields;
 using Shared.Components.Pieces;
 using Shared.Components.Players;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Enums;
 
 namespace PlayerCoreUnitTests
@@ -59,7 +59,7 @@ namespace PlayerCoreUnitTests
         public void IsHoldingPiece_Test(uint id)
         {
             var state = GetState(id);
-			state.Game.Players = new List<Shared.DTOs.Communication.Player>
+			state.Game.Players = new List<Shared.DTO.Communication.Player>
 			{
 				GetPlayer(id)
 			};
@@ -69,7 +69,7 @@ namespace PlayerCoreUnitTests
 			piece.PlayerId = id;
 			piece.Timestamp = new DateTime();
 			piece.Type = PieceType.Unknown;
-			data.Pieces = new List<Shared.DTOs.Communication.Piece>
+			data.Pieces = new List<Shared.DTO.Communication.Piece>
 			{
 				piece
 			};
@@ -97,7 +97,7 @@ namespace PlayerCoreUnitTests
         public void ReceiveData_EndingGame_InvokeEvent()
         {
             var state = GetState(1);
-            state.Game.Players = new List<Shared.DTOs.Communication.Player>
+            state.Game.Players = new List<Shared.DTO.Communication.Player>
 			{
 				GetPlayer(1)
 			};
@@ -119,14 +119,14 @@ namespace PlayerCoreUnitTests
             var state = GetState(1);
             var data = GetData();
 
-			var taskField = new Shared.DTOs.Communication.TaskField
+			var taskField = new Shared.DTO.Communication.TaskField
 			{
 				X = x,
 				Y = y,
 				PlayerId = 1,
 				DistanceToPiece = 1
 			};
-			data.TaskFields = new List<Shared.DTOs.Communication.TaskField>
+			data.TaskFields = new List<Shared.DTO.Communication.TaskField>
 				{
 				taskField
 			};
@@ -146,7 +146,7 @@ namespace PlayerCoreUnitTests
             var state = GetState(1);
             var data = GetDataWithLocation(x, y);
 
-            var goalField = new Shared.DTOs.Communication.GoalField
+            var goalField = new Shared.DTO.Communication.GoalField
             {
                 X = x,
                 Y = y,
@@ -155,7 +155,7 @@ namespace PlayerCoreUnitTests
 
 
 
-			data.GoalFields = new List<Shared.DTOs.Communication.GoalField>
+			data.GoalFields = new List<Shared.DTO.Communication.GoalField>
 			{
 				goalField
 			};
@@ -189,7 +189,7 @@ namespace PlayerCoreUnitTests
         {
             var game = new Game
             {
-                Board = new Shared.DTOs.Communication.GameBoard
+                Board = new Shared.DTO.Communication.GameBoard
                 {
                     GoalsHeight = 10,
                     TasksHeight = 10,
@@ -198,7 +198,7 @@ namespace PlayerCoreUnitTests
                 PlayerId = id,
                 PlayerLocation = new Location(),
                 
-                Players = new List<Shared.DTOs.Communication.Player>
+                Players = new List<Shared.DTO.Communication.Player>
 				{
 					GetPlayer( id )
 				}
@@ -211,7 +211,7 @@ namespace PlayerCoreUnitTests
         {
 			var game = new Game
 			{
-				Board = new Shared.DTOs.Communication.GameBoard
+				Board = new Shared.DTO.Communication.GameBoard
 				{
 					GoalsHeight = 10,
 					TasksHeight = 10,
@@ -223,7 +223,7 @@ namespace PlayerCoreUnitTests
 					X = x,
 					Y = y
 				},
-				Players = new List<Shared.DTOs.Communication.Player>
+				Players = new List<Shared.DTO.Communication.Player>
 			{
 				GetPlayer(id)
 			}
@@ -237,9 +237,9 @@ namespace PlayerCoreUnitTests
         {
 			var data = new Data
 			{
-				TaskFields = new List<Shared.DTOs.Communication.TaskField>(),
-				GoalFields = new List<Shared.DTOs.Communication.GoalField>(),
-				Pieces = new List<Shared.DTOs.Communication.Piece>(),
+				TaskFields = new List<Shared.DTO.Communication.TaskField>(),
+				GoalFields = new List<Shared.DTO.Communication.GoalField>(),
+				Pieces = new List<Shared.DTO.Communication.Piece>(),
 				PlayerLocation = new Location()
 			};
 			return data;
@@ -249,9 +249,9 @@ namespace PlayerCoreUnitTests
 		{
 			var data = new Data
 			{
-				TaskFields = new List<Shared.DTOs.Communication.TaskField>
+				TaskFields = new List<Shared.DTO.Communication.TaskField>
 			{
-				new Shared.DTOs.Communication.TaskField
+				new Shared.DTO.Communication.TaskField
 				{
 					PieceId = 1,
 					X = x,
@@ -260,8 +260,8 @@ namespace PlayerCoreUnitTests
 		},
 
 
-				GoalFields = new List<Shared.DTOs.Communication.GoalField>(),
-				Pieces = new List<Shared.DTOs.Communication.Piece>
+				GoalFields = new List<Shared.DTO.Communication.GoalField>(),
+				Pieces = new List<Shared.DTO.Communication.Piece>
 				{
 				GetPiece()
 			},
@@ -279,9 +279,9 @@ namespace PlayerCoreUnitTests
         {
             var data = new Data
             {
-                TaskFields = new List<Shared.DTOs.Communication.TaskField>(),
-                GoalFields = new List<Shared.DTOs.Communication.GoalField> (),
-                Pieces = new List<Shared.DTOs.Communication.Piece> (),
+                TaskFields = new List<Shared.DTO.Communication.TaskField>(),
+                GoalFields = new List<Shared.DTO.Communication.GoalField> (),
+                Pieces = new List<Shared.DTO.Communication.Piece> (),
                 PlayerLocation = new Location()
             };
             data.PlayerLocation.X = x;
@@ -290,18 +290,18 @@ namespace PlayerCoreUnitTests
             return data;
         }
 
-        private Shared.DTOs.Communication.Player GetPlayer(uint id)
+        private Shared.DTO.Communication.Player GetPlayer(uint id)
         {
-			var player = new Shared.DTOs.Communication.Player
+			var player = new Shared.DTO.Communication.Player
 			{
 				Id = id
 			};
 			return player;
         }
 
-        private Shared.DTOs.Communication.Piece GetPiece()
+        private Shared.DTO.Communication.Piece GetPiece()
         {
-			var piece = new Shared.DTOs.Communication.Piece
+			var piece = new Shared.DTO.Communication.Piece
 			{
 				Type = PieceType.Unknown,
 				Timestamp = new System.DateTime( 0 ),

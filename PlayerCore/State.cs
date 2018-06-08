@@ -9,7 +9,7 @@ using Shared.Enums;
 using Shared.Components.Fields;
 using Shared.Components.Factories;
 using Shared.Components.Extensions;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 
 namespace PlayerCore
 {
@@ -19,9 +19,9 @@ namespace PlayerCore
 
         public Game Game { get; }
 
-        public Shared.DTOs.Communication.Player[] PlayersMyTeam { get; }
+        public Shared.DTO.Communication.Player[] PlayersMyTeam { get; }
 
-        public Shared.DTOs.Communication.Player[] PlayersCompetitors { get; }
+        public Shared.DTO.Communication.Player[] PlayersCompetitors { get; }
 
         public event EventHandler EndGame;
 
@@ -53,7 +53,7 @@ namespace PlayerCore
 
         public TeamColour TeamColour { get; private set; }
 
-        public Shared.DTOs.Communication.Piece HoldingPiece { get; set; }
+        public Shared.DTO.Communication.Piece HoldingPiece { get; set; }
 
 
         public State(Game game, ulong id, ulong gameId, string playerGuid, BoardFactory boardFactory)
@@ -123,7 +123,7 @@ namespace PlayerCore
                 }
 
             if(data.Pieces != null)
-                foreach (Shared.DTOs.Communication.Piece p in data.Pieces)
+                foreach (Shared.DTO.Communication.Piece p in data.Pieces)
                 {
                     
                     var field = data.TaskFields?.FirstOrDefault(f => f.PieceIdSpecified && f.PieceId == p.Id);

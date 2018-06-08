@@ -1,5 +1,5 @@
 ﻿using CommunicationServerCore.Interfaces.Servers;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Interfaces.Proxies;
 using System;
 using System.Collections.Concurrent;

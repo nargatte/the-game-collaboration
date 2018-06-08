@@ -1,5 +1,5 @@
 ﻿using Shared.Components.Fields;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;

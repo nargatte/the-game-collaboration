@@ -2,7 +2,7 @@
 using CommunicationServerCore.Interfaces.Factories;
 using CommunicationServerCore.Interfaces.Servers;
 using Shared.Components.Factories;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Interfaces.Proxies;
 
 namespace CommunicationServerCore.Components.Factories

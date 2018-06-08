@@ -4,7 +4,7 @@ using CommunicationServerCore.Interfaces.Servers;
 using Shared.Components.Exceptions;
 using Shared.Components.Extensions;
 using Shared.Const;
-using Shared.DTOs.Communication;
+using Shared.DTO.Communication;
 using Shared.Enums;
 using Shared.Interfaces.Communication;
 using Shared.Interfaces.Proxies;

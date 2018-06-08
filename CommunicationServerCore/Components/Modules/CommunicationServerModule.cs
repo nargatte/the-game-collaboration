@@ -1,6 +1,6 @@
 ﻿using CommunicationServerCore.Base.Modules;
 using CommunicationServerCore.Interfaces.Factories;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 

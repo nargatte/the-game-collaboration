@@ -1,6 +1,6 @@
 ﻿using PlayerCore.Interfaces.Factories;
 using PlayerCore.Interfaces.Players;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using Shared.Enums;
 using Shared.Interfaces.Modules;
 

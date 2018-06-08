@@ -2,7 +2,7 @@
 using CommunicationServerCore.Interfaces.Modules;
 using CommunicationServerCore.Interfaces.Servers;
 using Shared.Base.Modules;
-using Shared.DTOs.Configuration;
+using Shared.DTO.Configuration;
 using System;
 
 namespace CommunicationServerCore.Base.Modules

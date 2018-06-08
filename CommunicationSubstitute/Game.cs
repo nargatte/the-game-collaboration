@@ -8,7 +8,7 @@
 //using Shared.Enums;
 //using Shared.Interfaces;
 //using Shared.Messages.Communication;
-//using Shared.DTOs.Configuration;
+//using Shared.DTO.Configuration;
 
 //namespace CommunicationSubstitute
 //{
@@ -24,8 +24,8 @@
 
 //        public PlayerInGame[] BluePlayers;
 //        public PlayerInGame[] RedPlayers;
-//        public Shared.DTOs.Communication.ConfirmJoiningGame[] BlueConfirms;
-//        public Shared.DTOs.Communication.ConfirmJoiningGame[] RedConfirms;
+//        public Shared.DTO.Communication.ConfirmJoiningGame[] BlueConfirms;
+//        public Shared.DTO.Communication.ConfirmJoiningGame[] RedConfirms;
 //        public Thread[] BlueThreads;
 //        public Thread[] RedThreads;
 
@@ -81,12 +81,12 @@
 //            return coordinateListToReturn.ToList();
 //        }
 
-//        private Shared.DTOs.Configuration.GameMasterSettings GenerateDefaultConfig()
+//        private Shared.DTO.Configuration.GameMasterSettings GenerateDefaultConfig()
 //        {
-//            var result = new Shared.DTOs.Configuration.GameMasterSettings
+//            var result = new Shared.DTO.Configuration.GameMasterSettings
 //            {
-//                ActionCosts = new Shared.DTOs.Configuration.GameMasterSettingsActionCosts(), // default ActionCosts
-//                GameDefinition = new Shared.DTOs.Configuration.GameMasterSettingsGameDefinition()
+//                ActionCosts = new Shared.DTO.Configuration.GameMasterSettingsActionCosts(), // default ActionCosts
+//                GameDefinition = new Shared.DTO.Configuration.GameMasterSettingsGameDefinition()
 //                {
 //                    GameName = "default game"
 //                }, //default GameDefinition, without Goals(!) and Name
@@ -103,7 +103,7 @@
 //            );
 
 //            result.GameDefinition.Goals = goalLocationsBlue.Select(location =>
-//                new Shared.DTOs.Configuration.GoalField
+//                new Shared.DTO.Configuration.GoalField
 //                {
 //                    Team = TeamColour.Blue,
 //                    Type = GoalFieldType.Goal,
@@ -111,7 +111,7 @@
 //                    Y = location.y
 //                }
 //            ).Concat(goalLocationsRed.Select(location =>
-//                new Shared.DTOs.Configuration.GoalField
+//                new Shared.DTO.Configuration.GoalField
 //                {
 //                    Team = TeamColour.Red,
 //                    Type = GoalFieldType.Goal,
@@ -162,8 +162,8 @@
 
 //            BluePlayers = new PlayerInGame[GameInfo.blueTeamPlayers];
 //            RedPlayers = new PlayerInGame[GameInfo.redTeamPlayers];
-//            BlueConfirms = new Shared.DTOs.Communication.ConfirmJoiningGame[GameInfo.blueTeamPlayers];
-//            RedConfirms = new Shared.DTOs.Communication.ConfirmJoiningGame[GameInfo.redTeamPlayers];
+//            BlueConfirms = new Shared.DTO.Communication.ConfirmJoiningGame[GameInfo.blueTeamPlayers];
+//            RedConfirms = new Shared.DTO.Communication.ConfirmJoiningGame[GameInfo.redTeamPlayers];
 //            BlueThreads = new Thread[GameInfo.blueTeamPlayers];
 //            RedThreads = new Thread[GameInfo.redTeamPlayers];
 //        }
@@ -173,7 +173,7 @@
 //            // blue registration
 //            for (ulong i = 0; i < GameInfo.blueTeamPlayers; i++)
 //            {
-//                BlueConfirms[i] = (Shared.DTOs.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
+//                BlueConfirms[i] = (Shared.DTO.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTO.Communication.JoinGame
 //                {
 //                    GameName = GameInfo.gameName,
 //                    PlayerIdSpecified = false,
@@ -185,7 +185,7 @@
 //            // red registration
 //            for (ulong i = 0; i < GameInfo.redTeamPlayers; i++)
 //            {
-//                RedConfirms[i] = (Shared.DTOs.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTOs.Communication.JoinGame
+//                RedConfirms[i] = (Shared.DTO.Communication.ConfirmJoiningGame)GameMaster.PerformJoinGame(new Shared.DTO.Communication.JoinGame
 //                {
 //                    GameName = GameInfo.gameName,
 //                    PlayerIdSpecified = false,
