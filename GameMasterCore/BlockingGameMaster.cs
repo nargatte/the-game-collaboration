@@ -309,6 +309,7 @@ namespace GameMasterCore
             var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                 Pieces = new List<DTO.Piece>
                 {
                     new DTO.Piece
@@ -348,7 +349,8 @@ namespace GameMasterCore
             var heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
-                return new DTO.Data { PlayerId = playerPawn.Id }; //player wanted to destroy inaccessible piece
+                return new DTO.Data { PlayerId = playerPawn.Id, PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value } }; //player wanted to destroy inaccessible piece
+
             }
 
             board.SetPiece(board.Factory.CreatePlayerPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
@@ -388,6 +390,7 @@ namespace GameMasterCore
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
+                        PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                         TaskFields = new List<DTO.TaskField> { fieldToReturn },
                         Pieces = piecesToReturn.ToList()
                     };
@@ -402,6 +405,7 @@ namespace GameMasterCore
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
+                        PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                         TaskFields = new List<DTO.TaskField> { fieldToReturn },
                         Pieces = pieceToReturn.ToList()
                     };
@@ -457,6 +461,7 @@ namespace GameMasterCore
                 {
                     GameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
                     PlayerId = playerPawn.Id,
+                    PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                     GoalFields = new List<DTO.GoalField> { GoalToReturn }
                 };
             }
@@ -476,6 +481,7 @@ namespace GameMasterCore
             var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                 Pieces = new List<DTO.Piece> {
                         new DTO.Piece
                         {
