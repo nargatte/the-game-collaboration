@@ -471,13 +471,13 @@ namespace PlayerCore
             }
             else //HoldingPiece
             {
-                if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham)
-                {
-                    await SendMessage(new DestroyPiece(), cancellationToken).ConfigureAwait(false);
-                    return;
-                }
-                else
-                {
+                //if (State.HoldingPiece.Type == Shared.Enums.PieceType.Sham)
+                //{
+                //    await SendMessage(new DestroyPiece(), cancellationToken).ConfigureAwait(false);
+                //    return;
+                //}
+                //else
+                //{
                     if (State.HoldingPiece.Type == Shared.Enums.PieceType.Unknown && State.TeamColour == Shared.Enums.TeamColour.Blue && State.Board.TasksHeight / 2 + State.Board.GoalsHeight < State.Location.Y)
                     {
                         await SendMessage(new TestPiece(), cancellationToken).ConfigureAwait(false);
@@ -548,7 +548,7 @@ namespace PlayerCore
 
                         }
                     }
-                }
+                //}
 
 
             }

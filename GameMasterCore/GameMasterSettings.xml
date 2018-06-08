@@ -13,11 +13,11 @@
     <Goals team="blue" x="5" y="5" type="goal" />
     <ShamProbability>0.2</ShamProbability>
     <PlacingNewPiecesFrequency>300</PlacingNewPiecesFrequency>
-    <InitialNumberOfPieces>8</InitialNumberOfPieces>
+    <InitialNumberOfPieces>4</InitialNumberOfPieces>
     <BoardWidth>6</BoardWidth>
     <TaskAreaLength>6</TaskAreaLength>
     <GoalAreaLength>6</GoalAreaLength>
-    <NumberOfPlayersPerTeam>4</NumberOfPlayersPerTeam>
+    <NumberOfPlayersPerTeam>2</NumberOfPlayersPerTeam>
     <GameName>Last</GameName>
   </GameDefinition>
   <ActionCosts>
