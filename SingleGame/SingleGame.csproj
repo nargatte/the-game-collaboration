@@ -71,10 +71,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dictionaries\VVMDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\FieldV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -62,11 +62,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\Dictionaries\StyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\CommunicationServerV.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Dictionaries\VVMDictionary.xaml">
+    <Page Include="Views\Dictionaries\StyleDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -78,11 +78,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\MainM.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\Commands\AsyncCommand.cs" />
     <Compile Include="ViewModels\Commands\AsyncCommandBase.cs" />
+    <Compile Include="ViewModels\CommunicationServerVM.cs" />
     <Compile Include="ViewModels\MainVM.cs" />
+    <Compile Include="Views\CommunicationServerV.xaml.cs">
+      <DependentUpon>CommunicationServerV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainW.xaml.cs">
       <DependentUpon>MainW.xaml</DependentUpon>
       <SubType>Code</SubType>

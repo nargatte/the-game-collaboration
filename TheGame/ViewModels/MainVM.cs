@@ -1,5 +1,4 @@
-﻿using TheGame.Models;
-using TheGame.ViewModels.Base;
+﻿using TheGame.ViewModels.Base;
 
 namespace TheGame.ViewModels
 {
@@ -13,7 +12,7 @@ namespace TheGame.ViewModels
 		#region IMainVM
 		#endregion
 		#region MainVM
-		public MainVM() : base( new MainM() )
+		public MainVM()
 		{
 		}
 		#endregion

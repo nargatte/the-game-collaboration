@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:V="clr-namespace:TheGame.Views"
         xmlns:VM="clr-namespace:TheGame.ViewModels"
         mc:Ignorable="d"
         Title="The Game"
@@ -17,8 +18,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Dictionaries/VVMDictionary.xaml"/>
+                <ResourceDictionary Source="Dictionaries/StyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockStyle}"/>
         </ResourceDictionary>
     </Window.Resources>
     <i:Interaction.Triggers>
@@ -26,5 +28,29 @@
             <i:InvokeCommandAction Command="{Binding InitializeAsyncCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid/>
+    <Grid>
+        <TabControl>
+            <TabItem Header="CommunicationServer">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TabControl ItemsSource="{Binding CommunicationServers}">
+                        <TabControl.Resources>
+                            <DataTemplate DataType="{x:Type VM:CommunicationServerVM}">
+                                <V:CommunicationServerV/>
+                            </DataTemplate>
+                        </TabControl.Resources>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="GameMaster">
+                
+            </TabItem>
+            <TabItem Header="Player">
+
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>
