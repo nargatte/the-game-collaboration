@@ -71,5 +71,8 @@
   <ItemGroup>
     <Content Include="GameMasterSettings.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="gm.cmd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

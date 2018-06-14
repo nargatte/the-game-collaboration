@@ -49,10 +49,10 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
-            PrepareCSVLogs();
 
             // prepare default config
             config = GenerateDefaultConfig();
+            PrepareCSVLogs();
 
             // generate board itself from config
             board = PrepareBoard(new BoardComponentFactory());
@@ -62,9 +62,9 @@ namespace GameMasterCore
         {
             playerGuidToId = new Dictionary<string, ulong>();
             random = new Random(seed);
-            PrepareCSVLogs();
 
             config = _config;
+            PrepareCSVLogs();
             board = PrepareBoard(_boardComponentFactory);
         }
         #region Preparation
@@ -148,7 +148,7 @@ namespace GameMasterCore
                         );
 
             GenerateRandomPlaces(
-                config.GameDefinition.InitialNumberOfPieces,
+                (int)config.GameDefinition.InitialNumberOfPieces,
                 0, result.Width, result.GoalsHeight, result.Height - result.GoalsHeight).ForEach(
                     place => result.SetPiece(result.Factory.CreateFieldPiece(++pieceIDcounter, GetRandomPieceType(), DateTime.Now, (ITaskField)result.GetField(place)))
                 );
@@ -309,6 +309,7 @@ namespace GameMasterCore
             var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                 Pieces = new List<DTO.Piece>
                 {
                     new DTO.Piece
@@ -330,6 +331,11 @@ namespace GameMasterCore
                 DTO.Location place;
                 do
                 {
+                    //place = new DTO.Location()
+                    //{
+                    //    X = (uint)random.Next(0, (int)board.Width),
+                    //    Y = (uint)random.Next((int)board.GoalsHeight, (int)(board.Height - board.GoalsHeight)),
+                    //};
                     place = GenerateRandomPlaces(1, 0, board.Width, board.GoalsHeight, board.Height - board.GoalsHeight - 1).First();
                 } while (board.GetField(place.X, place.Y).Player != null);
 
@@ -348,7 +354,8 @@ namespace GameMasterCore
             var heldPiecePawn = playerPawn.Piece;
             if (heldPiecePawn == null)
             {
-                return new DTO.Data { PlayerId = playerPawn.Id }; //player wanted to destroy inaccessible piece
+                return new DTO.Data { PlayerId = playerPawn.Id, PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value } }; //player wanted to destroy inaccessible piece
+
             }
 
             board.SetPiece(board.Factory.CreatePlayerPiece(heldPiecePawn.Id, heldPiecePawn.Type, DateTime.Now, null));
@@ -388,6 +395,7 @@ namespace GameMasterCore
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
+                        PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                         TaskFields = new List<DTO.TaskField> { fieldToReturn },
                         Pieces = piecesToReturn.ToList()
                     };
@@ -402,6 +410,7 @@ namespace GameMasterCore
                     return new DTO.Data
                     {
                         PlayerId = playerPawn.Id,
+                        PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                         TaskFields = new List<DTO.TaskField> { fieldToReturn },
                         Pieces = pieceToReturn.ToList()
                     };
@@ -457,6 +466,7 @@ namespace GameMasterCore
                 {
                     GameFinished = (redGoalsToScore == 0 || blueGoalsToScore == 0),
                     PlayerId = playerPawn.Id,
+                    PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                     GoalFields = new List<DTO.GoalField> { GoalToReturn }
                 };
             }
@@ -476,6 +486,7 @@ namespace GameMasterCore
             var result = new DTO.Data
             {
                 PlayerId = playerPawn.Id,
+                PlayerLocation = new DTO.Location { X = playerPawn.GetX().Value, Y = playerPawn.GetY().Value },
                 Pieces = new List<DTO.Piece> {
                         new DTO.Piece
                         {
@@ -847,12 +858,22 @@ namespace GameMasterCore
                 case TeamColour.Red:
                     do
                     {
+                        //position = new DTO.Location()
+                        //{
+                        //    X = (uint)random.Next(0, (int)board.Width),
+                        //    Y = (uint)random.Next((int)(board.Height - config.GameDefinition.TaskAreaLength), (int)(board.Height)),
+                        //};
                         position = GenerateRandomPlaces(1, 0, board.Width, board.Height - config.GameDefinition.TaskAreaLength, board.Height).First();
                     } while (board.GetField(position).Player != null);
                     return board.GetField(position);
                 case TeamColour.Blue:
                     do
                     {
+                        //position = new DTO.Location()
+                        //{
+                        //    X = (uint)random.Next(0, (int)board.Width),
+                        //    Y = (uint)random.Next((int)(0), (int)(config.GameDefinition.TaskAreaLength)),
+                        //};
                         position = GenerateRandomPlaces(1, 0, board.Width, 0, config.GameDefinition.TaskAreaLength).First();
                     } while (board.GetField(position).Player != null);
                     return board.GetField(position);
@@ -891,64 +912,28 @@ namespace GameMasterCore
         /// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         /// </summary>
         private List<DTO.Location> GenerateRandomPlaces(
-            uint n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
+            int n, uint minXInclusive, uint maxXExclusive, uint minYInclusive, uint maxYExclusive)
+        => GenerateRandomPlaces(
+            n, (int) minXInclusive, (int) maxXExclusive, (int) minYInclusive, (int) maxYExclusive);
+
+        private List<DTO.Location> GenerateRandomPlaces(
+            int n, int minXInclusive, int maxXExclusive, int minYInclusive, int maxYExclusive)
         {
-
-
-            if (maxXExclusive <= minXInclusive || maxYExclusive <= minYInclusive)
+            var locationLists = new List<DTO.Location>(n);
+            DTO.Location place;
+            do
             {
-                throw new ArgumentOutOfRangeException("Incorrectly defined rectangle");
-            }
-
-            int totalFieldCount = (int)((maxXExclusive - minXInclusive) * (maxYExclusive - minYInclusive));
-            var placeToPieceId = new Dictionary<int, int>();
-
-            for (int i = 0; i < n; i++)
-            {
-                placeToPieceId.Add(i, i);
-            }
-
-            for (int i = 0; i < totalFieldCount - 1; i++)
-            {
-                int randomTargetPlace = random.Next(i, totalFieldCount);
-
-                if (placeToPieceId.Keys.Contains(i))
+                do
                 {
-                    if (placeToPieceId.Keys.Contains(randomTargetPlace))
+                    place = new DTO.Location()
                     {
-
-                        int tmpId = placeToPieceId[randomTargetPlace];
-                        placeToPieceId[randomTargetPlace] = placeToPieceId[i];
-                        placeToPieceId[i] = tmpId;
-                    }
-                    else
-                    {
-                        placeToPieceId[randomTargetPlace] = placeToPieceId[i];
-                        placeToPieceId.Remove(i);
-                    }
-                }
-                else
-                {
-                    if (placeToPieceId.Keys.Contains(randomTargetPlace))
-                    {
-                        placeToPieceId[i] = placeToPieceId[randomTargetPlace];
-                        placeToPieceId.Remove(randomTargetPlace);
-                    }
-                }
-            }
-
-            var coordinateListToReturn = new DTO.Location[n];
-            foreach (var keyValue in placeToPieceId)
-            {
-                coordinateListToReturn[keyValue.Value] = new DTO.Location()
-                {
-                    X = (uint)(minXInclusive + (keyValue.Key % (maxXExclusive - minXInclusive))),
-                    Y = (uint)(minYInclusive + (keyValue.Key / (maxXExclusive - minXInclusive)))
-                };
-
-            }
-
-            return coordinateListToReturn.ToList();
+                        X = (uint)random.Next(minXInclusive, maxXExclusive),
+                        Y = (uint)random.Next(minYInclusive, maxYExclusive),
+                    };
+                } while (locationLists.Any(location => location.X == place.X && location.Y == place.Y));
+                locationLists.Add(place);
+            } while (locationLists.Count < n);
+            return locationLists;
         }
 
         private bool CheckWin(string guid, out DTO.Data message)

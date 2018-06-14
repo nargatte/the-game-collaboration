@@ -58,8 +58,8 @@ namespace CommunicationServerCore
 		{
 			communicationObserver.Sent += OnSent;
 			communicationObserver.Received += OnReceived;
-			communicationObserver.SentKeepAlive += OnSentKeepAlive;
-			communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
+			//communicationObserver.SentKeepAlive += OnSentKeepAlive;
+			//communicationObserver.ReceivedKeepAlive += OnReceivedKeepAlive;
 			communicationObserver.Discarded += OnDiscarded;
 			communicationObserver.Disconnected += OnDisconnected;
 		}
