@@ -225,6 +225,7 @@ namespace CommunicationServerCore.Components.Servers
 					RejectKnowledgeExchange rejectKnowledgeExchange;
 					SuggestAction suggestAction;
 					SuggestActionResponse suggestActionResponse;
+					Data data;
 					if( ( getGames = await proxy.TryReceiveAsync<GetGames>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for GetGames
 						await GetGamesAsync( proxy, getGames, cancellationToken );//process request
 					else if( ( joinGame = await proxy.TryReceiveAsync<JoinGame>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for JoinGame
@@ -249,6 +250,8 @@ namespace CommunicationServerCore.Components.Servers
 						await SuggestActionAsync( proxy, suggestAction, cancellationToken );//pass message
 					else if( ( suggestActionResponse = await proxy.TryReceiveAsync<SuggestActionResponse>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for SuggestActionResponse
 						await SuggestActionResponseAsync( proxy, suggestActionResponse, cancellationToken );//pass message
+					else if( ( data = await proxy.TryReceiveAsync<Data>( cancellationToken ).ConfigureAwait( false ) ) != null )//check for Data
+						await DataAsync( proxy, data, cancellationToken );//pass message
 					else//doesn't matter
 						proxy.Discard();
 				}
@@ -335,6 +338,25 @@ namespace CommunicationServerCore.Components.Servers
 				{
 				}
 			//else Player fault
+		}
+		protected async Task DataAsync( IClientProxy proxy, Data data, CancellationToken cancellationToken )//when Data is pending
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			players.TryGetValue( proxy.Remote.Id, out var session );
+			if( session.GameId != Constants.AnonymousId )
+			{
+				if( gamesById.TryGetValue( session.GameId, out var game ) )
+				{
+					try
+					{
+						await game.GameMaster.SendAsync( data, cancellationToken );
+					}
+					catch( Exception )//GameMaster fault
+					{
+					}
+				}
+				//else Player fault
+			}
 		}
 		protected async Task AsAnonymousGameMasterAsync( IClientProxy proxy, RegisterGame registerGame, CancellationToken cancellationToken )//when GameMaster is anonymous
 		{
